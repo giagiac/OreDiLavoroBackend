@@ -2,6 +2,10 @@ import 'reflect-metadata';
 import { DataSource, DataSourceOptions } from 'typeorm';
 
 export const AppDataSource = new DataSource({
+  migrationsTableName: 'EPS_NESTJS_MIGRATION',
+  sid: process.env.DATABASE_SID,
+  serviceName: process.env.DATABASE_SERVICE_NAME,
+
   type: process.env.DATABASE_TYPE,
   url: process.env.DATABASE_URL,
   host: process.env.DATABASE_HOST,

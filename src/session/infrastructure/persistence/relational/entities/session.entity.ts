@@ -13,7 +13,7 @@ import { UserEntity } from '../../../../../users/infrastructure/persistence/rela
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
 
 @Entity({
-  name: 'session',
+  name: 'EPS_NESTJS_SESSION',
 })
 export class SessionEntity extends EntityRelationalHelper {
   @PrimaryGeneratedColumn()

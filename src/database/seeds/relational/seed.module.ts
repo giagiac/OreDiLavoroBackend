@@ -9,6 +9,7 @@ import { StatusSeedModule } from './status/status-seed.module';
 import { UserSeedModule } from './user/user-seed.module';
 import databaseConfig from '../../config/database.config';
 import appConfig from '../../../config/app.config';
+import { OracleConnectionOptions } from 'typeorm/driver/oracle/OracleConnectionOptions';
 
 @Module({
   imports: [
@@ -23,7 +24,10 @@ import appConfig from '../../../config/app.config';
     TypeOrmModule.forRootAsync({
       useClass: TypeOrmConfigService,
       dataSourceFactory: async (options: DataSourceOptions) => {
-        return new DataSource(options).initialize();
+        return new DataSource({
+          ...options,
+          sid: 'db',
+        } as OracleConnectionOptions).initialize();
       },
     }),
   ],

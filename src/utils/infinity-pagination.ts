@@ -10,3 +10,13 @@ export const infinityPagination = <T>(
     hasNextPage: data.length === options.limit,
   };
 };
+
+export const infinityPaginationQueryBuilder = <T>(
+  data: T[],
+  count: number,
+): InfinityPaginationResponseDto<T> => {
+  return {
+    data,
+    hasNextPage: data.length !== count,
+  };
+};

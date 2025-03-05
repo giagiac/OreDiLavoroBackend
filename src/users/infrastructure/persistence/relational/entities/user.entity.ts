@@ -18,7 +18,7 @@ import { AuthProvidersEnum } from '../../../../../auth/auth-providers.enum';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
 
 @Entity({
-  name: 'user',
+  name: 'EPS_NESTJS_USER',
 })
 export class UserEntity extends EntityRelationalHelper {
   @PrimaryGeneratedColumn()
@@ -50,7 +50,9 @@ export class UserEntity extends EntityRelationalHelper {
   @OneToOne(() => FileEntity, {
     eager: true,
   })
-  @JoinColumn()
+  @JoinColumn({
+    referencedColumnName: 'id',
+  })
   photo?: FileEntity | null;
 
   @ManyToOne(() => RoleEntity, {

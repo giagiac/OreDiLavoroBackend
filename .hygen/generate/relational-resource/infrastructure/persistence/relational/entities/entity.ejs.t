@@ -13,7 +13,7 @@ import { EntityRelationalHelper } from '../../../../../utils/relational-entity-h
   name: '<%= h.inflection.transform(name, ['underscore']) %>',
 })
 export class <%= name %>Entity extends EntityRelationalHelper {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn()
   id: string;
 
   @CreateDateColumn()
