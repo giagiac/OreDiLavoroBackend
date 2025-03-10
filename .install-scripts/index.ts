@@ -1,17 +1,17 @@
 import prompts from 'prompts';
-import removeFacebookAuth from './scripts/remove-auth-facebook';
-import removeGoogleAuth from './scripts/remove-auth-google';
-import removeAppleAuth from './scripts/remove-auth-apple';
-import removeTwitterAuth from './scripts/remove-auth-twitter';
-import removeInstallScripts from './scripts/remove-install-scripts';
-import removePostgreSql from './scripts/remove-postgresql';
-import removeMongoDb from './scripts/remove-mongodb';
-import removeRelationalResourceGeneration from './scripts/resource-generation-scripts/remove-relational';
-import removeDocumentResourceGeneration from './scripts/resource-generation-scripts/remove-document';
-import removeAllDbResourceGeneration from './scripts/resource-generation-scripts/remove-all-db';
 import removeAllDbPropertyGeneration from './scripts/property-generation-scripts/remove-all-db';
 import removeDocumentPropertyGeneration from './scripts/property-generation-scripts/remove-document';
 import removeRelationalPropertyGeneration from './scripts/property-generation-scripts/remove-relational';
+import removeAppleAuth from './scripts/remove-auth-apple';
+import removeFacebookAuth from './scripts/remove-auth-facebook';
+import removeGoogleAuth from './scripts/remove-auth-google';
+import removeTwitterAuth from './scripts/remove-auth-twitter';
+import removeInstallScripts from './scripts/remove-install-scripts';
+import removeMongoDb from './scripts/remove-mongodb';
+import removePostgreSql from './scripts/remove-postgresql';
+import removeAllDbResourceGeneration from './scripts/resource-generation-scripts/remove-all-db';
+import removeDocumentResourceGeneration from './scripts/resource-generation-scripts/remove-document';
+import removeRelationalResourceGeneration from './scripts/resource-generation-scripts/remove-relational';
 
 (async () => {
   const response = await prompts(

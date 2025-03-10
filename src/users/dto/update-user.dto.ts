@@ -1,4 +1,4 @@
-import { PartialType, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiPropertyOptional, PartialType } from '@nestjs/swagger';
 import { CreateUserDto } from './create-user.dto';
 
 import { Transform, Type } from 'class-transformer';

@@ -1,35 +1,35 @@
 import { Module } from '@nestjs/common';
-import { UsersModule } from './users/users.module';
-import { FilesModule } from './files/files.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { HeaderResolver, I18nModule } from 'nestjs-i18n';
+import path from 'path';
+import { DataSource, DataSourceOptions } from 'typeorm';
+import { OracleConnectionOptions } from 'typeorm/driver/oracle/OracleConnectionOptions';
+import { AuthAppleModule } from './auth-apple/auth-apple.module';
+import appleConfig from './auth-apple/config/apple.config';
+import { AuthFacebookModule } from './auth-facebook/auth-facebook.module';
+import facebookConfig from './auth-facebook/config/facebook.config';
+import { AuthGoogleModule } from './auth-google/auth-google.module';
+import googleConfig from './auth-google/config/google.config';
+import { AuthTwitterModule } from './auth-twitter/auth-twitter.module';
+import twitterConfig from './auth-twitter/config/twitter.config';
 import { AuthModule } from './auth/auth.module';
-import databaseConfig from './database/config/database.config';
 import authConfig from './auth/config/auth.config';
 import appConfig from './config/app.config';
-import mailConfig from './mail/config/mail.config';
-import fileConfig from './files/config/file.config';
-import facebookConfig from './auth-facebook/config/facebook.config';
-import googleConfig from './auth-google/config/google.config';
-import twitterConfig from './auth-twitter/config/twitter.config';
-import appleConfig from './auth-apple/config/apple.config';
-import path from 'path';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthAppleModule } from './auth-apple/auth-apple.module';
-import { AuthFacebookModule } from './auth-facebook/auth-facebook.module';
-import { AuthGoogleModule } from './auth-google/auth-google.module';
-import { AuthTwitterModule } from './auth-twitter/auth-twitter.module';
-import { HeaderResolver, I18nModule } from 'nestjs-i18n';
-import { TypeOrmConfigService } from './database/typeorm-config.service';
-import { MailModule } from './mail/mail.module';
-import { HomeModule } from './home/home.module';
-import { DataSource, DataSourceOptions } from 'typeorm';
 import { AllConfigType } from './config/config.type';
-import { SessionModule } from './session/session.module';
-import { MailerModule } from './mailer/mailer.module';
-import { MongooseModule } from '@nestjs/mongoose';
-import { MongooseConfigService } from './database/mongoose-config.service';
 import { DatabaseConfig } from './database/config/database-config.type';
-import { OracleConnectionOptions } from 'typeorm/driver/oracle/OracleConnectionOptions';
+import databaseConfig from './database/config/database.config';
+import { MongooseConfigService } from './database/mongoose-config.service';
+import { TypeOrmConfigService } from './database/typeorm-config.service';
+import fileConfig from './files/config/file.config';
+import { FilesModule } from './files/files.module';
+import { HomeModule } from './home/home.module';
+import mailConfig from './mail/config/mail.config';
+import { MailModule } from './mail/mail.module';
+import { MailerModule } from './mailer/mailer.module';
+import { SessionModule } from './session/session.module';
+import { UsersModule } from './users/users.module';
 
 // <database-block>
 const infrastructureDatabaseModule = (databaseConfig() as DatabaseConfig)
@@ -48,19 +48,25 @@ const infrastructureDatabaseModule = (databaseConfig() as DatabaseConfig)
     });
 // </database-block>
 
-import { ArticoliCostisModule } from './articoli-costis/articoli-costis.module';
+import { ArticoliCostiCfCommModule } from './articoli-costi-cf-comm/articoli-costi-cf-comm.module';
 
-import { CfCommsModule } from './cf-comms/cf-comms.module';
+import { CfCommsModule } from './cf-comm/cf-comm.module';
 
-import { CfsModule } from './cfs/cfs.module';
+import { CfsModule } from './cf/cf.module';
+
+import { nsorpeffcicliesecsModule } from './nsorpeffcicliesec/nsorpeffcicliesec.module';
+
+import { ArticoliCostiCfsModule } from './articoli-costi-cf/articoli-costi-cf.module';
 
 @Module({
   imports: [
+    ArticoliCostiCfsModule,
+    nsorpeffcicliesecsModule,
     CfsModule,
     CfsModule,
     CfCommsModule,
     CfCommsModule,
-    ArticoliCostisModule,
+    ArticoliCostiCfCommModule,
     ConfigModule.forRoot({
       isGlobal: true,
       load: [

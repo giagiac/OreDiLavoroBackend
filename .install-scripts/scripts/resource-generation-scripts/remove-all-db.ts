@@ -1,6 +1,6 @@
-import replace from '../../helpers/replace';
-import path from 'path';
 import fs from 'fs';
+import path from 'path';
+import replace from '../../helpers/replace';
 
 const removeAllDbResourceGeneration = async () => {
   const filesToRemove = [

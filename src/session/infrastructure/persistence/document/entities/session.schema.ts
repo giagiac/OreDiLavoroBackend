@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { now, HydratedDocument } from 'mongoose';
+import mongoose, { HydratedDocument, now } from 'mongoose';
 import { UserSchemaClass } from '../../../../../users/infrastructure/persistence/document/entities/user.schema';
 import { EntityDocumentHelper } from '../../../../../utils/document-entity-helper';
 

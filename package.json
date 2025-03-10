@@ -12,7 +12,7 @@
     "migration:create": "npm run typeorm -- migration:create",
     "migration:run": "LD_LIBRARY_PATH=../instantclient_23_7 npm run typeorm -- --dataSource=src/database/data-source.ts migration:run",
     "migration:revert": "LD_LIBRARY_PATH=../instantclient_23_7 npm run typeorm -- --dataSource=src/database/data-source.ts migration:revert",
-    "schema:drop": "npm run typeorm -- --dataSource=src/database/data-source.ts schema:drop",
+    "schema:drop": "nooooo npm run typeorm -- --dataSource=src/database/data-source.ts schema:drop",
     "seed:create:relational": "hygen seeds create-relational",
     "seed:create:document": "hygen seeds create-document",
     "generate:resource:all-db": "hygen generate all-db-resource",
