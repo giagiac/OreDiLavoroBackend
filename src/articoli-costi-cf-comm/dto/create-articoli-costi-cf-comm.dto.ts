@@ -8,6 +8,7 @@ import {
   // decorators here
   ApiProperty,
 } from '@nestjs/swagger';
+import { TipoCosto } from '../../articoli-costi-cf/infrastructure/persistence/relational/entities/articoli-costi-cf.entity';
 
 export class CreateArticoliCostiCfCommDto {
   @ApiProperty({
@@ -16,7 +17,7 @@ export class CreateArticoliCostiCfCommDto {
   })
   @IsOptional()
   @IsString()
-  costo2?: string | null;
+  TIPO_COSTO?: TipoCosto | null;
 
   @ApiProperty({
     required: false,
@@ -24,7 +25,7 @@ export class CreateArticoliCostiCfCommDto {
   })
   @IsOptional()
   @IsString()
-  costo1?: string | null;
+  COD_ART?: string | null;
 
   // @ApiProperty({
   //   required: true,

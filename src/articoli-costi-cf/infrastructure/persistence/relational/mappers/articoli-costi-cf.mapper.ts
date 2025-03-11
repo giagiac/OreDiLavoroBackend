@@ -8,6 +8,14 @@ export class ArticoliCostiCfMapper {
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
 
+    domainEntity.COD_CF = raw.COD_CF;
+    domainEntity.COD_ART = raw.COD_ART;
+    domainEntity.TIPO_COSTO = raw.TIPO_COSTO;
+
+    if(raw.artCosti){
+      domainEntity.artCosti = raw.artCosti
+    }
+
     return domainEntity;
   }
 
@@ -16,6 +24,10 @@ export class ArticoliCostiCfMapper {
     if (domainEntity.id) {
       persistenceEntity.id = domainEntity.id;
     }
+    persistenceEntity.TIPO_COSTO = domainEntity.TIPO_COSTO
+    persistenceEntity.COD_ART = domainEntity.COD_ART
+    persistenceEntity.COD_CF = domainEntity.COD_CF
+    
     persistenceEntity.createdAt = domainEntity.createdAt;
     persistenceEntity.updatedAt = domainEntity.updatedAt;
 

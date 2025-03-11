@@ -8,7 +8,7 @@ import {
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
 
 @Entity({
-  name: 'NsOrpEffCicliEsec',
+  name: 'EPS_NESTJS_ORP_EFF_CICLI_ESEC',
 })
 export class nsorpeffcicliesecEntity extends EntityRelationalHelper {
   @Column({
@@ -35,7 +35,7 @@ export class nsorpeffcicliesecEntity extends EntityRelationalHelper {
   })
   AZIENDA_ID: number;
 
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn()
   id: string;
 
   @CreateDateColumn()

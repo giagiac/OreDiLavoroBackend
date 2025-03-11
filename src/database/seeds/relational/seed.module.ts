@@ -7,6 +7,8 @@ import { OracleConnectionOptions } from 'typeorm/driver/oracle/OracleConnectionO
 import appConfig from '../../../config/app.config';
 import databaseConfig from '../../config/database.config';
 import { TypeOrmConfigService } from '../../typeorm-config.service';
+import { ArticoliCostiCfSeedModule } from './articoliCostiCf/articoliCostiCf-seed.module';
+import { ArticoliCostiCfCommSeedModule } from './articoliCostiCfComm/articoliCostiCfComm-seed.module';
 import { RoleSeedModule } from './role/role-seed.module';
 import { StatusSeedModule } from './status/status-seed.module';
 import { UserSeedModule } from './user/user-seed.module';
@@ -16,6 +18,8 @@ import { UserSeedModule } from './user/user-seed.module';
     RoleSeedModule,
     StatusSeedModule,
     UserSeedModule,
+    ArticoliCostiCfSeedModule,
+    ArticoliCostiCfCommSeedModule,
     ConfigModule.forRoot({
       isGlobal: true,
       load: [databaseConfig, appConfig],

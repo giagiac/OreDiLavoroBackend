@@ -1,6 +1,7 @@
 import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
 import { CfCommEntity } from '../../../../../cf-comm/infrastructure/persistence/relational/entities/cf-comm.entity';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
+import { ArticoliCostiCfEntity } from '../../../../../articoli-costi-cf/infrastructure/persistence/relational/entities/articoli-costi-cf.entity';
 
 @Entity({
   name: 'CF',
@@ -37,6 +38,11 @@ export class CfEntity extends EntityRelationalHelper {
   @PrimaryColumn()
   COD_CF: string;
 
-  @OneToMany(() => CfCommEntity, (cf) => cf.cf)
+  @OneToMany(() => CfCommEntity, (cfComm) => cfComm.cf, { eager: true })
   cfComm?: CfCommEntity[] | null;
+
+  @OneToMany(() => ArticoliCostiCfEntity, (articoliCosti) => articoliCosti.cf, {
+    eager: true,
+  })
+  articoliCostiCf?: ArticoliCostiCfEntity[] | null;
 }

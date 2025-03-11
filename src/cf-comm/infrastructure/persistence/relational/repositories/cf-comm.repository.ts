@@ -6,7 +6,7 @@ import { NullableType } from '../../../../../utils/types/nullable.type';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
 import { CfComm } from '../../../../domain/cf-comm';
 import { CfCommDto } from '../../../../dto/cf-comm.dto';
-import { SortCfCommDto } from '../../../../dto/find-all-cf-comms.dto';
+import { SortCfCommDto } from '../../../../dto/find-all-cf-comm.dto';
 import { CfCommRepository } from '../../cf-comm.repository';
 import { CfCommEntity } from '../entities/cf-comm.entity';
 import { CfCommMapper } from '../mappers/cf-comm.mapper';
@@ -96,7 +96,7 @@ export class CfCommRelationalRepository implements CfCommRepository {
 
     const entitiesSql = this.cfCommRepository
       .createQueryBuilder('cfComm')
-      .leftJoinAndSelect('cfComm.articoliCosti', 'articoliCosti')
+      // .leftJoinAndSelect('cfComm.articoliCosti', 'articoliCosti')
       .offset((paginationOptions.page - 1) * paginationOptions.limit)
       .limit(paginationOptions.limit);
 
@@ -108,7 +108,7 @@ export class CfCommRelationalRepository implements CfCommRepository {
       this.applicaSort('cfComm', entitiesSql, sortOptions);
     }
 
-    console.log(entitiesSql.getSql());
+    // console.log(entitiesSql.getSql());
 
     const entitiesAndCount = await entitiesSql.getManyAndCount();
 

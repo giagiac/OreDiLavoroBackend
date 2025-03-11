@@ -23,13 +23,13 @@ import { infinityPaginationQueryBuilder } from '../utils/infinity-pagination';
 import { CfCommService } from './cf-comm.service';
 import { CfComm } from './domain/cf-comm';
 import { CreateCfCommDto } from './dto/create-cf-comm.dto';
-import { FindAllCfCommDto } from './dto/find-all-cf-comms.dto';
+import { FindAllCfCommDto } from './dto/find-all-cf-comm.dto';
 
 @ApiTags('Cfcomm')
 @ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'))
 @Controller({
-  path: 'cf-comms',
+  path: 'cf-comm',
   version: '1',
 })
 export class CfCommController {

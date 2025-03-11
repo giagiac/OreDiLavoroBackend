@@ -4,7 +4,7 @@ import { NullableType } from '../../../utils/types/nullable.type';
 import { IPaginationOptions } from '../../../utils/types/pagination-options';
 import { CfComm } from '../../domain/cf-comm';
 import { CfCommDto } from '../../dto/cf-comm.dto';
-import { SortCfCommDto } from '../../dto/find-all-cf-comms.dto';
+import { SortCfCommDto } from '../../dto/find-all-cf-comm.dto';
 
 export abstract class CfCommRepository {
   abstract create(

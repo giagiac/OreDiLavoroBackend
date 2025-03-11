@@ -1,16 +1,46 @@
 import {
+  Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { ArtCostiEntity } from '../../../../../art-costi/infrastructure/persistence/relational/entities/art-costi.entity';
+import { CfEntity } from '../../../../../cf/infrastructure/persistence/relational/entities/cf.entity';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
+
+export type TipoCosto =
+  | 'IN_GIORNATA'
+  | 'IN_GIORNATA_DOPO_21'
+  | 'PERNOTTO_FUORISEDE_ANDATA'
+  | 'PERNOTTO_FUORISEDE_RITORNO';
 
 @Entity({
   name: 'EPS_NESTJS_ARTICOLI_COSTI_CF',
 })
 export class ArticoliCostiCfEntity extends EntityRelationalHelper {
-  @PrimaryGeneratedColumn('uuid')
+  @Column({
+    nullable: true,
+    type: String,
+  })
+  TIPO_COSTO?: TipoCosto | null;
+
+  @Column({
+    nullable: true,
+    type: String,
+  })
+  COD_ART?: string | null;
+
+  @Column({
+    nullable: false,
+    type: String,
+  })
+  COD_CF: string;
+
+  @PrimaryGeneratedColumn()
   id: string;
 
   @CreateDateColumn()
@@ -18,4 +48,20 @@ export class ArticoliCostiCfEntity extends EntityRelationalHelper {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @ManyToOne(() => CfEntity)
+  @JoinColumn({
+    referencedColumnName: 'COD_CF',
+    name: 'COD_CF',
+  })
+  cf: CfEntity | null;
+
+  @OneToMany(() => ArtCostiEntity, (artCosti) => artCosti.articoliCostiCf, {
+    eager: true,
+  })
+  @JoinColumn({
+    referencedColumnName: 'COD_ART',
+    name: 'COD_ART',
+  })
+  artCosti: ArtCostiEntity[];
 }

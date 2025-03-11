@@ -19,4 +19,4 @@ const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig)
   providers: [CfService],
   exports: [CfService, infrastructurePersistenceModule],
 })
-export class CfsModule {}
+export class CfModule {}

@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { IPaginationOptions } from '../utils/types/pagination-options';
 import { ArticoliCostiCf } from './domain/articoli-costi-cf';
-import { CreateArticoliCostiCfDto } from './dto/create-articoli-costi-cf.dto';
 import { UpdateArticoliCostiCfDto } from './dto/update-articoli-costi-cf.dto';
 import { ArticoliCostiCfRepository } from './infrastructure/persistence/articoli-costi-cf.repository';
 
@@ -11,19 +10,6 @@ export class ArticoliCostiCfService {
     // Dependencies here
     private readonly articoliCostiCfRepository: ArticoliCostiCfRepository,
   ) {}
-
-  async create(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    createArticoliCostiCfDto: CreateArticoliCostiCfDto,
-  ) {
-    // Do not remove comment below.
-    // <creating-property />
-
-    return this.articoliCostiCfRepository.create({
-      // Do not remove comment below.
-      // <creating-property-payload />
-    });
-  }
 
   findAllWithPagination({
     paginationOptions,

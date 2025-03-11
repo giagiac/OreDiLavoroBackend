@@ -34,9 +34,9 @@ export class ArticoliCostiCfCommService {
     return this.articoliCostiCfCommRepository.update(CF_COMM_ID, {
       // Do not remove comment below.
       // <updating-property-payload />
-      costo2: updateArticoliCostiDto.costo2,
+      TIPO_COSTO: updateArticoliCostiDto.TIPO_COSTO,
 
-      costo1: updateArticoliCostiDto.costo1,
+      COD_ART: updateArticoliCostiDto.COD_ART,
     });
   }
 

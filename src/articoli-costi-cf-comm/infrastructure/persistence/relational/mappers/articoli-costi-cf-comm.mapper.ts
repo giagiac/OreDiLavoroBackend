@@ -6,9 +6,9 @@ import { ArticoliCostiCfCommEntity } from '../entities/articoli-costi-cf-comm.en
 export class ArticoliCostiCfCommMapper {
   static toDomain(raw: ArticoliCostiCfCommEntity): ArticoliCostiCfComm {
     const domainEntity = new ArticoliCostiCfComm();
-    domainEntity.costo2 = raw.costo2;
+    domainEntity.TIPO_COSTO = raw.TIPO_COSTO;
 
-    domainEntity.costo1 = raw.costo1;
+    domainEntity.COD_ART = raw.COD_ART;
 
     domainEntity.id = raw.id;
     domainEntity.createdAt = raw.createdAt;
@@ -21,8 +21,8 @@ export class ArticoliCostiCfCommMapper {
     domainEntity: ArticoliCostiCfComm,
   ): ArticoliCostiCfCommEntity {
     const persistenceEntity = new ArticoliCostiCfCommEntity();
-    persistenceEntity.costo2 = domainEntity.costo2;
-    persistenceEntity.costo1 = domainEntity.costo1;
+    persistenceEntity.TIPO_COSTO = domainEntity.TIPO_COSTO;
+    persistenceEntity.COD_ART = domainEntity.COD_ART;
     persistenceEntity.CF_COMM_ID = domainEntity.CF_COMM_ID;
 
     if (domainEntity.CfComm) {

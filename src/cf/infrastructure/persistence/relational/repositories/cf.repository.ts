@@ -73,7 +73,7 @@ export class CfRelationalRepository implements CfRepository {
     // const entities = await this.cfRepository.find({
     //   skip: (paginationOptions.page - 1) * paginationOptions.limit,
     //   take: paginationOptions.limit,
-    //   relations: ['cfComm', 'cfComm.articoliCosti'],
+    //   relations: ['cfComm', 'cfComm.articoliCostiCf'],
     // });
 
     let entitiesSql;
@@ -83,7 +83,9 @@ export class CfRelationalRepository implements CfRepository {
         .createQueryBuilder('cf')
         .distinct()
         .innerJoin('cf.cfComm', 'cfComm')
-        // .innerJoin('cfComm.articoliCosti', 'articoliCosti')
+        .leftJoinAndSelect('cf.articoliCostiCf', 'articoliCostiCf')
+        .leftJoinAndSelect('articoliCostiCf.artCosti', 'artCosti')
+        // .innerJoin('cfComm.articoliCostiCf', 'articoliCostiCf')
         // .orderBy('LPAD(cf.COD_CF,10)', 'ASC')
         // .select()
         .offset((paginationOptions.page - 1) * paginationOptions.limit)
@@ -91,10 +93,12 @@ export class CfRelationalRepository implements CfRepository {
     } else {
       entitiesSql = this.cfRepository
         .createQueryBuilder('cf')
+        .leftJoinAndSelect('cf.articoliCostiCf', 'articoliCostiCf')
+        .leftJoinAndSelect('articoliCostiCf.artCosti', 'artCosti')
         //.innerJoinAndSelect('cf.cfComm', 'cfComm')
-        //.leftJoinAndSelect('cfComm.articoliCosti', 'articoliCosti')
+        //.leftJoinAndSelect('cfComm.articoliCostiCf', 'articoliCostiCf')
         //.leftJoinAndSelect('cf.cfComm', 'cfComm', 'cf.COD_CF = cfComm.COD_CF') // Aggiungi la relazione e la condizione di join
-        //.innerJoinAndSelect('cfComm.articoliCosti', 'articoliCosti', "cfComm.CF_COMM_ID = articoliCosti.CF_COMM_ID")
+        //.innerJoinAndSelect('cfComm.articoliCostiCf', 'articoliCostiCf', "cfComm.CF_COMM_ID = articoliCostiCf.CF_COMM_ID")
         .offset((paginationOptions.page - 1) * paginationOptions.limit)
         .limit(paginationOptions.limit);
     }

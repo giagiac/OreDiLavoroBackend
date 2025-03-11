@@ -5,14 +5,12 @@ import {
   Get,
   Param,
   Patch,
-  Post,
   Query,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import {
   ApiBearerAuth,
-  ApiCreatedResponse,
   ApiOkResponse,
   ApiParam,
   ApiTags,
@@ -24,7 +22,6 @@ import {
 import { infinityPagination } from '../utils/infinity-pagination';
 import { ArticoliCostiCfService } from './articoli-costi-cf.service';
 import { ArticoliCostiCf } from './domain/articoli-costi-cf';
-import { CreateArticoliCostiCfDto } from './dto/create-articoli-costi-cf.dto';
 import { FindAllArticoliCostiCfDto } from './dto/find-all-articoli-costi-cf.dto';
 import { UpdateArticoliCostiCfDto } from './dto/update-articoli-costi-cf.dto';
 
@@ -39,14 +36,6 @@ export class ArticoliCostiCfController {
   constructor(
     private readonly articoliCostiCfService: ArticoliCostiCfService,
   ) {}
-
-  @Post()
-  @ApiCreatedResponse({
-    type: ArticoliCostiCf,
-  })
-  create(@Body() createArticoliCostiCfDto: CreateArticoliCostiCfDto) {
-    return this.articoliCostiCfService.create(createArticoliCostiCfDto);
-  }
 
   @Get()
   @ApiOkResponse({

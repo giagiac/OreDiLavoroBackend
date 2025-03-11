@@ -33,7 +33,7 @@ export class CfCommMapper {
 
     domainEntity.COD_CF = raw.CF_COMM_ID;
 
-    domainEntity.articoliCosti = raw.articoliCosti;
+    // domainEntity.articoliCosti = raw.articoliCosti;
 
     return domainEntity;
   }

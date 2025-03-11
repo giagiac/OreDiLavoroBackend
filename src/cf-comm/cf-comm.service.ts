@@ -4,7 +4,7 @@ import { IPaginationOptions } from '../utils/types/pagination-options';
 import { CfComm } from './domain/cf-comm';
 import { CfCommDto } from './dto/cf-comm.dto';
 import { CreateCfCommDto } from './dto/create-cf-comm.dto';
-import { SortCfCommDto } from './dto/find-all-cf-comms.dto';
+import { SortCfCommDto } from './dto/find-all-cf-comm.dto';
 import { UpdateCfCommDto } from './dto/update-cf-comm.dto';
 import { CfCommRepository } from './infrastructure/persistence/cf-comm.repository';
 

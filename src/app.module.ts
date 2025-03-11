@@ -52,18 +52,27 @@ import { ArticoliCostiCfCommModule } from './articoli-costi-cf-comm/articoli-cos
 
 import { CfCommsModule } from './cf-comm/cf-comm.module';
 
-import { CfsModule } from './cf/cf.module';
+import { CfModule } from './cf/cf.module';
 
 import { nsorpeffcicliesecsModule } from './nsorpeffcicliesec/nsorpeffcicliesec.module';
 
 import { ArticoliCostiCfsModule } from './articoli-costi-cf/articoli-costi-cf.module';
 
+import { art_anaModule } from './art-ana/art-ana.module';
+
+import { artCostiModule } from './art-costi/art-costi.module';
+
+import { tipiCostiArtsModule } from './tipi-costi-art/tipi-costi-art.module';
+
 @Module({
   imports: [
+    tipiCostiArtsModule,
+    artCostiModule,
+    art_anaModule,
     ArticoliCostiCfsModule,
     nsorpeffcicliesecsModule,
-    CfsModule,
-    CfsModule,
+    CfModule,
+    CfModule,
     CfCommsModule,
     CfCommsModule,
     ArticoliCostiCfCommModule,

@@ -2,12 +2,10 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
-  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { CfCommEntity } from '../../../../../cf-comm/infrastructure/persistence/relational/entities/cf-comm.entity';
+import { TipoCosto } from '../../../../../articoli-costi-cf/infrastructure/persistence/relational/entities/articoli-costi-cf.entity';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
 
 @Entity({
@@ -18,13 +16,13 @@ export class ArticoliCostiCfCommEntity extends EntityRelationalHelper {
     nullable: true,
     type: String,
   })
-  costo2?: string | null;
+  TIPO_COSTO?: TipoCosto | null;
 
   @Column({
     nullable: true,
     type: String,
   })
-  costo1?: string | null;
+  COD_ART?: string | null;
 
   @Column({
     nullable: false,
@@ -41,10 +39,10 @@ export class ArticoliCostiCfCommEntity extends EntityRelationalHelper {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @OneToOne(() => CfCommEntity, (cfComm) => cfComm.CF_COMM_ID)
-  @JoinColumn({
-    referencedColumnName: 'CF_COMM_ID',
-    name: 'CF_COMM_ID',
-  })
-  CfComm?: CfCommEntity | null;
+  // @OneToOne(() => CfCommEntity, (cfComm) => cfComm.CF_COMM_ID)
+  // @JoinColumn({
+  //   referencedColumnName: 'CF_COMM_ID',
+  //   name: 'CF_COMM_ID',
+  // })
+  // CfComm?: CfCommEntity | null;
 }

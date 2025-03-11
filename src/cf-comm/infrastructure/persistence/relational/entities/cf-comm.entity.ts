@@ -1,12 +1,4 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToOne,
-  PrimaryColumn,
-} from 'typeorm';
-import { ArticoliCostiCfCommEntity } from '../../../../../articoli-costi-cf-comm/infrastructure/persistence/relational/entities/articoli-costi-cf-comm.entity';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 import { CfEntity } from '../../../../../cf/infrastructure/persistence/relational/entities/cf.entity';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
 
@@ -99,11 +91,4 @@ export class CfCommEntity extends EntityRelationalHelper {
     name: 'COD_CF',
   })
   cf: CfEntity | null;
-
-  @OneToOne(
-    () => ArticoliCostiCfCommEntity,
-    (articoliCosti) => articoliCosti.CfComm,
-    { eager: true },
-  )
-  articoliCosti: ArticoliCostiCfCommEntity | null;
 }
