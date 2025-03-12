@@ -4,7 +4,7 @@ import { EntityRelationalHelper } from '../../../../../utils/relational-entity-h
 @Entity({
   name: 'ART_ANA',
 })
-export class art_anaEntity extends EntityRelationalHelper {
+export class ArtAnaEntity extends EntityRelationalHelper {
   @PrimaryColumn()
   COD_ART: string;
 

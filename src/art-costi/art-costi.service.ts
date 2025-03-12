@@ -13,14 +13,17 @@ export class artCostisService {
 
   findAllWithPagination({
     paginationOptions,
+    COD_ART
   }: {
     paginationOptions: IPaginationOptions;
+    COD_ART: String
   }) {
     return this.artCostiRepository.findAllWithPagination({
       paginationOptions: {
         page: paginationOptions.page,
         limit: paginationOptions.limit,
       },
+      COD_ART
     });
   }
 

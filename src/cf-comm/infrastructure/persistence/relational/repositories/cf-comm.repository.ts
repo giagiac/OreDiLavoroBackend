@@ -87,7 +87,7 @@ export class CfCommRelationalRepository implements CfCommRepository {
     sortOptions?: Array<SortCfCommDto> | null;
     paginationOptions: IPaginationOptions;
     // join: boolean;
-  }): Promise<{ cf: CfComm[]; count: number }> {
+  }): Promise<{ data: CfComm[]; count: number }> {
     // const entities = await this.cfRepository.find({
     //   skip: (paginationOptions.page - 1) * paginationOptions.limit,
     //   take: paginationOptions.limit,
@@ -113,7 +113,7 @@ export class CfCommRelationalRepository implements CfCommRepository {
     const entitiesAndCount = await entitiesSql.getManyAndCount();
 
     return {
-      cf: entitiesAndCount[0].map((entity) => CfCommMapper.toDomain(entity)),
+      data: entitiesAndCount[0].map((entity) => CfCommMapper.toDomain(entity)),
       count: entitiesAndCount[1],
     };
   }

@@ -1,6 +1,6 @@
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsNumber, IsOptional } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class FindAllartCostiDto {
   @ApiPropertyOptional()
@@ -14,4 +14,9 @@ export class FindAllartCostiDto {
   @IsNumber()
   @IsOptional()
   limit?: number;
+
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  COD_ART: String;
 }

@@ -1,9 +1,9 @@
-import { art_ana } from '../../../../domain/art-ana';
-import { art_anaEntity } from '../entities/art-ana.entity';
+import { ArtAna } from '../../../../domain/art-ana';
+import { ArtAnaEntity } from '../entities/art-ana.entity';
 
-export class art_anaMapper {
-  static toDomain(raw: art_anaEntity): art_ana {
-    const domainEntity = new art_ana();
+export class ArtAnaMapper {
+  static toDomain(raw: ArtAnaEntity): ArtAna {
+    const domainEntity = new ArtAna();
     domainEntity.COD_ART = raw.COD_ART;
     domainEntity.DES_ART = raw.DES_ART;
     domainEntity.COD_CAT = raw.COD_CAT;
@@ -11,8 +11,8 @@ export class art_anaMapper {
     return domainEntity;
   }
 
-  static toPersistence(domainEntity: art_ana): art_anaEntity {
-    const persistenceEntity = new art_anaEntity();
+  static toPersistence(domainEntity: ArtAna): ArtAnaEntity {
+    const persistenceEntity = new ArtAnaEntity();
     if (domainEntity.COD_ART) {
       persistenceEntity.COD_ART = domainEntity.COD_ART;
     }

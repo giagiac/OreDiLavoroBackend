@@ -42,6 +42,7 @@ export class artCostisController {
   async findAll(
     @Query() query: FindAllartCostiDto,
   ): Promise<InfinityPaginationResponseDto<ArtCosti>> {
+    const COD_ART = query.COD_ART
     const page = query?.page ?? 1;
     let limit = query?.limit ?? 10;
     if (limit > 50) {
@@ -54,6 +55,7 @@ export class artCostisController {
           page,
           limit,
         },
+        COD_ART
       }),
       { page, limit },
     );

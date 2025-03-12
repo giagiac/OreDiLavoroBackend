@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { In, Like, Repository } from 'typeorm';
 import { NullableType } from '../../../../../utils/types/nullable.type';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
 import { ArtCosti } from '../../../../domain/art-costi';
@@ -25,10 +25,15 @@ export class artCostiRelationalRepository implements artCostiRepository {
 
   async findAllWithPagination({
     paginationOptions,
+    COD_ART
   }: {
     paginationOptions: IPaginationOptions;
+    COD_ART: String
   }): Promise<ArtCosti[]> {
     const entities = await this.artCostiRepository.find({
+      where: {
+        COD_ART: Like(`${COD_ART}%`)
+      },
       skip: (paginationOptions.page - 1) * paginationOptions.limit,
       take: paginationOptions.limit,
     });

@@ -58,7 +58,7 @@ import { nsorpeffcicliesecsModule } from './nsorpeffcicliesec/nsorpeffcicliesec.
 
 import { ArticoliCostiCfsModule } from './articoli-costi-cf/articoli-costi-cf.module';
 
-import { art_anaModule } from './art-ana/art-ana.module';
+import { ArtAnaModule } from './art-ana/art-ana.module';
 
 import { artCostiModule } from './art-costi/art-costi.module';
 
@@ -68,7 +68,7 @@ import { tipiCostiArtsModule } from './tipi-costi-art/tipi-costi-art.module';
   imports: [
     tipiCostiArtsModule,
     artCostiModule,
-    art_anaModule,
+    ArtAnaModule,
     ArticoliCostiCfsModule,
     nsorpeffcicliesecsModule,
     CfModule,

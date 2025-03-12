@@ -1,17 +1,17 @@
 import { Module } from '@nestjs/common';
-import { art_anaRepository } from '../art-ana.repository';
-import { art_anaRelationalRepository } from './repositories/art-ana.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { art_anaEntity } from './entities/art-ana.entity';
+import { ArtAnaRepository } from '../art-ana.repository';
+import { ArtAnaEntity } from './entities/art-ana.entity';
+import { ArtAnanaRelationalRepository } from './repositories/art-ana.repository';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([art_anaEntity])],
+  imports: [TypeOrmModule.forFeature([ArtAnaEntity])],
   providers: [
     {
-      provide: art_anaRepository,
-      useClass: art_anaRelationalRepository,
+      provide: ArtAnaRepository,
+      useClass: ArtAnanaRelationalRepository,
     },
   ],
-  exports: [art_anaRepository],
+  exports: [ArtAnaRepository],
 })
-export class Relationalart_anaPersistenceModule {}
+export class RelationalArtAnaPersistenceModule {}

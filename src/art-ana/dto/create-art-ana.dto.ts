@@ -1,3 +1,3 @@
-export class Createart_anaDto {
+export class CreateArtAnaDto {
   // Don't forget to use the class-validator decorators in the DTO properties.
 }

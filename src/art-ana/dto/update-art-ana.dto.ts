@@ -2,6 +2,6 @@
 // import { Allow } from 'class-validator';
 
 import { PartialType } from '@nestjs/swagger';
-import { Createart_anaDto } from './create-art-ana.dto';
+import { CreateArtAnaDto } from './create-art-ana.dto';
 
-export class Updateart_anaDto extends PartialType(Createart_anaDto) {}
+export class UpdateArtAnanaDto extends PartialType(CreateArtAnaDto) {}

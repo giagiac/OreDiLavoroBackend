@@ -1,27 +1,34 @@
+import { FilterDto } from '../../../utils/dto/filter-column';
 import { DeepPartial } from '../../../utils/types/deep-partial.type';
 import { NullableType } from '../../../utils/types/nullable.type';
 import { IPaginationOptions } from '../../../utils/types/pagination-options';
-import { art_ana } from '../../domain/art-ana';
+import { ArtAna } from '../../domain/art-ana';
+import { ArtAnaDto } from '../../dto/art-ana.dto';
+import { SortArtAnaDto } from '../../dto/find-all-art-ana.dto';
 
-export abstract class art_anaRepository {
+export abstract class ArtAnaRepository {
   abstract create(
-    data: Omit<art_ana, 'id' | 'createdAt' | 'updatedAt'>,
-  ): Promise<art_ana>;
+    data: Omit<ArtAna, 'id' | 'createdAt' | 'updatedAt'>,
+  ): Promise<ArtAna>;
 
   abstract findAllWithPagination({
+    filterOptions,
+    sortOptions,
     paginationOptions,
   }: {
+    filterOptions?: Array<FilterDto<ArtAnaDto>> | null;
+    sortOptions?: Array<SortArtAnaDto> | null;
     paginationOptions: IPaginationOptions;
-  }): Promise<art_ana[]>;
+  }): Promise<{ data: Array<ArtAna>; count: number }>;
 
-  abstract findById(id: art_ana['COD_ART']): Promise<NullableType<art_ana>>;
+  abstract findById(id: ArtAna['COD_ART']): Promise<NullableType<ArtAna>>;
 
-  abstract findByIds(ids: art_ana['COD_ART'][]): Promise<art_ana[]>;
+  abstract findByIds(ids: ArtAna['COD_ART'][]): Promise<ArtAna[]>;
 
   abstract update(
-    id: art_ana['COD_ART'],
-    payload: DeepPartial<art_ana>,
-  ): Promise<art_ana | null>;
+    id: ArtAna['COD_ART'],
+    payload: DeepPartial<ArtAna>,
+  ): Promise<ArtAna | null>;
 
-  abstract remove(id: art_ana['COD_ART']): Promise<void>;
+  abstract remove(id: ArtAna['COD_ART']): Promise<void>;
 }

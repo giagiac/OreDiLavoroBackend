@@ -25,7 +25,7 @@ export abstract class CfCommRepository {
     filterOptions?: Array<FilterDto<CfCommDto>> | null;
     sortOptions?: Array<SortCfCommDto> | null;
     paginationOptions: IPaginationOptions;
-  }): Promise<{ cf: Array<CfComm>; count: number }>;
+  }): Promise<{ data: Array<CfComm>; count: number }>;
 
   abstract update(
     id: CfComm['COD_CF'],

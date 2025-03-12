@@ -2,13 +2,13 @@ import { Module } from '@nestjs/common';
 import { DatabaseConfig } from '../database/config/database-config.type';
 import databaseConfig from '../database/config/database.config';
 import { art_anaController } from './art-ana.controller';
-import { art_anaService } from './art-ana.service';
-import { Relationalart_anaPersistenceModule } from './infrastructure/persistence/relational/relational-persistence.module';
+import { ArtAnaService } from './art-ana.service';
+import { RelationalArtAnaPersistenceModule } from './infrastructure/persistence/relational/relational-persistence.module';
 
 const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig)
   .isDocumentDatabase
-  ? Relationalart_anaPersistenceModule
-  : Relationalart_anaPersistenceModule;
+  ? RelationalArtAnaPersistenceModule
+  : RelationalArtAnaPersistenceModule;
 
 @Module({
   imports: [
@@ -16,7 +16,7 @@ const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig)
     infrastructurePersistenceModule,
   ],
   controllers: [art_anaController],
-  providers: [art_anaService],
-  exports: [art_anaService, infrastructurePersistenceModule],
+  providers: [ArtAnaService],
+  exports: [ArtAnaService, infrastructurePersistenceModule],
 })
-export class art_anaModule {}
+export class ArtAnaModule {}

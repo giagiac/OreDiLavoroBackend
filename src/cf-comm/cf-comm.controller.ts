@@ -59,14 +59,16 @@ export class CfCommController {
     const filters = query.filters;
     const sort = query.sort;
 
-    const { cf, count } = await this.cfCommsService.findAllWithPagination({
-      paginationOptions: {
-        page,
-        limit,
+    const { data: cf, count } = await this.cfCommsService.findAllWithPagination(
+      {
+        paginationOptions: {
+          page,
+          limit,
+        },
+        filterOptions: filters,
+        sortOptions: sort,
       },
-      filterOptions: filters,
-      sortOptions: sort,
-    });
+    );
 
     return infinityPaginationQueryBuilder(cf, count);
   }
