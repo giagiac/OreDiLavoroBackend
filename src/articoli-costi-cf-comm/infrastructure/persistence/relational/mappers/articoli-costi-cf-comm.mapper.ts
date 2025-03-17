@@ -1,4 +1,4 @@
-import { CfCommEntity } from '../../../../../cf-comm/infrastructure/persistence/relational/entities/cf-comm.entity';
+import { ArtAnaMapper } from '../../../../../art-ana/infrastructure/persistence/relational/mappers/art-ana.mapper';
 import { ArticoliCostiCfComm } from '../../../../domain/articoli-costi-cf-comm';
 
 import { ArticoliCostiCfCommEntity } from '../entities/articoli-costi-cf-comm.entity';
@@ -14,6 +14,14 @@ export class ArticoliCostiCfCommMapper {
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
 
+    domainEntity.CF_COMM_ID = raw.CF_COMM_ID;
+    domainEntity.COD_ART = raw.COD_ART;
+    domainEntity.TIPO_COSTO = raw.TIPO_COSTO;
+
+    if (raw.artAna) {
+      domainEntity.artAna = ArtAnaMapper.toDomain(raw.artAna);
+    }
+
     return domainEntity;
   }
 
@@ -24,10 +32,6 @@ export class ArticoliCostiCfCommMapper {
     persistenceEntity.TIPO_COSTO = domainEntity.TIPO_COSTO;
     persistenceEntity.COD_ART = domainEntity.COD_ART;
     persistenceEntity.CF_COMM_ID = domainEntity.CF_COMM_ID;
-
-    if (domainEntity.CfComm) {
-      domainEntity.CfComm = new CfCommEntity();
-    }
 
     if (domainEntity.id) {
       persistenceEntity.id = domainEntity.id;

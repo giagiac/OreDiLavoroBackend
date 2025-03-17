@@ -10,10 +10,10 @@ export abstract class artCostiRepository {
 
   abstract findAllWithPagination({
     paginationOptions,
-    COD_ART
+    COD_ART,
   }: {
     paginationOptions: IPaginationOptions;
-    COD_ART: String
+    COD_ART: String;
   }): Promise<ArtCosti[]>;
 
   abstract findById(

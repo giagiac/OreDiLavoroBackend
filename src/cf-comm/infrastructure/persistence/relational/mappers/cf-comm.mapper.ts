@@ -1,3 +1,4 @@
+import { ArticoliCostiCfCommMapper } from '../../../../../articoli-costi-cf-comm/infrastructure/persistence/relational/mappers/articoli-costi-cf-comm.mapper';
 import { CfComm } from '../../../../domain/cf-comm';
 
 import { CfCommEntity } from '../entities/cf-comm.entity';
@@ -33,7 +34,11 @@ export class CfCommMapper {
 
     domainEntity.COD_CF = raw.CF_COMM_ID;
 
-    // domainEntity.articoliCosti = raw.articoliCosti;
+    if (raw.articoliCostiCfComm) {
+      domainEntity.articoliCostiCfComm = raw.articoliCostiCfComm.map((it) =>
+        ArticoliCostiCfCommMapper.toDomain(it),
+      );
+    }
 
     return domainEntity;
   }

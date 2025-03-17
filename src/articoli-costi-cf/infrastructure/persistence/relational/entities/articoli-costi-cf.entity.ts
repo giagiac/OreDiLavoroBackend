@@ -4,11 +4,11 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
+  UpdateDateColumn
 } from 'typeorm';
-import { ArtCostiEntity } from '../../../../../art-costi/infrastructure/persistence/relational/entities/art-costi.entity';
+import { ArtAnaEntity } from '../../../../../art-ana/infrastructure/persistence/relational/entities/art-ana.entity';
 import { CfEntity } from '../../../../../cf/infrastructure/persistence/relational/entities/cf.entity';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
 
@@ -23,10 +23,9 @@ export type TipoCosto =
 })
 export class ArticoliCostiCfEntity extends EntityRelationalHelper {
   @Column({
-    nullable: true,
     type: String,
   })
-  TIPO_COSTO?: TipoCosto | null;
+  TIPO_COSTO?: TipoCosto;
 
   @Column({
     nullable: true,
@@ -48,6 +47,8 @@ export class ArticoliCostiCfEntity extends EntityRelationalHelper {
 
   @UpdateDateColumn()
   updatedAt: Date;
+  
+  // -----------------------------------------------------------------------------
 
   @ManyToOne(() => CfEntity)
   @JoinColumn({
@@ -56,12 +57,11 @@ export class ArticoliCostiCfEntity extends EntityRelationalHelper {
   })
   cf: CfEntity | null;
 
-  @OneToMany(() => ArtCostiEntity, (artCosti) => artCosti.articoliCostiCf, {
-    eager: true,
-  })
+  @OneToOne(() => ArtAnaEntity, (artAna) => artAna.COD_ART)
   @JoinColumn({
     referencedColumnName: 'COD_ART',
     name: 'COD_ART',
   })
-  artCosti: ArtCostiEntity[];
+  artAna?: ArtAnaEntity | null;
+
 }

@@ -100,7 +100,7 @@ export class ArtAnanaRelationalRepository implements ArtAnaRepository {
       .limit(paginationOptions.limit);
 
     if (filterOptions) {
-      this.applicaWhere('artAna', entitiesSql, filterOptions);
+      this.applicaWhereLike('artAna', entitiesSql, filterOptions);
     }
 
     if (sortOptions) {

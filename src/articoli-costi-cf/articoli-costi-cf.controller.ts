@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Patch,
   Query,
@@ -11,6 +13,7 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import {
   ApiBearerAuth,
+  ApiCreatedResponse,
   ApiOkResponse,
   ApiParam,
   ApiTags,
@@ -61,33 +64,24 @@ export class ArticoliCostiCfController {
     );
   }
 
-  @Get(':id')
+  @Patch(':COD_CF')
   @ApiParam({
-    name: 'id',
+    name: 'COD_CF',
     type: String,
     required: true,
   })
-  @ApiOkResponse({
+  @ApiCreatedResponse({
     type: ArticoliCostiCf,
   })
-  findById(@Param('id') id: string) {
-    return this.articoliCostiCfService.findById(id);
-  }
-
-  @Patch(':id')
-  @ApiParam({
-    name: 'id',
-    type: String,
-    required: true,
-  })
-  @ApiOkResponse({
-    type: ArticoliCostiCf,
-  })
+  @HttpCode(HttpStatus.CREATED)
   update(
-    @Param('id') id: string,
+    @Param('COD_CF') COD_CF: string,
     @Body() updateArticoliCostiCfDto: UpdateArticoliCostiCfDto,
   ) {
-    return this.articoliCostiCfService.update(id, updateArticoliCostiCfDto);
+    return this.articoliCostiCfService.update(
+      COD_CF,
+      updateArticoliCostiCfDto,
+    );
   }
 
   @Delete(':id')

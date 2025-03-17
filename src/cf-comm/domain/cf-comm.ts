@@ -81,8 +81,8 @@ export class CfComm {
   NUM_SEDE: string;
 
   @ApiProperty({
-    type: () => ArticoliCostiCfComm,
+    type: () => Array<ArticoliCostiCfComm>,
     nullable: true,
   })
-  articoliCosti: ArticoliCostiCfComm | null;
+  articoliCostiCfComm: Array<ArticoliCostiCfComm> | null;
 }

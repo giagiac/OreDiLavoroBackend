@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -36,7 +37,7 @@ import { UpdateArticoliCostiCfCommDto } from './dto/update-articoli-costi-cf-com
 })
 export class ArticoliCostiCfCommController {
   constructor(
-    private readonly articoliCostisService: ArticoliCostiCfCommService,
+    private readonly articoliCostiCfCommService: ArticoliCostiCfCommService,
   ) {}
 
   @Get()
@@ -53,7 +54,7 @@ export class ArticoliCostiCfCommController {
     }
 
     return infinityPagination(
-      await this.articoliCostisService.findAllWithPagination({
+      await this.articoliCostiCfCommService.findAllWithPagination({
         paginationOptions: {
           page,
           limit,
@@ -75,11 +76,21 @@ export class ArticoliCostiCfCommController {
   @HttpCode(HttpStatus.CREATED)
   update(
     @Param('CF_COMM_ID') CF_COMM_ID: string,
-    @Body() updateArticoliCostiDto: UpdateArticoliCostiCfCommDto,
+    @Body() updateArticoliCostiCfCommDto: UpdateArticoliCostiCfCommDto,
   ) {
-    return this.articoliCostisService.update(
+    return this.articoliCostiCfCommService.update(
       CF_COMM_ID,
-      updateArticoliCostiDto,
+      updateArticoliCostiCfCommDto,
     );
+  }
+
+  @Delete(':CF_COMM_ID')
+  @ApiParam({
+    name: 'CF_COMM_ID',
+    type: String,
+    required: true,
+  })
+  remove(@Param('CF_COMM_ID') CF_COMM_ID: string) {
+    return this.articoliCostiCfCommService.remove(CF_COMM_ID);
   }
 }

@@ -14,7 +14,7 @@ export class ArticoliCostiCfCommRelationalRepository
 {
   constructor(
     @InjectRepository(ArticoliCostiCfCommEntity)
-    private readonly articoliCostiRepository: Repository<ArticoliCostiCfCommEntity>,
+    private readonly articoliCostiCfCommRepository: Repository<ArticoliCostiCfCommEntity>,
   ) {}
 
   // async create(data: ArticoliCosti): Promise<ArticoliCosti> {
@@ -30,7 +30,7 @@ export class ArticoliCostiCfCommRelationalRepository
   }: {
     paginationOptions: IPaginationOptions;
   }): Promise<ArticoliCostiCfComm[]> {
-    const entities = await this.articoliCostiRepository.find({
+    const entities = await this.articoliCostiCfCommRepository.find({
       skip: (paginationOptions.page - 1) * paginationOptions.limit,
       take: paginationOptions.limit,
     });
@@ -41,7 +41,7 @@ export class ArticoliCostiCfCommRelationalRepository
   async findById(
     id: ArticoliCostiCfComm['id'],
   ): Promise<NullableType<ArticoliCostiCfComm>> {
-    const entity = await this.articoliCostiRepository.findOne({
+    const entity = await this.articoliCostiCfCommRepository.findOne({
       where: { id },
     });
 
@@ -51,7 +51,7 @@ export class ArticoliCostiCfCommRelationalRepository
   async findByIds(
     ids: ArticoliCostiCfComm['id'][],
   ): Promise<ArticoliCostiCfComm[]> {
-    const entities = await this.articoliCostiRepository.find({
+    const entities = await this.articoliCostiCfCommRepository.find({
       where: { id: In(ids) },
     });
 
@@ -62,33 +62,34 @@ export class ArticoliCostiCfCommRelationalRepository
     CF_COMM_ID: ArticoliCostiCfComm['CF_COMM_ID'],
     payload: ArticoliCostiCfComm,
   ): Promise<ArticoliCostiCfComm> {
-    const entity = await this.articoliCostiRepository.findOne({
-      where: { CF_COMM_ID },
-    });
+    const result = await this.articoliCostiCfCommRepository.manager.transaction(
+      async (transactionalEntityManager) => {
+        const entity: ArticoliCostiCfCommEntity | null =
+          await this.articoliCostiCfCommRepository.findOne({
+            where: { CF_COMM_ID, TIPO_COSTO: payload.TIPO_COSTO },
+          });
 
-    if (!entity) {
-      // throw new Error('Record not found');
-      payload.CF_COMM_ID = CF_COMM_ID;
-      const persistenceModel = ArticoliCostiCfCommMapper.toPersistence(payload);
-      const newEntity = await this.articoliCostiRepository.save(
-        this.articoliCostiRepository.create(persistenceModel),
-      );
-      return ArticoliCostiCfCommMapper.toDomain(newEntity);
-    }
+        if (entity) {
+          payload = {
+            ...entity,
+            ...payload
+          };
+        }
 
-    const updatedEntity = await this.articoliCostiRepository.save(
-      this.articoliCostiRepository.create(
-        ArticoliCostiCfCommMapper.toPersistence({
-          ...ArticoliCostiCfCommMapper.toDomain(entity),
-          ...payload,
-        }),
-      ),
+        const persistenceModel =
+          ArticoliCostiCfCommMapper.toPersistence(payload);
+
+        const newEntity = await this.articoliCostiCfCommRepository.save(
+          this.articoliCostiCfCommRepository.create(persistenceModel),
+        );
+        return newEntity;
+      },
     );
 
-    return ArticoliCostiCfCommMapper.toDomain(updatedEntity);
+    return ArticoliCostiCfCommMapper.toDomain(result);
   }
 
-  async remove(id: ArticoliCostiCfComm['id']): Promise<void> {
-    await this.articoliCostiRepository.delete(id);
+  async remove(CF_COMM_ID: ArticoliCostiCfComm['CF_COMM_ID']): Promise<void> {
+    await this.articoliCostiCfCommRepository.delete(CF_COMM_ID);
   }
 }

@@ -25,14 +25,14 @@ export class artCostiRelationalRepository implements artCostiRepository {
 
   async findAllWithPagination({
     paginationOptions,
-    COD_ART
+    COD_ART,
   }: {
     paginationOptions: IPaginationOptions;
-    COD_ART: String
+    COD_ART: String;
   }): Promise<ArtCosti[]> {
     const entities = await this.artCostiRepository.find({
       where: {
-        COD_ART: Like(`${COD_ART}%`)
+        COD_ART: Like(`${COD_ART}%`),
       },
       skip: (paginationOptions.page - 1) * paginationOptions.limit,
       take: paginationOptions.limit,

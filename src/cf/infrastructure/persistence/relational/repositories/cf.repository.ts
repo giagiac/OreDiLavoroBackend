@@ -83,18 +83,25 @@ export class CfRelationalRepository implements CfRepository {
         .createQueryBuilder('cf')
         .distinct()
         .innerJoin('cf.cfComm', 'cfComm')
+        // .leftJoinAndSelect('cf.articoliCostiCf', 'articoliCostiCf')
+        //.leftJoinAndSelect('articoliCostiCf.artCosti', 'artCosti')
+
         .leftJoinAndSelect('cf.articoliCostiCf', 'articoliCostiCf')
-        .leftJoinAndSelect('articoliCostiCf.artCosti', 'artCosti')
-        // .innerJoin('cfComm.articoliCostiCf', 'articoliCostiCf')
-        // .orderBy('LPAD(cf.COD_CF,10)', 'ASC')
-        // .select()
+        .leftJoinAndSelect('articoliCostiCf.artAna', "artAna")
+        .leftJoinAndSelect('artAna.artCosti', "artCosti")
+
         .offset((paginationOptions.page - 1) * paginationOptions.limit)
         .limit(paginationOptions.limit);
     } else {
       entitiesSql = this.cfRepository
         .createQueryBuilder('cf')
+        // .leftJoinAndSelect('cf.articoliCostiCf', 'articoliCostiCf')
+        // .leftJoinAndSelect('articoliCostiCf.artCosti', 'artCosti')
+
         .leftJoinAndSelect('cf.articoliCostiCf', 'articoliCostiCf')
-        .leftJoinAndSelect('articoliCostiCf.artCosti', 'artCosti')
+        .leftJoinAndSelect('articoliCostiCf.artAna', "artAna")
+        .leftJoinAndSelect('artAna.artCosti', "artCosti")
+
         //.innerJoinAndSelect('cf.cfComm', 'cfComm')
         //.leftJoinAndSelect('cfComm.articoliCostiCf', 'articoliCostiCf')
         //.leftJoinAndSelect('cf.cfComm', 'cfComm', 'cf.COD_CF = cfComm.COD_CF') // Aggiungi la relazione e la condizione di join

@@ -24,5 +24,5 @@ export abstract class ArticoliCostiCfCommRepository {
     payload: DeepPartial<ArticoliCostiCfComm>,
   ): Promise<ArticoliCostiCfComm | null>;
 
-  // abstract remove(id: ArticoliCosti['id']): Promise<void>;
+  abstract remove(CF_COMM_ID: ArticoliCostiCfComm['CF_COMM_ID']): Promise<void>;
 }

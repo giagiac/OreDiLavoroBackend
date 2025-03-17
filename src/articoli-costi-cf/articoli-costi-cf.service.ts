@@ -24,29 +24,21 @@ export class ArticoliCostiCfService {
     });
   }
 
-  findById(id: ArticoliCostiCf['id']) {
-    return this.articoliCostiCfRepository.findById(id);
-  }
-
-  findByIds(ids: ArticoliCostiCf['id'][]) {
-    return this.articoliCostiCfRepository.findByIds(ids);
-  }
-
   async update(
-    id: ArticoliCostiCf['id'],
+    COD_CF: ArticoliCostiCf['COD_CF'],
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     updateArticoliCostiCfDto: UpdateArticoliCostiCfDto,
   ) {
     // Do not remove comment below.
     // <updating-property />
 
-    return this.articoliCostiCfRepository.update(id, {
-      // Do not remove comment below.
-      // <updating-property-payload />
-    });
+    return this.articoliCostiCfRepository.update(
+      COD_CF,
+      updateArticoliCostiCfDto,
+    );
   }
 
-  remove(id: ArticoliCostiCf['id']) {
-    return this.articoliCostiCfRepository.remove(id);
+  remove(COD_CF: ArticoliCostiCf['COD_CF']) {
+    return this.articoliCostiCfRepository.remove(COD_CF);
   }
 }

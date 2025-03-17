@@ -48,7 +48,7 @@ export class CfCommService {
 
       NUM_SEDE: createCfCommDto.NUM_SEDE,
 
-      articoliCosti: null,
+      articoliCostiCfComm: null,
     });
   }
 

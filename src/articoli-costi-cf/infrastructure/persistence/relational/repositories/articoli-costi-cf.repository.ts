@@ -17,13 +17,13 @@ export class ArticoliCostiCfRelationalRepository
     private readonly articoliCostiCfRepository: Repository<ArticoliCostiCfEntity>,
   ) {}
 
-  async create(data: ArticoliCostiCf): Promise<ArticoliCostiCf> {
-    const persistenceModel = ArticoliCostiCfMapper.toPersistence(data);
-    const newEntity = await this.articoliCostiCfRepository.save(
-      this.articoliCostiCfRepository.create(persistenceModel),
-    );
-    return ArticoliCostiCfMapper.toDomain(newEntity);
-  }
+  // async create(data: ArticoliCostiCf): Promise<ArticoliCostiCf> {
+  //   const persistenceModel = ArticoliCostiCfMapper.toPersistence(data);
+  //   const newEntity = await this.articoliCostiCfRepository.save(
+  //     this.articoliCostiCfRepository.create(persistenceModel),
+  //   );
+  //   return ArticoliCostiCfMapper.toDomain(newEntity);
+  // }
 
   async findAllWithPagination({
     paginationOptions,
@@ -57,27 +57,35 @@ export class ArticoliCostiCfRelationalRepository
   }
 
   async update(
-    id: ArticoliCostiCf['id'],
-    payload: Partial<ArticoliCostiCf>,
+    COD_CF: ArticoliCostiCf['COD_CF'],
+    payload: ArticoliCostiCf,
   ): Promise<ArticoliCostiCf> {
-    const entity = await this.articoliCostiCfRepository.findOne({
-      where: { id },
+    const result = await this.articoliCostiCfRepository.manager.transaction(
+      async (transactionalEntityManager) => {
+        const entity: ArticoliCostiCfEntity | null =
+          await this.articoliCostiCfRepository.findOne({
+            where: { COD_CF, TIPO_COSTO: payload.TIPO_COSTO },
     });
 
-    if (!entity) {
-      throw new Error('Record not found');
-    }
+        if (entity) {
+          payload = {
+            ...entity,
+            ...payload
+          };
+        }
 
-    const updatedEntity = await this.articoliCostiCfRepository.save(
-      this.articoliCostiCfRepository.create(
-        ArticoliCostiCfMapper.toPersistence({
-          ...ArticoliCostiCfMapper.toDomain(entity),
-          ...payload,
-        }),
-      ),
+        const persistenceModel =
+          ArticoliCostiCfMapper.toPersistence(payload);
+
+        const newEntity = await this.articoliCostiCfRepository.save(
+          this.articoliCostiCfRepository.create(persistenceModel),
+        );
+
+        return newEntity;
+      },
     );
 
-    return ArticoliCostiCfMapper.toDomain(updatedEntity);
+    return ArticoliCostiCfMapper.toDomain(result);
   }
 
   async remove(id: ArticoliCostiCf['id']): Promise<void> {

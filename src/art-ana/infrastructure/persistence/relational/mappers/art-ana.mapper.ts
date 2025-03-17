@@ -8,6 +8,10 @@ export class ArtAnaMapper {
     domainEntity.DES_ART = raw.DES_ART;
     domainEntity.COD_CAT = raw.COD_CAT;
 
+    if (raw.artCosti) {
+      domainEntity.artCosti = raw.artCosti;
+    }
+
     return domainEntity;
   }
 

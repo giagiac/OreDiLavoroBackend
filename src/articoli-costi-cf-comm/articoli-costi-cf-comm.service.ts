@@ -31,16 +31,13 @@ export class ArticoliCostiCfCommService {
     // Do not remove comment below.
     // <updating-property />
 
-    return this.articoliCostiCfCommRepository.update(CF_COMM_ID, {
-      // Do not remove comment below.
-      // <updating-property-payload />
-      TIPO_COSTO: updateArticoliCostiDto.TIPO_COSTO,
-
-      COD_ART: updateArticoliCostiDto.COD_ART,
-    });
+    return this.articoliCostiCfCommRepository.update(
+      CF_COMM_ID,
+      updateArticoliCostiDto,
+    );
   }
 
-  // remove(id: ArticoliCosti['id']) {
-  //   return this.articoliCostiRepository.remove(id);
-  // }
+  remove(CF_COMM_ID: ArticoliCostiCfComm['CF_COMM_ID']) {
+    return this.articoliCostiCfCommRepository.remove(CF_COMM_ID);
+  }
 }

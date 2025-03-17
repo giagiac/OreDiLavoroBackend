@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ArtCosti } from '../../art-costi/domain/art-costi';
+import { ArtAna } from '../../art-ana/domain/art-ana';
 import { TipoCosto } from '../infrastructure/persistence/relational/entities/articoli-costi-cf.entity';
 
 export class ArticoliCostiCf {
@@ -11,9 +11,9 @@ export class ArticoliCostiCf {
 
   @ApiProperty({
     type: () => String,
-    nullable: true,
+    required: true,
   })
-  TIPO_COSTO?: TipoCosto | null;
+  TIPO_COSTO?: TipoCosto;
 
   @ApiProperty({
     type: String,
@@ -21,9 +21,9 @@ export class ArticoliCostiCf {
   COD_CF: string;
 
   @ApiProperty({
-    type: () => Array<ArtCosti | null>,
+    type: () => ArtAna,
   })
-  artCosti?: ArtCosti[] | null;
+  artAna?: ArtAna | null;
 
   @ApiProperty({
     type: String,

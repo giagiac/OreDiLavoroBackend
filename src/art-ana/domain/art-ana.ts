@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { ArtCosti } from '../../art-costi/domain/art-costi';
 
 export class ArtAna {
   @ApiProperty({
@@ -15,4 +16,9 @@ export class ArtAna {
     type: String,
   })
   COD_CAT: string;
+
+  @ApiProperty({
+    type: Array<ArtCosti>,
+  })
+  artCosti?: Array<ArtCosti> | null;
 }

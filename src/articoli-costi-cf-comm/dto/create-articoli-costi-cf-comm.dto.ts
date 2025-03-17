@@ -1,23 +1,15 @@
-import {
-  IsOptional,
-  // decorators here
-  IsString,
-} from 'class-validator';
 
-import {
-  // decorators here
-  ApiProperty,
-} from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsString, IsOptional } from 'class-validator';
 import { TipoCosto } from '../../articoli-costi-cf/infrastructure/persistence/relational/entities/articoli-costi-cf.entity';
 
 export class CreateArticoliCostiCfCommDto {
   @ApiProperty({
-    required: false,
+    required: true,
     type: () => String,
   })
-  @IsOptional()
   @IsString()
-  TIPO_COSTO?: TipoCosto | null;
+  TIPO_COSTO?: TipoCosto;
 
   @ApiProperty({
     required: false,
@@ -27,12 +19,12 @@ export class CreateArticoliCostiCfCommDto {
   @IsString()
   COD_ART?: string | null;
 
-  // @ApiProperty({
-  //   required: true,
-  //   type: () => String,
-  // })
-  // @IsString()
-  // CF_COMM_ID: string;
+  @ApiProperty({
+    required: true,
+    type: () => String,
+  })
+  @IsString()
+  CF_COMM_ID: string;
 
   // Don't forget to use the class-validator decorators in the DTO properties.
 }
