@@ -9,7 +9,6 @@ export class artCostiMapper {
     domainEntity.COD_TIPO_COST = raw.COD_TIPO_COST;
     domainEntity.COSTO_ART = raw.COSTO_ART;
     domainEntity.DATA_RIF = raw.DATA_RIF;
-
     return domainEntity;
   }
 

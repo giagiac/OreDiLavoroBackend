@@ -30,7 +30,7 @@ import { UserSeedModule } from './user/user-seed.module';
       dataSourceFactory: async (options: DataSourceOptions) => {
         return new DataSource({
           ...options,
-          sid: 'db',
+          sid: 'db'
         } as OracleConnectionOptions).initialize();
       },
     }),

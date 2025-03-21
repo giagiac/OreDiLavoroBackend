@@ -96,6 +96,7 @@ export class ArtAnanaRelationalRepository implements ArtAnaRepository {
 
     const entitiesSql = this.artAnaRepository
       .createQueryBuilder('artAna')
+      .leftJoinAndSelect('artAna.artCosti', 'artCosti')
       .offset((paginationOptions.page - 1) * paginationOptions.limit)
       .limit(paginationOptions.limit);
 
@@ -106,8 +107,6 @@ export class ArtAnanaRelationalRepository implements ArtAnaRepository {
     if (sortOptions) {
       this.applicaSort('artAna', entitiesSql, sortOptions);
     }
-
-    // console.log(entitiesSql.getSql());
 
     const entitiesAndCount = await entitiesSql.getManyAndCount();
 

@@ -61,7 +61,7 @@ export class ArticoliCostiCfCommRelationalRepository
   async update(
     CF_COMM_ID: ArticoliCostiCfComm['CF_COMM_ID'],
     payload: ArticoliCostiCfComm,
-  ): Promise<ArticoliCostiCfComm> {
+  ): Promise<ArticoliCostiCfComm | null> {
     const result = await this.articoliCostiCfCommRepository.manager.transaction(
       async (transactionalEntityManager) => {
         const entity: ArticoliCostiCfCommEntity | null =
@@ -69,10 +69,21 @@ export class ArticoliCostiCfCommRelationalRepository
             where: { CF_COMM_ID, TIPO_COSTO: payload.TIPO_COSTO },
           });
 
+        // const entity: ArticoliCostiCfCommEntity | null =
+        //   await this.articoliCostiCfCommRepository
+        //     .createQueryBuilder('articoliCostiCfComm')
+        //     //.leftJoinAndSelect('articoliCostiCfComm.artAna', 'artAna') // Assumi che la relazione sia "artAna"
+        //     //.leftJoinAndSelect('artAna.artCosti', 'artCosti')
+        //     .where('articoliCostiCfComm.CF_COMM_ID = :CF_COMM_ID', { CF_COMM_ID })
+        //     .andWhere('articoliCostiCfComm.TIPO_COSTO = :TIPO_COSTO', {
+        //       TIPO_COSTO: payload.TIPO_COSTO,
+        //     })
+        //     .getOne();
+
         if (entity) {
           payload = {
             ...entity,
-            ...payload
+            ...payload,
           };
         }
 
@@ -86,7 +97,21 @@ export class ArticoliCostiCfCommRelationalRepository
       },
     );
 
-    return ArticoliCostiCfCommMapper.toDomain(result);
+    const entity: ArticoliCostiCfCommEntity | null =
+      await this.articoliCostiCfCommRepository
+        .createQueryBuilder('articoliCostiCfComm')
+        .leftJoinAndSelect('articoliCostiCfComm.artAna', 'artAna') // Assumi che la relazione sia "artAna"
+        .leftJoinAndSelect('artAna.artCosti', 'artCosti')
+        .where('articoliCostiCfComm.CF_COMM_ID = :CF_COMM_ID', { CF_COMM_ID })
+        .andWhere('articoliCostiCfComm.TIPO_COSTO = :TIPO_COSTO', {
+          TIPO_COSTO: payload.TIPO_COSTO,
+        })
+        .getOne();
+
+    if (entity) {
+      return ArticoliCostiCfCommMapper.toDomain(entity);
+    }
+    return null;
   }
 
   async remove(CF_COMM_ID: ArticoliCostiCfComm['CF_COMM_ID']): Promise<void> {

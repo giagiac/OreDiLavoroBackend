@@ -1,7 +1,13 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
-import { ArticoliCostiCfEntity } from '../../../../../articoli-costi-cf/infrastructure/persistence/relational/entities/articoli-costi-cf.entity';
-import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryColumn
+} from 'typeorm';
 import { ArtAnaEntity } from '../../../../../art-ana/infrastructure/persistence/relational/entities/art-ana.entity';
+import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
+import { NumberToStringTransformer } from '../../../../../utils/transformers/number.transformer';
 
 @Entity({
   name: 'ART_COSTI',
@@ -16,8 +22,11 @@ export class ArtCostiEntity extends EntityRelationalHelper {
   @Column()
   COD_TIPO_COST: string;
 
-  @Column()
-  COSTO_ART: Number;
+  @Column({
+    type: 'number',
+    transformer: new NumberToStringTransformer(),
+  })
+  COSTO_ART: string;
 
   @Column()
   DATA_RIF: Date;

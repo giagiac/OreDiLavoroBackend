@@ -2,8 +2,8 @@ import { Module } from '@nestjs/common';
 import { DatabaseConfig } from '../database/config/database-config.type';
 import databaseConfig from '../database/config/database.config';
 import { RelationaltipiCostiArtPersistenceModule } from './infrastructure/persistence/relational/relational-persistence.module';
-import { tipiCostiArtsService } from './tipi-costi-art.service';
 import { tipiCostiArtsController } from './tipi-costi-art.controller';
+import { tipiCostiArtsService } from './tipi-costi-art.service';
 
 const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig)
   .isDocumentDatabase
@@ -19,4 +19,4 @@ const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig)
   providers: [tipiCostiArtsService],
   exports: [tipiCostiArtsService, infrastructurePersistenceModule],
 })
-export class tipiCostiArtsModule {}
+export class TipiCostiArtsModule {}

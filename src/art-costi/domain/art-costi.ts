@@ -17,7 +17,7 @@ export class ArtCosti {
   COD_TIPO_COST;
 
   @ApiProperty({
-    type: Number,
+    type: String,
   })
   COSTO_ART;
 

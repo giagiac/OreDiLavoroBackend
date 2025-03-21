@@ -59,23 +59,22 @@ export class ArticoliCostiCfRelationalRepository
   async update(
     COD_CF: ArticoliCostiCf['COD_CF'],
     payload: ArticoliCostiCf,
-  ): Promise<ArticoliCostiCf> {
+  ): Promise<ArticoliCostiCf|null> {
     const result = await this.articoliCostiCfRepository.manager.transaction(
       async (transactionalEntityManager) => {
         const entity: ArticoliCostiCfEntity | null =
           await this.articoliCostiCfRepository.findOne({
             where: { COD_CF, TIPO_COSTO: payload.TIPO_COSTO },
-    });
+          });
 
         if (entity) {
           payload = {
             ...entity,
-            ...payload
+            ...payload,
           };
         }
 
-        const persistenceModel =
-          ArticoliCostiCfMapper.toPersistence(payload);
+        const persistenceModel = ArticoliCostiCfMapper.toPersistence(payload);
 
         const newEntity = await this.articoliCostiCfRepository.save(
           this.articoliCostiCfRepository.create(persistenceModel),
@@ -85,7 +84,22 @@ export class ArticoliCostiCfRelationalRepository
       },
     );
 
-    return ArticoliCostiCfMapper.toDomain(result);
+    //return ArticoliCostiCfMapper.toDomain(result);
+        const entity: ArticoliCostiCfEntity | null =
+          await this.articoliCostiCfRepository
+            .createQueryBuilder('articoliCostiCf')
+            .leftJoinAndSelect('articoliCostiCf.artAna', 'artAna') // Assumi che la relazione sia "artAna"
+            .leftJoinAndSelect('artAna.artCosti', 'artCosti')
+            .where('articoliCostiCf.COD_CF = :COD_CF', { COD_CF })
+            .andWhere('articoliCostiCf.TIPO_COSTO = :TIPO_COSTO', {
+              TIPO_COSTO: payload.TIPO_COSTO,
+            })
+            .getOne();
+    
+        if (entity) {
+          return ArticoliCostiCfMapper.toDomain(entity);
+        }
+        return null;
   }
 
   async remove(id: ArticoliCostiCf['id']): Promise<void> {

@@ -54,26 +54,24 @@ import { CfCommsModule } from './cf-comm/cf-comm.module';
 
 import { CfModule } from './cf/cf.module';
 
-import { nsorpeffcicliesecsModule } from './nsorpeffcicliesec/nsorpeffcicliesec.module';
+import { NsorpeffcicliesecsModule } from './nsorpeffcicliesec/nsorpeffcicliesec.module';
 
 import { ArticoliCostiCfsModule } from './articoli-costi-cf/articoli-costi-cf.module';
 
 import { ArtAnaModule } from './art-ana/art-ana.module';
 
-import { artCostiModule } from './art-costi/art-costi.module';
+import { ArtCostiModule } from './art-costi/art-costi.module';
 
-import { tipiCostiArtsModule } from './tipi-costi-art/tipi-costi-art.module';
+import { TipiCostiArtsModule } from './tipi-costi-art/tipi-costi-art.module';
 
 @Module({
   imports: [
-    tipiCostiArtsModule,
-    artCostiModule,
+    TipiCostiArtsModule,
+    ArtCostiModule,
     ArtAnaModule,
     ArticoliCostiCfsModule,
-    nsorpeffcicliesecsModule,
+    NsorpeffcicliesecsModule,
     CfModule,
-    CfModule,
-    CfCommsModule,
     CfCommsModule,
     ArticoliCostiCfCommModule,
     ConfigModule.forRoot({

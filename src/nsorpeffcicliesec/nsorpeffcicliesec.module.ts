@@ -19,4 +19,4 @@ const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig)
   providers: [nsorpeffcicliesecService],
   exports: [nsorpeffcicliesecService, infrastructurePersistenceModule],
 })
-export class nsorpeffcicliesecsModule {}
+export class NsorpeffcicliesecsModule {}

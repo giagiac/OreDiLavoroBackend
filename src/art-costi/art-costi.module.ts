@@ -19,4 +19,4 @@ const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig)
   providers: [artCostisService],
   exports: [artCostisService, infrastructurePersistenceModule],
 })
-export class artCostiModule {}
+export class ArtCostiModule {}
