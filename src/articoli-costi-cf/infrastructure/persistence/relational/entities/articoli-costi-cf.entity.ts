@@ -6,7 +6,7 @@ import {
   ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
-  UpdateDateColumn
+  UpdateDateColumn,
 } from 'typeorm';
 import { ArtAnaEntity } from '../../../../../art-ana/infrastructure/persistence/relational/entities/art-ana.entity';
 import { CfEntity } from '../../../../../cf/infrastructure/persistence/relational/entities/cf.entity';
@@ -47,7 +47,7 @@ export class ArticoliCostiCfEntity extends EntityRelationalHelper {
 
   @UpdateDateColumn()
   updatedAt: Date;
-  
+
   // -----------------------------------------------------------------------------
 
   @ManyToOne(() => CfEntity)
@@ -63,5 +63,4 @@ export class ArticoliCostiCfEntity extends EntityRelationalHelper {
     name: 'COD_ART',
   })
   artAna?: ArtAnaEntity | null;
-
 }

@@ -13,7 +13,7 @@ export abstract class artCostiRepository {
     COD_ART,
   }: {
     paginationOptions: IPaginationOptions;
-    COD_ART: String;
+    COD_ART: string;
   }): Promise<ArtCosti[]>;
 
   abstract findById(

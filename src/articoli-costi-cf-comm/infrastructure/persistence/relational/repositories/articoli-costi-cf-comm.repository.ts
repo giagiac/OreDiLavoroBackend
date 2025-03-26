@@ -62,40 +62,37 @@ export class ArticoliCostiCfCommRelationalRepository
     CF_COMM_ID: ArticoliCostiCfComm['CF_COMM_ID'],
     payload: ArticoliCostiCfComm,
   ): Promise<ArticoliCostiCfComm | null> {
-    const result = await this.articoliCostiCfCommRepository.manager.transaction(
-      async (transactionalEntityManager) => {
-        const entity: ArticoliCostiCfCommEntity | null =
-          await this.articoliCostiCfCommRepository.findOne({
-            where: { CF_COMM_ID, TIPO_COSTO: payload.TIPO_COSTO },
-          });
+    await this.articoliCostiCfCommRepository.manager.transaction(async () => {
+      const entity: ArticoliCostiCfCommEntity | null =
+        await this.articoliCostiCfCommRepository.findOne({
+          where: { CF_COMM_ID, TIPO_COSTO: payload.TIPO_COSTO },
+        });
 
-        // const entity: ArticoliCostiCfCommEntity | null =
-        //   await this.articoliCostiCfCommRepository
-        //     .createQueryBuilder('articoliCostiCfComm')
-        //     //.leftJoinAndSelect('articoliCostiCfComm.artAna', 'artAna') // Assumi che la relazione sia "artAna"
-        //     //.leftJoinAndSelect('artAna.artCosti', 'artCosti')
-        //     .where('articoliCostiCfComm.CF_COMM_ID = :CF_COMM_ID', { CF_COMM_ID })
-        //     .andWhere('articoliCostiCfComm.TIPO_COSTO = :TIPO_COSTO', {
-        //       TIPO_COSTO: payload.TIPO_COSTO,
-        //     })
-        //     .getOne();
+      // const entity: ArticoliCostiCfCommEntity | null =
+      //   await this.articoliCostiCfCommRepository
+      //     .createQueryBuilder('articoliCostiCfComm')
+      //     //.leftJoinAndSelect('articoliCostiCfComm.artAna', 'artAna') // Assumi che la relazione sia "artAna"
+      //     //.leftJoinAndSelect('artAna.artCosti', 'artCosti')
+      //     .where('articoliCostiCfComm.CF_COMM_ID = :CF_COMM_ID', { CF_COMM_ID })
+      //     .andWhere('articoliCostiCfComm.TIPO_COSTO = :TIPO_COSTO', {
+      //       TIPO_COSTO: payload.TIPO_COSTO,
+      //     })
+      //     .getOne();
 
-        if (entity) {
-          payload = {
-            ...entity,
-            ...payload,
-          };
-        }
+      if (entity) {
+        payload = {
+          ...entity,
+          ...payload,
+        };
+      }
 
-        const persistenceModel =
-          ArticoliCostiCfCommMapper.toPersistence(payload);
+      const persistenceModel = ArticoliCostiCfCommMapper.toPersistence(payload);
 
-        const newEntity = await this.articoliCostiCfCommRepository.save(
-          this.articoliCostiCfCommRepository.create(persistenceModel),
-        );
-        return newEntity;
-      },
-    );
+      const newEntity = await this.articoliCostiCfCommRepository.save(
+        this.articoliCostiCfCommRepository.create(persistenceModel),
+      );
+      return newEntity;
+    });
 
     const entity: ArticoliCostiCfCommEntity | null =
       await this.articoliCostiCfCommRepository

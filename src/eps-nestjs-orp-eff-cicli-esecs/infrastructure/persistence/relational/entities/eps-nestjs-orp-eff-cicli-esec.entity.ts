@@ -1,0 +1,140 @@
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { OrpEffCicliEsecEntity } from '../../../../../orp-eff-cicli-esecs/infrastructure/persistence/relational/entities/orp-eff-cicli-esec.entity';
+import { OrpEffCicliEntity } from '../../../../../orp-eff-ciclis/infrastructure/persistence/relational/entities/orp-eff-cicli.entity';
+import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
+
+@Entity({
+  name: 'EPS_NESTJS_ORP_EFF_CICLI_ESEC',
+})
+export class EpsNestjsOrpEffCicliEsecEntity extends EntityRelationalHelper {
+  @PrimaryGeneratedColumn()
+  id: string;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+
+  @Column({
+    nullable: true,
+    type: Number,
+  })
+  APP_REQ3_SYNCED?: number | null;
+
+  @Column({
+    nullable: true,
+    type: Number,
+  })
+  TEMPO_MINUTI_OP?: number | null;
+
+  @Column({
+    nullable: true,
+    type: Number,
+  })
+  TEMPO_MINUTI_MACC?: number | null;
+
+  @Column({
+    nullable: true,
+    type: String,
+  })
+  NOTE?: string | null;
+
+  @Column({
+    nullable: true,
+    type: Date,
+  })
+  DATA_FINE?: Date | null;
+
+  @Column({
+    nullable: true,
+    type: Date,
+  })
+  DATA_INIZIO?: Date | null;
+
+  @Column({
+    nullable: true,
+    type: Number,
+  })
+  TEMPO_OPERATORE?: number | null;
+
+  @Column({
+    nullable: true,
+    type: Number,
+  })
+  TEMPO_MACCHINA?: number | null;
+
+  @Column({
+    nullable: true,
+    type: String,
+  })
+  COD_OP?: string | null;
+
+  @Column({
+    nullable: true,
+    type: String,
+  })
+  COD_ART?: string | null;
+
+  @Column({
+    nullable: true,
+    type: String,
+  })
+  DOC_RIGA_ESEC_ID?: string | null;
+
+  @Column({
+    nullable: true,
+    type: String,
+  })
+  DOC_RIGA_ID?: string | null;
+
+  @Column({
+    nullable: true,
+    type: Number,
+  })
+  NUM_RIGA?: number | null;
+
+  @Column({
+    nullable: true,
+    type: String,
+  })
+  DOC_ID?: string | null;
+
+  @Column({
+    nullable: true,
+    type: Number,
+  })
+  AZIENDA_ID?: number | null;
+
+  // tabella di HG dopo aver passato i dati al servizio - servirà per lo STORICO
+  @OneToOne(
+    () => OrpEffCicliEsecEntity,
+    (orpEffCicliEsec) => orpEffCicliEsec.epsNestjsOrpEffCicliEsec,
+  )
+  @JoinColumn({
+    name: 'DOC_RIGA_ESEC_ID',
+    referencedColumnName: 'DOC_RIGA_ESEC_ID',
+  })
+  orpEffCicliEsec?: OrpEffCicliEsecEntity | null;
+
+  // tabella di HG - dati dei cicli DOC_RIGA_ID - l'utente cerca per codice COMMESSA :
+  // il codice COMMESSA BREVE, l'ultimo carattere è in numero del ciclo
+  @ManyToOne(
+    () => OrpEffCicliEntity,
+    (orpEffCicliEntity) => orpEffCicliEntity.epsNestjsOrpEffCicliEsec,
+  )
+  @JoinColumn({
+    name: 'DOC_RIGA_ID',
+    referencedColumnName: 'DOC_RIGA_ID',
+  })
+  orpEffCicli?: OrpEffCicliEntity | null;
+}

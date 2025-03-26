@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { FilterDto } from '../utils/dto/filter-column';
+import { FilterDto, SortDto } from '../utils/dto/filter-column';
 import { IPaginationOptions } from '../utils/types/pagination-options';
 import { Cf } from './domain/cf';
 import { CfDto } from './dto/cf.dto';
 import { CreateCfDto } from './dto/create-cf.dto';
-import { SortCfDto } from './dto/find-all-cf.dto';
 import { UpdateCfDto } from './dto/update-cf.dto';
 import { CfRepository } from './infrastructure/persistence/cf.repository';
 
@@ -41,7 +40,7 @@ export class CfService {
     join,
   }: {
     filterOptions?: Array<FilterDto<CfDto>> | null;
-    sortOptions?: Array<SortCfDto> | null;
+    sortOptions?: Array<SortDto<CfDto>> | null;
     paginationOptions: IPaginationOptions;
     join: boolean;
   }) {

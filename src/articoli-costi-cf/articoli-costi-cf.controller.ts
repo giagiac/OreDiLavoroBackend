@@ -78,10 +78,7 @@ export class ArticoliCostiCfController {
     @Param('COD_CF') COD_CF: string,
     @Body() updateArticoliCostiCfDto: UpdateArticoliCostiCfDto,
   ) {
-    return this.articoliCostiCfService.update(
-      COD_CF,
-      updateArticoliCostiCfDto,
-    );
+    return this.articoliCostiCfService.update(COD_CF, updateArticoliCostiCfDto);
   }
 
   @Delete(':id')

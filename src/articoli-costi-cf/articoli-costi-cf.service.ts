@@ -26,7 +26,7 @@ export class ArticoliCostiCfService {
 
   async update(
     COD_CF: ArticoliCostiCf['COD_CF'],
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     updateArticoliCostiCfDto: UpdateArticoliCostiCfDto,
   ) {
     // Do not remove comment below.

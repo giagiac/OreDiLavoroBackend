@@ -1,27 +1,10 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform, Type, plainToInstance } from 'class-transformer';
-import {
-  IsArray,
-  IsNumber,
-  IsOptional,
-  IsString,
-  ValidateNested,
-} from 'class-validator';
-import { FilterDto } from '../../utils/dto/filter-column';
+import { IsArray, IsNumber, IsOptional, ValidateNested } from 'class-validator';
+import { FilterDto, SortDto } from '../../utils/dto/filter-column';
 import { OthersFiltersDto } from '../../utils/dto/others-filters';
-import { Cf } from '../domain/cf';
 import { CfDto, JoinDto } from './cf.dto';
-
-export class SortCfDto {
-  @ApiProperty()
-  @Type(() => String)
-  @IsString()
-  orderBy: keyof Cf;
-
-  @ApiProperty()
-  @IsString()
-  order: string;
-}
+import { Cf } from '../domain/cf';
 
 export class FindAllCfDto {
   @ApiPropertyOptional()
@@ -62,10 +45,10 @@ export class FindAllCfDto {
   @IsOptional()
   @Transform(({ value }) => {
     return value
-      ? plainToInstance(Array<SortCfDto>, JSON.parse(value))
+      ? plainToInstance(Array<SortDto<Cf>>, JSON.parse(value))
       : undefined;
   })
   @ValidateNested({ each: true })
-  @Type(() => SortCfDto)
-  sort?: SortCfDto[] | null;
+  @Type(() => SortDto)
+  sort?: SortDto<Cf>[] | null;
 }

@@ -1,4 +1,4 @@
-import { ValueTransformer } from "typeorm";
+import { ValueTransformer } from 'typeorm';
 
 export class NumberToStringTransformer implements ValueTransformer {
   to(value: number): number {

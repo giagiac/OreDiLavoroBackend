@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, In } from 'typeorm';
-import { ArticoliCostiCfEntity } from '../entities/articoli-costi-cf.entity';
+import { In, Repository } from 'typeorm';
 import { NullableType } from '../../../../../utils/types/nullable.type';
+import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
 import { ArticoliCostiCf } from '../../../../domain/articoli-costi-cf';
 import { ArticoliCostiCfRepository } from '../../articoli-costi-cf.repository';
+import { ArticoliCostiCfEntity } from '../entities/articoli-costi-cf.entity';
 import { ArticoliCostiCfMapper } from '../mappers/articoli-costi-cf.mapper';
-import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
 
 @Injectable()
 export class ArticoliCostiCfRelationalRepository
@@ -59,47 +59,45 @@ export class ArticoliCostiCfRelationalRepository
   async update(
     COD_CF: ArticoliCostiCf['COD_CF'],
     payload: ArticoliCostiCf,
-  ): Promise<ArticoliCostiCf|null> {
-    const result = await this.articoliCostiCfRepository.manager.transaction(
-      async (transactionalEntityManager) => {
-        const entity: ArticoliCostiCfEntity | null =
-          await this.articoliCostiCfRepository.findOne({
-            where: { COD_CF, TIPO_COSTO: payload.TIPO_COSTO },
-          });
+  ): Promise<ArticoliCostiCf | null> {
+    await this.articoliCostiCfRepository.manager.transaction(async () => {
+      const entity: ArticoliCostiCfEntity | null =
+        await this.articoliCostiCfRepository.findOne({
+          where: { COD_CF, TIPO_COSTO: payload.TIPO_COSTO },
+        });
 
-        if (entity) {
-          payload = {
-            ...entity,
-            ...payload,
-          };
-        }
+      if (entity) {
+        payload = {
+          ...entity,
+          ...payload,
+        };
+      }
 
-        const persistenceModel = ArticoliCostiCfMapper.toPersistence(payload);
+      const persistenceModel = ArticoliCostiCfMapper.toPersistence(payload);
 
-        const newEntity = await this.articoliCostiCfRepository.save(
-          this.articoliCostiCfRepository.create(persistenceModel),
-        );
+      const newEntity = await this.articoliCostiCfRepository.save(
+        this.articoliCostiCfRepository.create(persistenceModel),
+      );
 
-        return newEntity;
-      },
-    );
+      return newEntity;
+    });
 
     //return ArticoliCostiCfMapper.toDomain(result);
-        const entity: ArticoliCostiCfEntity | null =
-          await this.articoliCostiCfRepository
-            .createQueryBuilder('articoliCostiCf')
-            .leftJoinAndSelect('articoliCostiCf.artAna', 'artAna') // Assumi che la relazione sia "artAna"
-            .leftJoinAndSelect('artAna.artCosti', 'artCosti')
-            .where('articoliCostiCf.COD_CF = :COD_CF', { COD_CF })
-            .andWhere('articoliCostiCf.TIPO_COSTO = :TIPO_COSTO', {
-              TIPO_COSTO: payload.TIPO_COSTO,
-            })
-            .getOne();
-    
-        if (entity) {
-          return ArticoliCostiCfMapper.toDomain(entity);
-        }
-        return null;
+    const entity: ArticoliCostiCfEntity | null =
+      await this.articoliCostiCfRepository
+        .createQueryBuilder('articoliCostiCf')
+        .leftJoinAndSelect('articoliCostiCf.artAna', 'artAna') // Assumi che la relazione sia "artAna"
+        .leftJoinAndSelect('artAna.artCosti', 'artCosti')
+        .where('articoliCostiCf.COD_CF = :COD_CF', { COD_CF })
+        .andWhere('articoliCostiCf.TIPO_COSTO = :TIPO_COSTO', {
+          TIPO_COSTO: payload.TIPO_COSTO,
+        })
+        .getOne();
+
+    if (entity) {
+      return ArticoliCostiCfMapper.toDomain(entity);
+    }
+    return null;
   }
 
   async remove(id: ArticoliCostiCf['id']): Promise<void> {

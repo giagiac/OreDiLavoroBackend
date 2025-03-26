@@ -18,5 +18,5 @@ export class FindAllartCostiDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  COD_ART: String;
+  COD_ART: string;
 }

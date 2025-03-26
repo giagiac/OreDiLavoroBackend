@@ -1,10 +1,9 @@
-import { FilterDto } from '../../../utils/dto/filter-column';
+import { FilterDto, SortDto } from '../../../utils/dto/filter-column';
 import { DeepPartial } from '../../../utils/types/deep-partial.type';
 import { NullableType } from '../../../utils/types/nullable.type';
 import { IPaginationOptions } from '../../../utils/types/pagination-options';
 import { Cf } from '../../domain/cf';
 import { CfDto } from '../../dto/cf.dto';
-import { SortCfDto } from '../../dto/find-all-cf.dto';
 
 export abstract class CfRepository {
   abstract create(
@@ -18,7 +17,7 @@ export abstract class CfRepository {
     join,
   }: {
     filterOptions?: Array<FilterDto<CfDto>> | null;
-    sortOptions?: Array<SortCfDto> | null;
+    sortOptions?: Array<SortDto<CfDto>> | null;
     paginationOptions: IPaginationOptions;
     join: boolean;
   }): Promise<{ cf: Array<Cf>; count: number }>;

@@ -9,6 +9,7 @@ import databaseConfig from '../../config/database.config';
 import { TypeOrmConfigService } from '../../typeorm-config.service';
 import { ArticoliCostiCfSeedModule } from './articoliCostiCf/articoliCostiCf-seed.module';
 import { ArticoliCostiCfCommSeedModule } from './articoliCostiCfComm/articoliCostiCfComm-seed.module';
+import { EpsNestjsOrpEffCicliEsecSeedModule } from './epsNestjsOrpEffCicliEsec/epsNestjsOrpEffCicliEsec-seed.module';
 import { RoleSeedModule } from './role/role-seed.module';
 import { StatusSeedModule } from './status/status-seed.module';
 import { UserSeedModule } from './user/user-seed.module';
@@ -20,6 +21,7 @@ import { UserSeedModule } from './user/user-seed.module';
     UserSeedModule,
     ArticoliCostiCfSeedModule,
     ArticoliCostiCfCommSeedModule,
+    EpsNestjsOrpEffCicliEsecSeedModule,
     ConfigModule.forRoot({
       isGlobal: true,
       load: [databaseConfig, appConfig],
@@ -30,7 +32,7 @@ import { UserSeedModule } from './user/user-seed.module';
       dataSourceFactory: async (options: DataSourceOptions) => {
         return new DataSource({
           ...options,
-          sid: 'db'
+          sid: 'db',
         } as OracleConnectionOptions).initialize();
       },
     }),

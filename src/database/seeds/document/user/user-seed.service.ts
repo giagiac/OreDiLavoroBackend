@@ -33,6 +33,7 @@ export class UserSeedService {
         status: {
           _id: StatusEnum.active.toString(),
         },
+        COD_OP: '1404111412',
       });
       await data.save();
     }
@@ -56,6 +57,7 @@ export class UserSeedService {
         status: {
           _id: StatusEnum.active.toString(),
         },
+        COD_OP: '0615140413',
       });
 
       await data.save();

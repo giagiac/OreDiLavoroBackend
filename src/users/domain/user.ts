@@ -5,6 +5,7 @@ import databaseConfig from '../../database/config/database.config';
 import { FileType } from '../../files/domain/file';
 import { Role } from '../../roles/domain/role';
 import { Status } from '../../statuses/domain/status';
+import { Operatori } from '../../operatoris/domain/operatori';
 
 // <database-block>
 const idType = (databaseConfig() as DatabaseConfig).isDocumentDatabase
@@ -77,4 +78,14 @@ export class User {
 
   @ApiProperty()
   deletedAt: Date;
+
+  @ApiProperty({
+    type: String,
+  })
+  COD_OP?: string | null;
+
+  @ApiProperty({
+    type: () => Operatori,
+  })
+  operatori?: Operatori | null;
 }

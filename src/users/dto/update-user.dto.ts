@@ -45,4 +45,8 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   @IsOptional()
   @Type(() => StatusDto)
   status?: StatusDto;
+
+  @ApiPropertyOptional({ type: String })
+  @IsOptional()
+  COD_OP?: string | null;
 }

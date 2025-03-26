@@ -28,7 +28,7 @@ export class artCostiRelationalRepository implements artCostiRepository {
     COD_ART,
   }: {
     paginationOptions: IPaginationOptions;
-    COD_ART: String;
+    COD_ART: string;
   }): Promise<ArtCosti[]> {
     const entities = await this.artCostiRepository.find({
       where: {

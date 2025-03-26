@@ -97,8 +97,8 @@ export class CfCommRelationalRepository implements CfCommRepository {
     const entitiesSql = this.cfCommRepository
       .createQueryBuilder('cfComm')
       .leftJoinAndSelect('cfComm.articoliCostiCfComm', 'articoliCostiCfComm')
-      .leftJoinAndSelect('articoliCostiCfComm.artAna', "artAna")
-      .leftJoinAndSelect('artAna.artCosti', "artCosti")
+      .leftJoinAndSelect('articoliCostiCfComm.artAna', 'artAna')
+      .leftJoinAndSelect('artAna.artCosti', 'artCosti')
       .offset((paginationOptions.page - 1) * paginationOptions.limit)
       .limit(paginationOptions.limit);
 

@@ -29,10 +29,10 @@ export class ArticoliCostiCfMapper {
     persistenceEntity.TIPO_COSTO = domainEntity.TIPO_COSTO;
     persistenceEntity.COD_ART = domainEntity.COD_ART;
     persistenceEntity.COD_CF = domainEntity.COD_CF;
-    
+
     if (domainEntity.id) {
       persistenceEntity.id = domainEntity.id;
-    }    
+    }
     persistenceEntity.createdAt = domainEntity.createdAt;
     persistenceEntity.updatedAt = domainEntity.updatedAt;
 

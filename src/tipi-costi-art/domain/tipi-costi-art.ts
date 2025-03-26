@@ -9,12 +9,12 @@ export class tipiCostiArt {
   @ApiProperty({
     type: String,
   })
-  DES_TIPO_COST: string
+  DES_TIPO_COST: string;
 
   @ApiProperty({
     type: Number,
   })
-  TIPO_COSTO:Number
+  TIPO_COSTO: number;
 
   // COD_TIPO_COST	NOT NULL	VARCHAR2(12)
   // DES_TIPO_COST		VARCHAR2(255)

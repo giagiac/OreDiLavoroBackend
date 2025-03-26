@@ -16,6 +16,7 @@ import { StatusEntity } from '../../../../../statuses/infrastructure/persistence
 
 import { AuthProvidersEnum } from '../../../../../auth/auth-providers.enum';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
+import { OperatoriEntity } from '../../../../../operatoris/infrastructure/persistence/relational/entities/operatori.entity';
 
 @Entity({
   name: 'EPS_NESTJS_USER',
@@ -73,4 +74,16 @@ export class UserEntity extends EntityRelationalHelper {
 
   @DeleteDateColumn()
   deletedAt: Date;
+
+  // --------------------------------------------------------------------
+
+  @Column({ type: String, nullable: true })
+  COD_OP?: string | null;
+
+  @OneToOne(() => OperatoriEntity, (operatoriEntity) => operatoriEntity.user)
+  @JoinColumn({
+    name: 'COD_OP',
+    referencedColumnName: 'COD_OP',
+  })
+  operatori?: OperatoriEntity | null;
 }

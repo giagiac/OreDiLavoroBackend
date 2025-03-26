@@ -1,12 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository, SelectQueryBuilder } from 'typeorm';
-import { FilterDto } from '../../../../../utils/dto/filter-column';
+import { In, Repository } from 'typeorm';
+import {
+  applicaSort,
+  applicaWhereLike,
+  FilterDto,
+  SortDto,
+} from '../../../../../utils/dto/filter-column';
 import { NullableType } from '../../../../../utils/types/nullable.type';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
 import { Cf } from '../../../../domain/cf';
 import { CfDto } from '../../../../dto/cf.dto';
-import { SortCfDto } from '../../../../dto/find-all-cf.dto';
 import { CfRepository } from '../../cf.repository';
 import { CfEntity } from '../entities/cf.entity';
 import { CfMapper } from '../mappers/cf.mapper';
@@ -26,38 +30,38 @@ export class CfRelationalRepository implements CfRepository {
     return CfMapper.toDomain(newEntity);
   }
 
-  applicaWhereLike(
-    columnName: string,
-    queryBuilder: SelectQueryBuilder<CfEntity>,
-    filtri: Array<FilterDto<CfDto>> | null,
-  ) {
-    if (filtri && filtri.length > 0) {
-      filtri.forEach((filtro) => {
-        if (filtro.columnName && filtro.value) {
-          queryBuilder.andWhere(
-            `LOWER(${columnName}.${filtro.columnName}) like LOWER('${filtro.value}%')`,
-          );
-        }
-      });
-    }
-  }
+  // applicaWhereLike(
+  //   columnName: string,
+  //   queryBuilder: SelectQueryBuilder<CfEntity>,
+  //   filtri: Array<FilterDto<CfDto>> | null,
+  // ) {
+  //   if (filtri && filtri.length > 0) {
+  //     filtri.forEach((filtro) => {
+  //       if (filtro.columnName && filtro.value) {
+  //         queryBuilder.andWhere(
+  //           `LOWER(${columnName}.${filtro.columnName}) like LOWER('${filtro.value}%')`,
+  //         );
+  //       }
+  //     });
+  //   }
+  // }
 
-  applicaSort(
-    columnName: string,
-    queryBuilder: SelectQueryBuilder<CfEntity>,
-    sort: Array<SortCfDto> | null,
-  ) {
-    if (sort && sort.length > 0) {
-      sort.forEach((sortItem) => {
-        if (sortItem.orderBy && sortItem.order) {
-          queryBuilder.addOrderBy(
-            `LPAD(${columnName}.${sortItem.orderBy},10)`,
-            sortItem.order.toUpperCase() as any,
-          );
-        }
-      });
-    }
-  }
+  // applicaSort(
+  //   columnName: string,
+  //   queryBuilder: SelectQueryBuilder<CfEntity>,
+  //   sort: Array<SortCfDto> | null,
+  // ) {
+  //   if (sort && sort.length > 0) {
+  //     sort.forEach((sortItem) => {
+  //       if (sortItem.orderBy && sortItem.order) {
+  //         queryBuilder.addOrderBy(
+  //           `LPAD(${columnName}.${sortItem.orderBy},10)`,
+  //           sortItem.order.toUpperCase() as any,
+  //         );
+  //       }
+  //     });
+  //   }
+  // }
 
   async findAllWithPagination({
     filterOptions,
@@ -66,7 +70,7 @@ export class CfRelationalRepository implements CfRepository {
     join,
   }: {
     filterOptions?: Array<FilterDto<CfDto>> | null;
-    sortOptions?: Array<SortCfDto> | null;
+    sortOptions?: Array<SortDto<CfDto>> | null;
     paginationOptions: IPaginationOptions;
     join: boolean;
   }): Promise<{ cf: Cf[]; count: number }> {
@@ -87,8 +91,8 @@ export class CfRelationalRepository implements CfRepository {
         //.leftJoinAndSelect('articoliCostiCf.artCosti', 'artCosti')
 
         .leftJoinAndSelect('cf.articoliCostiCf', 'articoliCostiCf')
-        .leftJoinAndSelect('articoliCostiCf.artAna', "artAna")
-        .leftJoinAndSelect('artAna.artCosti', "artCosti")
+        .leftJoinAndSelect('articoliCostiCf.artAna', 'artAna')
+        .leftJoinAndSelect('artAna.artCosti', 'artCosti')
 
         .offset((paginationOptions.page - 1) * paginationOptions.limit)
         .limit(paginationOptions.limit);
@@ -99,8 +103,8 @@ export class CfRelationalRepository implements CfRepository {
         // .leftJoinAndSelect('articoliCostiCf.artCosti', 'artCosti')
 
         .leftJoinAndSelect('cf.articoliCostiCf', 'articoliCostiCf')
-        .leftJoinAndSelect('articoliCostiCf.artAna', "artAna")
-        .leftJoinAndSelect('artAna.artCosti', "artCosti")
+        .leftJoinAndSelect('articoliCostiCf.artAna', 'artAna')
+        .leftJoinAndSelect('artAna.artCosti', 'artCosti')
 
         //.innerJoinAndSelect('cf.cfComm', 'cfComm')
         //.leftJoinAndSelect('cfComm.articoliCostiCf', 'articoliCostiCf')
@@ -111,14 +115,12 @@ export class CfRelationalRepository implements CfRepository {
     }
 
     if (filterOptions) {
-      this.applicaWhereLike('cf', entitiesSql, filterOptions);
+      applicaWhereLike('cf', entitiesSql, filterOptions);
     }
 
     if (sortOptions) {
-      this.applicaSort('cf', entitiesSql, sortOptions);
+      applicaSort('cf', entitiesSql, sortOptions);
     }
-
-    // console.log(entitiesSql.getSql());
 
     const entitiesAndCount = await entitiesSql.getManyAndCount();
 

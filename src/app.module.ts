@@ -54,8 +54,6 @@ import { CfCommsModule } from './cf-comm/cf-comm.module';
 
 import { CfModule } from './cf/cf.module';
 
-import { NsorpeffcicliesecsModule } from './nsorpeffcicliesec/nsorpeffcicliesec.module';
-
 import { ArticoliCostiCfsModule } from './articoli-costi-cf/articoli-costi-cf.module';
 
 import { ArtAnaModule } from './art-ana/art-ana.module';
@@ -64,13 +62,36 @@ import { ArtCostiModule } from './art-costi/art-costi.module';
 
 import { TipiCostiArtsModule } from './tipi-costi-art/tipi-costi-art.module';
 
+import { OrpEffCicliEsecsModule } from './orp-eff-cicli-esecs/orp-eff-cicli-esecs.module';
+
+import { OrpEffCiclisModule } from './orp-eff-ciclis/orp-eff-ciclis.module';
+
+import { LinkOrpOrdsModule } from './link-orp-ords/link-orp-ords.module';
+
+import { OrdCliRighesModule } from './ord-cli-righes/ord-cli-righes.module';
+
+import { OrpEffsModule } from './orp-effs/orp-effs.module';
+
+import { X1TrasCodicisModule } from './x1-tras-codicis/x1-tras-codicis.module';
+
+import { EpsNestjsOrpEffCicliEsecsModule } from './eps-nestjs-orp-eff-cicli-esecs/eps-nestjs-orp-eff-cicli-esecs.module';
+
+import { OperatorisModule } from './operatoris/operatoris.module';
+
 @Module({
   imports: [
+    OperatorisModule,
+    EpsNestjsOrpEffCicliEsecsModule,
+    X1TrasCodicisModule,
+    OrpEffsModule,
+    OrdCliRighesModule,
+    LinkOrpOrdsModule,
+    OrpEffCiclisModule,
+    OrpEffCicliEsecsModule,
     TipiCostiArtsModule,
     ArtCostiModule,
     ArtAnaModule,
     ArticoliCostiCfsModule,
-    NsorpeffcicliesecsModule,
     CfModule,
     CfCommsModule,
     ArticoliCostiCfCommModule,

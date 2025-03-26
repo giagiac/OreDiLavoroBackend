@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { IPaginationOptions } from '../utils/types/pagination-options';
 import { tipiCostiArt } from './domain/tipi-costi-art';
-import { CreatetipiCostiArtDto } from './dto/create-tipi-costi-art.dto';
 import { UpdatetipiCostiArtDto } from './dto/update-tipi-costi-art.dto';
 import { tipiCostiArtRepository } from './infrastructure/persistence/tipi-costi-art.repository';
 

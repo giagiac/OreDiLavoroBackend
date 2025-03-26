@@ -1,8 +1,14 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryColumn,
+} from 'typeorm';
+import { ArticoliCostiCfCommEntity } from '../../../../../articoli-costi-cf-comm/infrastructure/persistence/relational/entities/articoli-costi-cf-comm.entity';
 import { CfEntity } from '../../../../../cf/infrastructure/persistence/relational/entities/cf.entity';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
-import { ArticoliCostiCfComm } from '../../../../../articoli-costi-cf-comm/domain/articoli-costi-cf-comm';
-import { ArticoliCostiCfCommEntity } from '../../../../../articoli-costi-cf-comm/infrastructure/persistence/relational/entities/articoli-costi-cf-comm.entity';
 
 @Entity({
   name: 'CF_COMM',
@@ -94,7 +100,11 @@ export class CfCommEntity extends EntityRelationalHelper {
   })
   cf: CfEntity | null;
 
-  @OneToMany(() => ArticoliCostiCfCommEntity, (articoliCostiCfComm) => articoliCostiCfComm.cfComm, { eager: true })
+  @OneToMany(
+    () => ArticoliCostiCfCommEntity,
+    (articoliCostiCfComm) => articoliCostiCfComm.cfComm,
+    { eager: true },
+  )
   @JoinColumn({
     referencedColumnName: 'CF_COMM_ID',
   })

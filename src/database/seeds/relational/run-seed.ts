@@ -1,10 +1,11 @@
 import { NestFactory } from '@nestjs/core';
+import { ArticoliCostiCfSeedService } from './articoliCostiCf/articoliCostiCf-seed.service';
+import { ArticoliCostiCfCommSeedService } from './articoliCostiCfComm/articoliCostiCfComm-seed.service';
 import { RoleSeedService } from './role/role-seed.service';
 import { SeedModule } from './seed.module';
 import { StatusSeedService } from './status/status-seed.service';
 import { UserSeedService } from './user/user-seed.service';
-import { ArticoliCostiCfSeedService } from './articoliCostiCf/articoliCostiCf-seed.service';
-import { ArticoliCostiCfCommSeedService } from './articoliCostiCfComm/articoliCostiCfComm-seed.service';
+import { EpsNestjsOrpEffCicliEsecSeedService } from './epsNestjsOrpEffCicliEsec/epsNestjsOrpEffCicliEsec-seed.service';
 
 const runSeed = async () => {
   const app = await NestFactory.create(SeedModule);
@@ -16,6 +17,8 @@ const runSeed = async () => {
 
   await app.get(ArticoliCostiCfSeedService).run();
   await app.get(ArticoliCostiCfCommSeedService).run();
+
+  await app.get(EpsNestjsOrpEffCicliEsecSeedService).run();
 
   await app.close();
 };
