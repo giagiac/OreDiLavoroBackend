@@ -33,6 +33,7 @@ import { UpdateEpsNestjsOrpEffCicliEsecDto } from './dto/update-esp-nestjs-orp-e
 import { EpsNestjsOrpEffCicliEsecsService } from './eps-nestjs-orp-eff-cicli-esecs.service';
 import { UserEntity } from '../users/infrastructure/persistence/relational/entities/user.entity';
 import { User } from '../utils/decorators';
+import Decimal from 'decimal.js';
 
 @ApiTags('Epsnestjsorpeffcicliesecs')
 @ApiBearerAuth()
@@ -44,7 +45,7 @@ import { User } from '../utils/decorators';
 export class EpsNestjsOrpEffCicliEsecsController {
   constructor(
     private readonly epsNestjsOrpEffCicliEsecsService: EpsNestjsOrpEffCicliEsecsService,
-  ) {}
+  ) { }
 
   @Post()
   @ApiCreatedResponse({
@@ -67,7 +68,7 @@ export class EpsNestjsOrpEffCicliEsecsController {
     @Query() query: FindAllEpsNestjsOrpEffCicliEsecsDto,
     @Req() req: Request,
     @User() user: UserEntity,
-  ): Promise<InfinityPaginationResponseDto<EpsNestjsOrpEffCicliEsec>> {
+  ): Promise<{ totale: Number, infinityPagination: InfinityPaginationResponseDto<EpsNestjsOrpEffCicliEsec> }> {
     const page = query?.page ?? 1;
     let limit = query?.limit ?? 10;
     if (limit > 200) {
@@ -88,7 +89,12 @@ export class EpsNestjsOrpEffCicliEsecsController {
         user,
       });
 
-    return infinityPaginationQueryBuilder(epsNestjsOrpEffCicliEsecs, count);
+    const paginationResult = infinityPaginationQueryBuilder(epsNestjsOrpEffCicliEsecs.list, count)
+
+    return {
+      totale: epsNestjsOrpEffCicliEsecs.totaleTempoOperatore,
+      infinityPagination: paginationResult
+    }
   }
 
   @Get(':id')

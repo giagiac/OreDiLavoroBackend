@@ -1,3 +1,4 @@
+import Decimal from 'decimal.js';
 import { User } from '../../../users/domain/user';
 import { FilterDto, SortDto } from '../../../utils/dto/filter-column';
 import { DeepPartial } from '../../../utils/types/deep-partial.type';
@@ -21,7 +22,7 @@ export abstract class EpsNestjsOrpEffCicliEsecRepository {
     sortOptions?: Array<SortDto<EpsNestjsOrpEffCicliEsecDto>> | null;
     paginationOptions: IPaginationOptions;
     user: User | null;
-  }): Promise<{ data: Array<EpsNestjsOrpEffCicliEsec>; count: number }>;
+  }): Promise<{ data: { totaleTempoOperatore: Number; list: EpsNestjsOrpEffCicliEsec[] }; count: number }>;
 
   abstract findById(
     id: EpsNestjsOrpEffCicliEsec['id'],

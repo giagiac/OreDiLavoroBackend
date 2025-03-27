@@ -11,6 +11,9 @@ import {
 import { OrpEffCicliEsecEntity } from '../../../../../orp-eff-cicli-esecs/infrastructure/persistence/relational/entities/orp-eff-cicli-esec.entity';
 import { OrpEffCicliEntity } from '../../../../../orp-eff-ciclis/infrastructure/persistence/relational/entities/orp-eff-cicli.entity';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
+import { OperatoriEntity } from '../../../../../operatoris/infrastructure/persistence/relational/entities/operatori.entity';
+import { NumberToDecimalTransformer, NumberToStringTransformer } from '../../../../../utils/transformers/number.transformer';
+import Decimal from 'decimal.js';
 
 @Entity({
   name: 'EPS_NESTJS_ORP_EFF_CICLI_ESEC',
@@ -33,15 +36,17 @@ export class EpsNestjsOrpEffCicliEsecEntity extends EntityRelationalHelper {
 
   @Column({
     nullable: true,
-    type: Number,
+    type: String,
+    // transformer: new NumberToStringTransformer(),
   })
-  TEMPO_MINUTI_OP?: number | null;
+  TEMPO_MINUTI_OP?: Decimal | null;
 
   @Column({
     nullable: true,
-    type: Number,
+    type: String,
+    // transformer: new NumberToStringTransformer(),
   })
-  TEMPO_MINUTI_MACC?: number | null;
+  TEMPO_MINUTI_MACC?: Decimal | null;
 
   @Column({
     nullable: true,
@@ -63,15 +68,17 @@ export class EpsNestjsOrpEffCicliEsecEntity extends EntityRelationalHelper {
 
   @Column({
     nullable: true,
-    type: Number,
+    type: String, // ATT.NE importante che sia stringa
+    //transformer: new NumberToDecimalTransformer(),
   })
-  TEMPO_OPERATORE?: number | null;
+  TEMPO_OPERATORE?: Decimal | null;
 
   @Column({
     nullable: true,
-    type: Number,
+    type: String, // ATT.NE importante che sia stringa
+    //transformer: new NumberToStringTransformer(),
   })
-  TEMPO_MACCHINA?: number | null;
+  TEMPO_MACCHINA?: Decimal | null;
 
   @Column({
     nullable: true,
@@ -137,4 +144,16 @@ export class EpsNestjsOrpEffCicliEsecEntity extends EntityRelationalHelper {
     referencedColumnName: 'DOC_RIGA_ID',
   })
   orpEffCicli?: OrpEffCicliEntity | null;
+
+  // riferimento a operatore (il filtro sarà stretto solo sull'operatore corrente)
+  // 
+  @ManyToOne(
+    () => OperatoriEntity,
+    (operatoriEntity) => operatoriEntity.epsNestjsOrpEffCicliEsec,
+  )
+  @JoinColumn({
+    name: 'COD_OP',
+    referencedColumnName: 'COD_OP',
+  })
+  operatori?: OrpEffCicliEntity | null;
 }

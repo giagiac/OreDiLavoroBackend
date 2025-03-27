@@ -1,6 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
+import Decimal from 'decimal.js';
 
 export class EpsNestjsOrpEffCicliEsec {
+  @ApiProperty({
+    type: () => Number,
+    nullable: true,
+  })
+  TOTALE_TEMPO_MINUTI_OP?: number | null;
+
   @ApiProperty({
     type: () => Number,
     nullable: true,
@@ -14,16 +21,16 @@ export class EpsNestjsOrpEffCicliEsec {
   APP_REQ3_SYNCED?: number | null;
 
   @ApiProperty({
-    type: () => Number,
+    type: () => Decimal,
     nullable: true,
   })
-  TEMPO_MINUTI_OP?: number | null;
+  TEMPO_MINUTI_OP?: Decimal | null;
 
   @ApiProperty({
-    type: () => Number,
+    type: () => Decimal,
     nullable: true,
   })
-  TEMPO_MINUTI_MACC?: number | null;
+  TEMPO_MINUTI_MACC?: Decimal | null;
 
   @ApiProperty({
     type: () => String,
@@ -44,16 +51,16 @@ export class EpsNestjsOrpEffCicliEsec {
   DATA_INIZIO?: Date | null;
 
   @ApiProperty({
-    type: () => Number,
+    type: () => Decimal,
     nullable: true,
   })
-  TEMPO_OPERATORE?: number | null;
+  TEMPO_OPERATORE?: Decimal | null;
 
   @ApiProperty({
-    type: () => Number,
+    type: () => Decimal,
     nullable: true,
   })
-  TEMPO_MACCHINA?: number | null;
+  TEMPO_MACCHINA?: Decimal | null;
 
   @ApiProperty({
     type: () => String,

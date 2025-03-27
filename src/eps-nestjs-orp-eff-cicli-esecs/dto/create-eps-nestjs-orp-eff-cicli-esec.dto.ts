@@ -15,6 +15,7 @@ import {
   // decorators here
   Transform,
 } from 'class-transformer';
+import Decimal from 'decimal.js';
 
 export class CreateEpsNestjsOrpEffCicliEsecDto {
   @ApiProperty({
@@ -35,19 +36,19 @@ export class CreateEpsNestjsOrpEffCicliEsecDto {
 
   @ApiProperty({
     required: false,
-    type: () => Number,
+    type: () => Decimal,
   })
   @IsOptional()
   @IsNumber()
-  TEMPO_MINUTI_OP?: number | null;
+  TEMPO_MINUTI_OP?: Decimal | null;
 
   @ApiProperty({
     required: false,
-    type: () => Number,
+    type: () => Decimal,
   })
   @IsOptional()
   @IsNumber()
-  TEMPO_MINUTI_MACC?: number | null;
+  TEMPO_MINUTI_MACC?: Decimal | null;
 
   @ApiProperty({
     required: false,
@@ -77,19 +78,19 @@ export class CreateEpsNestjsOrpEffCicliEsecDto {
 
   @ApiProperty({
     required: false,
-    type: () => Number,
+    type: () => Decimal,
   })
   @IsOptional()
   @IsNumber()
-  TEMPO_OPERATORE?: number | null;
+  TEMPO_OPERATORE?: Decimal | null;
 
   @ApiProperty({
     required: false,
-    type: () => Number,
+    type: () => Decimal,
   })
   @IsOptional()
   @IsNumber()
-  TEMPO_MACCHINA?: number | null;
+  TEMPO_MACCHINA?: Decimal | null;
 
   @ApiProperty({
     required: false,
@@ -108,11 +109,12 @@ export class CreateEpsNestjsOrpEffCicliEsecDto {
   COD_ART?: string | null;
 
   @ApiProperty({
-    required: true,
+    required: false,
     type: () => String,
   })
   @IsString()
-  DOC_RIGA_ESEC_ID: string;
+  @IsOptional()
+  DOC_RIGA_ESEC_ID?: string | null;
 
   @ApiProperty({
     required: false,
