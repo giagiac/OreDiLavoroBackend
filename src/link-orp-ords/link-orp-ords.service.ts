@@ -66,11 +66,10 @@ export class LinkOrpOrdsService {
     return this.linkOrpOrdRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
-      ordCliRighe,
 
-      linkOrpOrd,
-
-      // ORP_EFF_DOC_ID: createLinkOrpOrdDto.ORP_EFF_DOC_ID,
+      ORP_EFF_DOC_ID: createLinkOrpOrdDto.ORP_EFF_DOC_ID,
+      ORD_CLI_DOC_RIGA_ID: createLinkOrpOrdDto.ORD_CLI_DOC_RIGA_ID,
+      LINK_ORP_ORD_ID: createLinkOrpOrdDto.LINK_ORP_ORD_ID,
     });
   }
 

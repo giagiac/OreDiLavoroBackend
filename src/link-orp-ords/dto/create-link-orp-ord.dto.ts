@@ -41,5 +41,19 @@ export class CreateLinkOrpOrdDto {
   @IsString()
   ORP_EFF_DOC_ID: string;
 
+  @ApiProperty({
+    required: true,
+    type: () => String,
+  })
+  @IsString()
+  ORD_CLI_DOC_RIGA_ID: string;
+
+  @ApiProperty({
+    required: true,
+    type: () => String,
+  })
+  @IsString()
+  LINK_ORP_ORD_ID: string;
+
   // Don't forget to use the class-validator decorators in the DTO properties.
 }

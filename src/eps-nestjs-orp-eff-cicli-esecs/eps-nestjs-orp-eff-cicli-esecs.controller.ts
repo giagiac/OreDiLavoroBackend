@@ -68,7 +68,7 @@ export class EpsNestjsOrpEffCicliEsecsController {
     @Query() query: FindAllEpsNestjsOrpEffCicliEsecsDto,
     @Req() req: Request,
     @User() user: UserEntity,
-  ): Promise<{ totale: Number, infinityPagination: InfinityPaginationResponseDto<EpsNestjsOrpEffCicliEsec> }> {
+  ): Promise<InfinityPaginationResponseDto<EpsNestjsOrpEffCicliEsec> & { totale: Number }> {
     const page = query?.page ?? 1;
     let limit = query?.limit ?? 10;
     if (limit > 200) {
@@ -93,7 +93,7 @@ export class EpsNestjsOrpEffCicliEsecsController {
 
     return {
       totale: epsNestjsOrpEffCicliEsecs.totaleTempoOperatore,
-      infinityPagination: paginationResult
+      ...paginationResult
     }
   }
 

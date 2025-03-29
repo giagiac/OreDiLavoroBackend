@@ -17,6 +17,10 @@ export class OrpEffMapper {
 
     domainEntity.AZIENDA_ID = raw.AZIENDA_ID;
 
+    domainEntity.DES_PROD = raw.DES_PROD
+
+    domainEntity.COD_ART = raw.COD_ART;
+
     domainEntity.x1TrasCodici = raw.x1TrasCodici;
 
     return domainEntity;
@@ -35,6 +39,10 @@ export class OrpEffMapper {
     persistenceEntity.DOC_ID = domainEntity.DOC_ID;
 
     persistenceEntity.AZIENDA_ID = domainEntity.AZIENDA_ID;
+
+    persistenceEntity.DES_PROD = domainEntity.DES_PROD;
+
+    persistenceEntity.COD_ART = domainEntity.COD_ART;
 
     return persistenceEntity;
   }

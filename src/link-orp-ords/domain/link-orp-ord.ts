@@ -16,6 +16,19 @@ export class LinkOrpOrd {
   ORP_EFF_DOC_ID: string;
 
   @ApiProperty({
+    type: () => String,
+    nullable: false,
+  })
+  ORD_CLI_DOC_RIGA_ID: string;
+
+
+  @ApiProperty({
+    type: () => String,
+    nullable: false,
+  })
+  LINK_ORP_ORD_ID: string;
+
+  @ApiProperty({
     type: () => OrpEffCicli,
     nullable: false,
   })

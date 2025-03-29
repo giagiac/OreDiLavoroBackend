@@ -25,6 +25,12 @@ export class OrpEffCicliEntity extends EntityRelationalHelper {
   })
   DES_LAV?: string | null;
 
+  @Column({
+    nullable: true,
+    type: String,
+  })
+  DES_CICLO?: string | null;
+
   @PrimaryColumn({
     nullable: false,
     type: String,
@@ -64,7 +70,7 @@ export class OrpEffCicliEntity extends EntityRelationalHelper {
     referencedColumnName: 'DOC_RIGA_ID',
     name: 'DOC_RIGA_ID',
   })
-  orpEffCicliEsec: OrpEffCicliEsecEntity | null;
+  orpEffCicliEsec?: OrpEffCicliEsecEntity | null;
 
   @OneToOne(() => OrpEffEntity, (orpEff) => orpEff.orpEffCicli)
   @JoinColumn({

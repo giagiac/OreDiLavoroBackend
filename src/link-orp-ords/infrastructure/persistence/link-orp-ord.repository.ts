@@ -5,7 +5,7 @@ import { LinkOrpOrd } from '../../domain/link-orp-ord';
 
 export abstract class LinkOrpOrdRepository {
   abstract create(
-    data: Omit<LinkOrpOrd, 'ORP_EFF_DOC_ID' | 'createdAt' | 'updatedAt'>,
+    data: Omit<LinkOrpOrd, | 'linkOrpOrd' | 'ordCliRighe' | 'createdAt' | 'updatedAt'>,
   ): Promise<LinkOrpOrd>;
 
   abstract findAllWithPagination({

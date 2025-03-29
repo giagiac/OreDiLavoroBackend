@@ -1,8 +1,7 @@
+import Decimal from 'decimal.js';
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 import { ArtAnaEntity } from '../../../../../art-ana/infrastructure/persistence/relational/entities/art-ana.entity';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
-import { NumberToStringTransformer } from '../../../../../utils/transformers/number.transformer';
-import Decimal from 'decimal.js';
 
 @Entity({
   name: 'ART_COSTI',

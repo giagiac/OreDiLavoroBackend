@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Cf } from '../../cf/domain/cf';
 
 export class OrdCliRighe {
   @ApiProperty({
@@ -42,4 +43,9 @@ export class OrdCliRighe {
     nullable: true,
   })
   AZIENDA_ID?: number | null;
+
+  @ApiProperty({
+    type: () => Cf,
+  })
+  cf?: Cf | null;
 }

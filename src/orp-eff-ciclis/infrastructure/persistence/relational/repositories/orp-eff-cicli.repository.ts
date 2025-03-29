@@ -35,44 +35,18 @@ export class OrpEffCicliRelationalRepository implements OrpEffCicliRepository {
     paginationOptions: IPaginationOptions;
     join: boolean;
   }): Promise<{ orpEffCicli: Array<OrpEffCicli>; count: number }> {
-    // const entities = await this.orpEffCicliEsecRepository.find({
-    //   skip: (paginationOptions.page - 1) * paginationOptions.limit,
-    //   take: paginationOptions.limit,
-    // });
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    // const query = this.orpEffCicliEsecRepository
-    //   .createQueryBuilder('orpEffCicliEsec')
-    //   .leftJoinAndSelect('orpEffCicliEsec.orpEffCicli', 'orpEffCicli')
-    //   .leftJoinAndSelect('orpEffCicli.linkOrpOrd', 'linkOrpOrd')
-    //   .leftJoinAndSelect('linkOrpOrd.ordCliRighe', 'ordCliRighe')
-    //   .leftJoinAndSelect('orpEffCicli.orpEff', 'orpEff')
-    //   .leftJoinAndSelect('orpEff.x1TrasCodici', 'x1TrasCodici')
-    //   .select()
-    //   //.addSelect(`TO_CHAR(oCR.DATA_DOC, 'YY') || x1.CODICE2 || oP.NUM_DOC || '-' || oFC.NUM_RIGA`, 'concatenatedString') // Using raw SQL for concatenation and formatted date
-    //   .where(
-    //     '(TRUNC(orpEffCicliEsec.DATA_INIZIO) = :t1 AND TRUNC(orpEffCicliEsec.DATA_FINE) = :t2)',
-    //     {
-    //       t1: today,
-    //       t2: today,
-    //     },
-    //   );
-    //   // .where(
-    //   //   'TRUNC(SYSDATE) BETWEEN TRUNC(orpEffCicliEsec.DATA_INIZIO) AND TRUNC(orpEffCicliEsec.DATA_FINE)',
-    //   // );
+    const filterCodiceBreve = filterOptions?.find(it=> it.columnName === 'CODICE_BREVE')
 
     const query = this.orpEffCicliRepository
       .createQueryBuilder('orpEffCicli')
-      .innerJoinAndSelect('orpEffCicli.linkOrpOrd', 'linkOrpOrd')
-      .innerJoinAndSelect('linkOrpOrd.ordCliRighe', 'ordCliRighe')
+      .leftJoinAndSelect('orpEffCicli.linkOrpOrd', 'linkOrpOrd')
+      .leftJoinAndSelect('linkOrpOrd.ordCliRighe', 'ordCliRighe')
+      .leftJoinAndSelect('ordCliRighe.cf', 'cf')
+      .leftJoinAndSelect('orpEffCicli.orpEffCicliEsec', 'orpEffCicliEsec')
+      .leftJoinAndSelect('orpEffCicli.epsNestjsOrpEffCicliEsec', 'epsNestjsOrpEffCicliEsec')
       .innerJoinAndSelect('orpEffCicli.orpEff', 'orpEff')
       .innerJoinAndSelect('orpEff.x1TrasCodici', 'x1TrasCodici')
-      .leftJoinAndSelect(
-        'orpEffCicli.epsNestjsOrpEffCicliEsec',
-        'epsNestjsOrpEffCicliEsec',
-      )
       .select()
       .addSelect(
         `TO_CHAR("ordCliRighe".DATA_DOC, 'YY') || "x1TrasCodici".CODICE2 || "orpEff".NUM_DOC || '-' || "orpEffCicli".NUM_RIGA`,
@@ -80,7 +54,7 @@ export class OrpEffCicliRelationalRepository implements OrpEffCicliRepository {
       ) // Using raw SQL for concatenation and formatted date
       .where(
         `TO_CHAR("ordCliRighe".DATA_DOC, 'YY') || "x1TrasCodici".CODICE2 || "orpEff".NUM_DOC || '-' || "orpEffCicli".NUM_RIGA =:CODICE_BREVE`,
-        { CODICE_BREVE: '2414015-3' },
+        { CODICE_BREVE: filterCodiceBreve?.value },
       );
 
     const entitiesAndCount = await query.getManyAndCount();

@@ -5,17 +5,14 @@ import { LinkOrpOrdEntity } from '../entities/link-orp-ord.entity';
 export class LinkOrpOrdMapper {
   static toDomain(raw: LinkOrpOrdEntity): LinkOrpOrd {
     const domainEntity = new LinkOrpOrd();
+    
     if (raw.ordCliRighe) {
       domainEntity.ordCliRighe = OrdCliRigheMapper.toDomain(raw.ordCliRighe);
-    } else if (raw.ordCliRighe === null) {
-      domainEntity.ordCliRighe = null;
     }
-
-    // if (raw.orpEffCicli) {
-    //   domainEntity.linkOrpOrd = OrpEffCicliMapper.toDomain(raw.orpEffCicli);
-    // }
-
+    
     domainEntity.ORP_EFF_DOC_ID = raw.ORP_EFF_DOC_ID;
+    domainEntity.ORD_CLI_DOC_RIGA_ID = raw.ORD_CLI_DOC_RIGA_ID;
+    domainEntity.LINK_ORP_ORD_ID = raw.LINK_ORP_ORD_ID;
 
     return domainEntity;
   }

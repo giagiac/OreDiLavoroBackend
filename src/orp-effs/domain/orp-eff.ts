@@ -39,6 +39,18 @@ export class OrpEff {
   AZIENDA_ID?: number | null;
 
   @ApiProperty({
+    type: () => String,
+    nullable: false,
+  })
+  DES_PROD?: string | null;
+
+  @ApiProperty({
+    type: () => String,
+    nullable: false,
+  })
+  COD_ART?: string | null;
+
+  @ApiProperty({
     type: () => X1TrasCodici,
     nullable: true,
   })

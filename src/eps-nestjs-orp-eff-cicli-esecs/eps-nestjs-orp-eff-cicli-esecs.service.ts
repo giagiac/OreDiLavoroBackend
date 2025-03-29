@@ -73,6 +73,30 @@ export class EpsNestjsOrpEffCicliEsecsService {
     user: User;
   }) {
     const currentUser = await this.usersService.findById(user.id);
+
+    const DATA_INIZIO = filterOptions?.find((f) => f.columnName === 'DATA_INIZIO')
+    const DATA_FINE = filterOptions?.find((f) => f.columnName === 'DATA_FINE')
+
+    if(DATA_INIZIO == null || DATA_FINE == null) {
+      
+      const targetDateInizio = new Date(); // ora locale al server (GMT+1 p.e.)
+      const targetDateFine = new Date();
+      
+      targetDateInizio.setDate(targetDateFine.getDate() - 4);
+      targetDateInizio.setHours(0, 0, 0, 0);
+      targetDateFine.setHours(23, 59, 59, 999);
+
+      filterOptions = new Array<FilterDto<EpsNestjsOrpEffCicliEsec>>()
+      filterOptions?.push({
+        columnName: 'DATA_INIZIO',
+        value: targetDateInizio.toISOString(),
+      })
+      filterOptions?.push({
+        columnName: 'DATA_FINE',
+        value: targetDateFine.toISOString(),
+      })
+    }
+
     return this.epsNestjsOrpEffCicliEsecRepository.findAllWithPagination({
       filterOptions,
       sortOptions,

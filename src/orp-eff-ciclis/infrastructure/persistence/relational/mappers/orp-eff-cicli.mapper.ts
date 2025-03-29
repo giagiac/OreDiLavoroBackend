@@ -10,6 +10,8 @@ export class OrpEffCicliMapper {
 
     domainEntity.DES_LAV = raw.DES_LAV;
 
+    domainEntity.DES_CICLO = raw.DES_CICLO;
+
     domainEntity.DOC_RIGA_ID = raw.DOC_RIGA_ID;
 
     domainEntity.NUM_RIGA = raw.NUM_RIGA;
@@ -22,6 +24,10 @@ export class OrpEffCicliMapper {
       LinkOrpOrdMapper.toDomain(it),
     );
 
+    domainEntity.orpEffCicliEsec = raw.orpEffCicliEsec
+    
+    domainEntity.epsNestjsOrpEffCicliEsec = raw.epsNestjsOrpEffCicliEsec;
+
     domainEntity.orpEff = raw.orpEff;
 
     return domainEntity;
@@ -30,6 +36,8 @@ export class OrpEffCicliMapper {
   static toPersistence(domainEntity: OrpEffCicli): OrpEffCicliEntity {
     const persistenceEntity = new OrpEffCicliEntity();
     persistenceEntity.DES_LAV = domainEntity.DES_LAV;
+
+    persistenceEntity.DES_CICLO = domainEntity.DES_CICLO;
 
     persistenceEntity.DOC_RIGA_ID = domainEntity.DOC_RIGA_ID;
 

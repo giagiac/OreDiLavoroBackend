@@ -1,3 +1,4 @@
+import { CfMapper } from '../../../../../cf/infrastructure/persistence/relational/mappers/cf.mapper';
 import { OrdCliRighe } from '../../../../domain/ord-cli-righe';
 
 import { OrdCliRigheEntity } from '../entities/ord-cli-righe.entity';
@@ -18,6 +19,10 @@ export class OrdCliRigheMapper {
     domainEntity.DOC_ID = raw.DOC_ID;
 
     domainEntity.AZIENDA_ID = raw.AZIENDA_ID;
+
+    if(raw.cf){
+      domainEntity.cf = CfMapper.toDomain(raw.cf);
+    }
 
     return domainEntity;
   }
