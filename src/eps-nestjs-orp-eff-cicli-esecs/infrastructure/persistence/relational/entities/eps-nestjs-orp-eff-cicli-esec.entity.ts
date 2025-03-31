@@ -145,7 +145,7 @@ export class EpsNestjsOrpEffCicliEsecEntity extends EntityRelationalHelper {
   orpEffCicli?: OrpEffCicliEntity | null;
 
   // riferimento a operatore (il filtro sarà stretto solo sull'operatore corrente)
-  // 
+  //
   @ManyToOne(
     () => OperatoriEntity,
     (operatoriEntity) => operatoriEntity.epsNestjsOrpEffCicliEsec,

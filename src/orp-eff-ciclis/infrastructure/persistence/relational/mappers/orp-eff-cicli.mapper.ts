@@ -24,8 +24,8 @@ export class OrpEffCicliMapper {
       LinkOrpOrdMapper.toDomain(it),
     );
 
-    domainEntity.orpEffCicliEsec = raw.orpEffCicliEsec
-    
+    domainEntity.orpEffCicliEsec = raw.orpEffCicliEsec;
+
     domainEntity.epsNestjsOrpEffCicliEsec = raw.epsNestjsOrpEffCicliEsec;
 
     domainEntity.orpEff = raw.orpEff;

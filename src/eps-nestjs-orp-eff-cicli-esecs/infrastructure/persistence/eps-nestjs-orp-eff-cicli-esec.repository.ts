@@ -22,7 +22,10 @@ export abstract class EpsNestjsOrpEffCicliEsecRepository {
     sortOptions?: Array<SortDto<EpsNestjsOrpEffCicliEsecDto>> | null;
     paginationOptions: IPaginationOptions;
     user: User | null;
-  }): Promise<{ data: { totaleTempoOperatore: Number; list: EpsNestjsOrpEffCicliEsec[] }; count: number }>;
+  }): Promise<{
+    data: { totaleTempoOperatore: number; list: EpsNestjsOrpEffCicliEsec[] };
+    count: number;
+  }>;
 
   abstract findById(
     id: EpsNestjsOrpEffCicliEsec['id'],

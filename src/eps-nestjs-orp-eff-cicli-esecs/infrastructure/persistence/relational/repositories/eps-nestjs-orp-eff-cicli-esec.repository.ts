@@ -46,7 +46,7 @@ export class EpsNestjsOrpEffCicliEsecRelationalRepository
     paginationOptions: IPaginationOptions;
     user: UserEntity | null;
   }): Promise<{
-    data: { totaleTempoOperatore: Number; list: EpsNestjsOrpEffCicliEsec[] };
+    data: { totaleTempoOperatore: number; list: EpsNestjsOrpEffCicliEsec[] };
     count: number;
   }> {
     // --- Logica per determinare la data da usare ---
@@ -119,7 +119,7 @@ export class EpsNestjsOrpEffCicliEsecRelationalRepository
         // Use the library's 'plus' method for addition
         return accumulator.plus(valueToAdd);
       },
-      new Decimal(0) // Initialize the accumulator with Decimal(0)
+      new Decimal(0), // Initialize the accumulator with Decimal(0)
     );
 
     const list = entitiesAndCount[0].map((entity) =>

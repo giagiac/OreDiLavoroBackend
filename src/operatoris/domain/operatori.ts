@@ -10,7 +10,7 @@ export class Operatori {
     type: () => String,
     nullable: true,
   })
-  NOME_OP?: String | null
+  NOME_OP?: string | null;
 
   @ApiProperty({
     type: () => Number,
@@ -22,11 +22,11 @@ export class Operatori {
     type: () => String,
     nullable: true,
   })
-  X_COD_BADGE?: String | null
-  
+  X_COD_BADGE?: string | null;
+
   @ApiProperty({
     type: () => String,
     nullable: true,
   })
-  UTENTE?: String | null
+  UTENTE?: string | null;
 }

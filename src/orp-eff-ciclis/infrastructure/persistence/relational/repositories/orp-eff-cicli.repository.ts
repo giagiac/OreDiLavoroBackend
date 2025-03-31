@@ -35,8 +35,9 @@ export class OrpEffCicliRelationalRepository implements OrpEffCicliRepository {
     paginationOptions: IPaginationOptions;
     join: boolean;
   }): Promise<{ orpEffCicli: Array<OrpEffCicli>; count: number }> {
-
-    const filterCodiceBreve = filterOptions?.find(it=> it.columnName === 'CODICE_BREVE')
+    const filterCodiceBreve = filterOptions?.find(
+      (it) => it.columnName === 'CODICE_BREVE',
+    );
 
     const query = this.orpEffCicliRepository
       .createQueryBuilder('orpEffCicli')
@@ -44,7 +45,10 @@ export class OrpEffCicliRelationalRepository implements OrpEffCicliRepository {
       .leftJoinAndSelect('linkOrpOrd.ordCliRighe', 'ordCliRighe')
       .leftJoinAndSelect('ordCliRighe.cf', 'cf')
       .leftJoinAndSelect('orpEffCicli.orpEffCicliEsec', 'orpEffCicliEsec')
-      .leftJoinAndSelect('orpEffCicli.epsNestjsOrpEffCicliEsec', 'epsNestjsOrpEffCicliEsec')
+      .leftJoinAndSelect(
+        'orpEffCicli.epsNestjsOrpEffCicliEsec',
+        'epsNestjsOrpEffCicliEsec',
+      )
       .innerJoinAndSelect('orpEffCicli.orpEff', 'orpEff')
       .innerJoinAndSelect('orpEff.x1TrasCodici', 'x1TrasCodici')
       .select()

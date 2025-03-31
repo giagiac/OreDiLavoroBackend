@@ -20,7 +20,7 @@ export class OrdCliRigheMapper {
 
     domainEntity.AZIENDA_ID = raw.AZIENDA_ID;
 
-    if(raw.cf){
+    if (raw.cf) {
       domainEntity.cf = CfMapper.toDomain(raw.cf);
     }
 

@@ -45,7 +45,7 @@ import Decimal from 'decimal.js';
 export class EpsNestjsOrpEffCicliEsecsController {
   constructor(
     private readonly epsNestjsOrpEffCicliEsecsService: EpsNestjsOrpEffCicliEsecsService,
-  ) { }
+  ) {}
 
   @Post()
   @ApiCreatedResponse({
@@ -68,7 +68,9 @@ export class EpsNestjsOrpEffCicliEsecsController {
     @Query() query: FindAllEpsNestjsOrpEffCicliEsecsDto,
     @Req() req: Request,
     @User() user: UserEntity,
-  ): Promise<InfinityPaginationResponseDto<EpsNestjsOrpEffCicliEsec> & { totale: Number }> {
+  ): Promise<
+    InfinityPaginationResponseDto<EpsNestjsOrpEffCicliEsec> & { totale: number }
+  > {
     const page = query?.page ?? 1;
     let limit = query?.limit ?? 10;
     if (limit > 200) {
@@ -89,12 +91,15 @@ export class EpsNestjsOrpEffCicliEsecsController {
         user,
       });
 
-    const paginationResult = infinityPaginationQueryBuilder(epsNestjsOrpEffCicliEsecs.list, count)
+    const paginationResult = infinityPaginationQueryBuilder(
+      epsNestjsOrpEffCicliEsecs.list,
+      count,
+    );
 
     return {
       totale: epsNestjsOrpEffCicliEsecs.totaleTempoOperatore,
-      ...paginationResult
-    }
+      ...paginationResult,
+    };
   }
 
   @Get(':id')

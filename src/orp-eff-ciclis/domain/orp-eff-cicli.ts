@@ -70,6 +70,4 @@ export class OrpEffCicli {
     nullable: true,
   })
   epsNestjsOrpEffCicliEsec?: EpsNestjsOrpEffCicliEsecEntity | null;
-
-  
 }

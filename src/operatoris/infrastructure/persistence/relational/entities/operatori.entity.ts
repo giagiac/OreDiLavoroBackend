@@ -18,16 +18,16 @@ export class OperatoriEntity extends EntityRelationalHelper {
   COD_OP: string;
 
   @Column({ type: String, nullable: true })
-  NOME_OP?: String | null;
+  NOME_OP?: string | null;
 
   @Column({ type: Number, nullable: true })
   AZIENDA_ID?: number | null;
 
   @Column({ type: String, nullable: true })
-  X_COD_BADGE?: String | null;
+  X_COD_BADGE?: string | null;
 
   @Column({ type: String, nullable: true })
-  UTENTE?: String | null;
+  UTENTE?: string | null;
 
   @OneToOne(() => UserEntity, (userEntity) => userEntity.operatori)
   @JoinColumn({

@@ -17,7 +17,7 @@ export class OrpEffMapper {
 
     domainEntity.AZIENDA_ID = raw.AZIENDA_ID;
 
-    domainEntity.DES_PROD = raw.DES_PROD
+    domainEntity.DES_PROD = raw.DES_PROD;
 
     domainEntity.COD_ART = raw.COD_ART;
 

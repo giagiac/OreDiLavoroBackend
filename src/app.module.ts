@@ -78,8 +78,11 @@ import { EpsNestjsOrpEffCicliEsecsModule } from './eps-nestjs-orp-eff-cicli-esec
 
 import { OperatorisModule } from './operatoris/operatoris.module';
 
+import { EpsNestjsTargaMezzisModule } from './eps-nestjs-targa-mezzis/eps-nestjs-targa-mezzis.module';
+
 @Module({
   imports: [
+    EpsNestjsTargaMezzisModule,
     OperatorisModule,
     EpsNestjsOrpEffCicliEsecsModule,
     X1TrasCodicisModule,

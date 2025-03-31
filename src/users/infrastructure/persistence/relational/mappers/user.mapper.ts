@@ -26,7 +26,7 @@ export class UserMapper {
 
     domainEntity.COD_OP = raw.COD_OP;
 
-    domainEntity.operatori = raw.operatori
+    domainEntity.operatori = raw.operatori;
 
     return domainEntity;
   }
@@ -73,8 +73,8 @@ export class UserMapper {
     persistenceEntity.updatedAt = domainEntity.updatedAt;
     persistenceEntity.deletedAt = domainEntity.deletedAt;
 
-    persistenceEntity.COD_OP = domainEntity.COD_OP
-    
+    persistenceEntity.COD_OP = domainEntity.COD_OP;
+
     return persistenceEntity;
   }
 }

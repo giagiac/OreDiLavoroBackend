@@ -21,7 +21,6 @@ export class LinkOrpOrd {
   })
   ORD_CLI_DOC_RIGA_ID: string;
 
-
   @ApiProperty({
     type: () => String,
     nullable: false,

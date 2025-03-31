@@ -49,7 +49,7 @@ export class OperatoriRelationalRepository implements OperatoriRepository {
 
     // return entities.map((entity) => OperatoriMapper.toDomain(entity));
 
-    let entitiesSql = this.operatoriRepository
+    const entitiesSql = this.operatoriRepository
       .createQueryBuilder('operatori')
       .leftJoinAndSelect('operatori.user', 'user')
       .offset((paginationOptions.page - 1) * paginationOptions.limit)
