@@ -51,27 +51,28 @@ export class EpsNestjsTargaMezzisController {
   }
 
   @Get()
-    @ApiOkResponse({
-      type: InfinityPaginationResponse(EpsNestjsTargaMezzi),
-    })
-    async findAll(
-      @Query() query: FindAllEpsNestjsTargaMezziDto,
-    ): Promise<InfinityPaginationResponseDto<EpsNestjsTargaMezzi>> {
-      const page = query?.page ?? 1;
-      let limit = query?.limit ?? 10;
-      if (limit > 50) {
-        limit = 50;
-      }
-  
-      const filters = query.filters;
-      const sort = query.sort;
-      const join =
-        query.othersFilters != null &&
-        query.othersFilters.findIndex(
-          (it) => it.key == 'join' && it.value == 'true',
-        ) > -1;
-  
-      const { epsNestjsTargaMezzi, count } = await this.epsNestjsTargaMezzisService.findAllWithPagination({
+  @ApiOkResponse({
+    type: InfinityPaginationResponse(EpsNestjsTargaMezzi),
+  })
+  async findAll(
+    @Query() query: FindAllEpsNestjsTargaMezziDto,
+  ): Promise<InfinityPaginationResponseDto<EpsNestjsTargaMezzi>> {
+    const page = query?.page ?? 1;
+    let limit = query?.limit ?? 10;
+    if (limit > 50) {
+      limit = 50;
+    }
+
+    const filters = query.filters;
+    const sort = query.sort;
+    const join =
+      query.othersFilters != null &&
+      query.othersFilters.findIndex(
+        (it) => it.key == 'join' && it.value == 'true',
+      ) > -1;
+
+    const { epsNestjsTargaMezzi, count } =
+      await this.epsNestjsTargaMezzisService.findAllWithPagination({
         paginationOptions: {
           page,
           limit,
@@ -80,9 +81,9 @@ export class EpsNestjsTargaMezzisController {
         sortOptions: sort,
         join,
       });
-  
-      return infinityPaginationQueryBuilder(epsNestjsTargaMezzi, count);
-    }
+
+    return infinityPaginationQueryBuilder(epsNestjsTargaMezzi, count);
+  }
 
   @Get(':id')
   @ApiParam({

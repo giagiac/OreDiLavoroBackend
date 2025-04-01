@@ -7,7 +7,12 @@ import { EpsNestjsTargaMezzi } from '../../../../domain/eps-nestjs-targa-mezzi';
 import { EpsNestjsTargaMezziRepository } from '../../eps-nestjs-targa-mezzi.repository';
 import { EpsNestjsTargaMezziMapper } from '../mappers/eps-nestjs-targa-mezzi.mapper';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
-import { applicaSort, applicaWhereLike, FilterDto, SortDto } from '../../../../../utils/dto/filter-column';
+import {
+  applicaSort,
+  applicaWhereLike,
+  FilterDto,
+  SortDto,
+} from '../../../../../utils/dto/filter-column';
 import { EpsNestjsTargaMezziDto } from '../../../../dto/eps-nestjs-targa-mezzi.dto';
 
 @Injectable()
@@ -28,37 +33,39 @@ export class EpsNestjsTargaMezziRelationalRepository
   }
 
   async findAllWithPagination({
-      filterOptions,
-      sortOptions,
-      paginationOptions,
-      join,
-    }: {
-      filterOptions?: Array<FilterDto<EpsNestjsTargaMezziDto>> | null;
-      sortOptions?: Array<SortDto<EpsNestjsTargaMezziDto>> | null;
-      paginationOptions: IPaginationOptions;
-      join: boolean;
-    }): Promise<{ epsNestjsTargaMezzi: EpsNestjsTargaMezzi[]; count: number }> {
-  
-      let entitiesSql = this.epsNestjsTargaMezziRepository
+    filterOptions,
+    sortOptions,
+    paginationOptions,
+    join,
+  }: {
+    filterOptions?: Array<FilterDto<EpsNestjsTargaMezziDto>> | null;
+    sortOptions?: Array<SortDto<EpsNestjsTargaMezziDto>> | null;
+    paginationOptions: IPaginationOptions;
+    join: boolean;
+  }): Promise<{ epsNestjsTargaMezzi: EpsNestjsTargaMezzi[]; count: number }> {
+    let entitiesSql = this.epsNestjsTargaMezziRepository
       .createQueryBuilder('epsNestjsTargaMezzi')
+      .leftJoinAndSelect('epsNestjsTargaMezzi.artAna', 'artAna')
       .offset((paginationOptions.page - 1) * paginationOptions.limit)
-      .limit(paginationOptions.limit);
-  
-      if (filterOptions) {
-        applicaWhereLike('epsNestjsTargaMezzi', entitiesSql, filterOptions);
-      }
-  
-      if (sortOptions) {
-        applicaSort('epsNestjsTargaMezzi', entitiesSql, sortOptions);
-      }
-  
-      const entitiesAndCount = await entitiesSql.getManyAndCount();
-  
-      return {
-        epsNestjsTargaMezzi: entitiesAndCount[0].map((entity) => EpsNestjsTargaMezziMapper.toDomain(entity)),
-        count: entitiesAndCount[1],
-      };
+      .limit(paginationOptions.limit)
+
+    if (filterOptions) {
+      applicaWhereLike('epsNestjsTargaMezzi', entitiesSql, filterOptions);
     }
+
+    if (sortOptions) {
+      applicaSort('epsNestjsTargaMezzi', entitiesSql, sortOptions);
+    }
+
+    const entitiesAndCount = await entitiesSql.getManyAndCount();
+
+    return {
+      epsNestjsTargaMezzi: entitiesAndCount[0].map((entity) =>
+        EpsNestjsTargaMezziMapper.toDomain(entity),
+      ),
+      count: entitiesAndCount[1],
+    };
+  }
 
   async findById(
     id: EpsNestjsTargaMezzi['id'],
@@ -81,15 +88,25 @@ export class EpsNestjsTargaMezziRelationalRepository
   }
 
   async update(
-    id: EpsNestjsTargaMezzi['id'],
+    COD_ART: EpsNestjsTargaMezzi['COD_ART'],
     payload: Partial<EpsNestjsTargaMezzi>,
   ): Promise<EpsNestjsTargaMezzi> {
     const entity = await this.epsNestjsTargaMezziRepository.findOne({
-      where: { id },
+      where: { COD_ART },
     });
 
     if (!entity) {
-      throw new Error('Record not found');
+      const persistenceModel = EpsNestjsTargaMezziMapper.toPersistence({
+        COD_ART,
+        id: "",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        artAna: null
+      });
+      const newEntity = await this.epsNestjsTargaMezziRepository.save(
+        this.epsNestjsTargaMezziRepository.create(persistenceModel),
+      );
+      return EpsNestjsTargaMezziMapper.toDomain(newEntity)
     }
 
     const updatedEntity = await this.epsNestjsTargaMezziRepository.save(

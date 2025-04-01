@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { ArtAnaEntity } from '../../art-ana/infrastructure/persistence/relational/entities/art-ana.entity';
 
 export class EpsNestjsTargaMezzi {
   @ApiProperty({
@@ -17,4 +18,7 @@ export class EpsNestjsTargaMezzi {
 
   @ApiProperty()
   updatedAt: Date;
+
+  @ApiProperty()
+  artAna: ArtAnaEntity | null;
 }

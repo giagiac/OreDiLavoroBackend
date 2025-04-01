@@ -7,7 +7,7 @@ import { EpsNestjsTargaMezziDto } from '../../dto/eps-nestjs-targa-mezzi.dto';
 
 export abstract class EpsNestjsTargaMezziRepository {
   abstract create(
-    data: Omit<EpsNestjsTargaMezzi, 'id' | 'createdAt' | 'updatedAt'>,
+    data: Omit<EpsNestjsTargaMezzi, 'artAna' | 'id' | 'createdAt' | 'updatedAt'>,
   ): Promise<EpsNestjsTargaMezzi>;
 
   abstract findAllWithPagination({

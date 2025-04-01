@@ -51,6 +51,18 @@ export class OrpEff {
   COD_ART?: string | null;
 
   @ApiProperty({
+    type: () => Number,
+    nullable: true,
+  })
+  STATUS?: number | null;
+
+  @ApiProperty({
+    type: () => Number,
+    nullable: true,
+  })
+  SOSPESO?: number | null;
+
+  @ApiProperty({
     type: () => X1TrasCodici,
     nullable: true,
   })

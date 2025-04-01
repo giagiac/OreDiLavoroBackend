@@ -55,6 +55,12 @@ export class OrpEffEntity extends EntityRelationalHelper {
   })
   COD_ART?: string | null;
 
+  @Column({
+    nullable: true,
+    type: Number,
+  })
+  STATUS?: number | null;
+
   @OneToOne(() => OrpEffCicliEntity, (orpEffCicli) => orpEffCicli.orpEff)
   @JoinColumn({
     name: 'DOC_ID',

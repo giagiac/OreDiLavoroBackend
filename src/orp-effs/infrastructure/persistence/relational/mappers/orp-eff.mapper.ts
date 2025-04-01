@@ -21,6 +21,8 @@ export class OrpEffMapper {
 
     domainEntity.COD_ART = raw.COD_ART;
 
+    domainEntity.STATUS = raw.STATUS;
+
     domainEntity.x1TrasCodici = raw.x1TrasCodici;
 
     return domainEntity;
@@ -43,6 +45,8 @@ export class OrpEffMapper {
     persistenceEntity.DES_PROD = domainEntity.DES_PROD;
 
     persistenceEntity.COD_ART = domainEntity.COD_ART;
+
+    persistenceEntity.STATUS = domainEntity.STATUS;
 
     return persistenceEntity;
   }
