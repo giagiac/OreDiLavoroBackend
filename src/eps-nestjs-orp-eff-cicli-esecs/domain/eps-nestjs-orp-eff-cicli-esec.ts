@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import Decimal from 'decimal.js';
+import { OrpEffCicli } from '../../orp-eff-ciclis/domain/orp-eff-cicli';
 
 export class EpsNestjsOrpEffCicliEsec {
   @ApiProperty({
@@ -51,16 +52,16 @@ export class EpsNestjsOrpEffCicliEsec {
   DATA_INIZIO?: Date | null;
 
   @ApiProperty({
-    type: () => Decimal,
+    type: () => String,
     nullable: true,
   })
-  TEMPO_OPERATORE?: Decimal | null;
+  TEMPO_OPERATORE?: string | null;
 
   @ApiProperty({
-    type: () => Decimal,
+    type: () => String,
     nullable: true,
   })
-  TEMPO_MACCHINA?: Decimal | null;
+  TEMPO_MACCHINA?: string | null;
 
   @ApiProperty({
     type: () => String,
@@ -108,4 +109,11 @@ export class EpsNestjsOrpEffCicliEsec {
 
   @ApiProperty()
   updatedAt: Date;
+
+  // -------------------------
+  @ApiProperty({
+    type: () => OrpEffCicli,
+    nullable: true,
+  })
+  orpEffCicli?: OrpEffCicli | null;
 }

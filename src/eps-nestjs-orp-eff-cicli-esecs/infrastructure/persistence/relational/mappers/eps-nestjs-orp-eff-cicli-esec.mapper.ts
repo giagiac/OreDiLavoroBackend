@@ -1,6 +1,9 @@
+import Decimal from 'decimal.js';
 import { EpsNestjsOrpEffCicliEsec } from '../../../../domain/eps-nestjs-orp-eff-cicli-esec';
 
 import { EpsNestjsOrpEffCicliEsecEntity } from '../entities/eps-nestjs-orp-eff-cicli-esec.entity';
+import { OrpEffCicli } from '../../../../../orp-eff-ciclis/domain/orp-eff-cicli';
+import { OrpEffCicliMapper } from '../../../../../orp-eff-ciclis/infrastructure/persistence/relational/mappers/orp-eff-cicli.mapper';
 
 export class EpsNestjsOrpEffCicliEsecMapper {
   static toDomain(
@@ -41,12 +44,29 @@ export class EpsNestjsOrpEffCicliEsecMapper {
 
     domainEntity.AZIENDA_ID = raw.AZIENDA_ID;
 
+    if (raw.orpEffCicli) {
+      domainEntity.orpEffCicli = OrpEffCicliMapper.toDomain(raw.orpEffCicli);
+    }
+
     return domainEntity;
   }
 
   static toPersistence(
     domainEntity: EpsNestjsOrpEffCicliEsec,
   ): EpsNestjsOrpEffCicliEsecEntity {
+    // Imposta DATA_INIZIO al momento attuale
+    const DATA_INIZIO = new Date();
+
+    // Calcola TEMPO_OPERATORE_MS considerando la parte intera come ore e la parte decimale come centesimi di ora
+    const TEMPO_OPERATORE = Number(domainEntity.TEMPO_OPERATORE) || 0;
+    const ore = Math.floor(TEMPO_OPERATORE); // Parte intera (ore)
+    const centesimi = TEMPO_OPERATORE - ore; // Parte decimale (centesimi di ora)
+    const TEMPO_OPERATORE_MS =
+      ore * 60 * 60 * 1000 + centesimi * 60 * 60 * 1000;
+
+    // Calcola DATA_FINE aggiungendo TEMPO_OPERATORE_MS a DATA_INIZIO
+    const DATA_FINE = new Date(DATA_INIZIO.getTime() + TEMPO_OPERATORE_MS);
+
     const persistenceEntity = new EpsNestjsOrpEffCicliEsecEntity();
     persistenceEntity.NUM_RIGA = domainEntity.NUM_RIGA;
 
@@ -64,9 +84,9 @@ export class EpsNestjsOrpEffCicliEsecMapper {
 
     persistenceEntity.NOTE = domainEntity.NOTE;
 
-    persistenceEntity.DATA_FINE = domainEntity.DATA_FINE;
+    persistenceEntity.DATA_FINE = DATA_FINE;
 
-    persistenceEntity.DATA_INIZIO = domainEntity.DATA_INIZIO;
+    persistenceEntity.DATA_INIZIO = DATA_FINE;
 
     persistenceEntity.TEMPO_OPERATORE = domainEntity.TEMPO_OPERATORE;
 

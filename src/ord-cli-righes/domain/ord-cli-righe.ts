@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Cf } from '../../cf/domain/cf';
+import { OrdCliTras } from '../../ord-cli-tras/domain/ord-cli-tras';
 
 export class OrdCliRighe {
   @ApiProperty({
@@ -48,4 +49,9 @@ export class OrdCliRighe {
     type: () => Cf,
   })
   cf?: Cf | null;
+
+  @ApiProperty({
+    type: () => OrdCliTras,
+  })
+  ordCliTras?: OrdCliTras | null;
 }

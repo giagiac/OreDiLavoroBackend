@@ -11,10 +11,9 @@ export class EpsNestjsTargaMezziMapper {
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
 
-    if(raw.artAna){
-      domainEntity.artAna = raw.artAna
+    if (raw.artAna) {
+      domainEntity.artAna = raw.artAna;
     }
-
 
     return domainEntity;
   }

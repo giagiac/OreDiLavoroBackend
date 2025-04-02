@@ -14,6 +14,22 @@ import { OrpEffCicliEsecEntity } from '../../../../../orp-eff-cicli-esecs/infras
 import { OrpEffCicliEntity } from '../../../../../orp-eff-ciclis/infrastructure/persistence/relational/entities/orp-eff-cicli.entity';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
 
+import { ValueTransformer } from 'typeorm';
+
+export class DecimalToNumberTransformer implements ValueTransformer {
+  // Trasforma il valore da salvare nel database (numero -> stringa)
+  to(value: Decimal | null): number | null {
+    return value !== null && value !== undefined ? value.toNumber() : null;
+  }
+
+  // Trasforma il valore recuperato dal database (stringa -> numero)
+  from(value: number | null): Decimal | null {
+    return value !== null && value !== undefined
+      ? new Decimal(value.toString())
+      : null;
+  }
+}
+
 @Entity({
   name: 'EPS_NESTJS_ORP_EFF_CICLI_ESEC',
 })
@@ -68,16 +84,16 @@ export class EpsNestjsOrpEffCicliEsecEntity extends EntityRelationalHelper {
   @Column({
     nullable: true,
     type: String, // ATT.NE importante che sia stringa
-    //transformer: new NumberToDecimalTransformer(),
+    // transformer: new DecimalToNumberTransformer(),
   })
-  TEMPO_OPERATORE?: Decimal | null;
+  TEMPO_OPERATORE?: string | null;
 
   @Column({
     nullable: true,
     type: String, // ATT.NE importante che sia stringa
-    //transformer: new NumberToStringTransformer(),
+    // transformer: new DecimalToNumberTransformer(),
   })
-  TEMPO_MACCHINA?: Decimal | null;
+  TEMPO_MACCHINA?: string | null;
 
   @Column({
     nullable: true,

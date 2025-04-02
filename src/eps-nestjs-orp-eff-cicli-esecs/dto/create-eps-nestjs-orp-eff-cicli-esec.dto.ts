@@ -4,6 +4,7 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  Validate,
 } from 'class-validator';
 
 import {
@@ -16,6 +17,7 @@ import {
   Transform,
 } from 'class-transformer';
 import Decimal from 'decimal.js';
+import { ValueTransformer } from 'typeorm';
 
 export class CreateEpsNestjsOrpEffCicliEsecDto {
   @ApiProperty({
@@ -81,7 +83,18 @@ export class CreateEpsNestjsOrpEffCicliEsecDto {
     type: () => Decimal,
   })
   @IsOptional()
-  @IsNumber()
+  @Transform(({ value }) => {
+    if (typeof value === 'string') {
+      const timeParts = value.split(':');
+      if (timeParts.length === 2) {
+        const hours = new Decimal(timeParts[0]);
+        const minutes = new Decimal(timeParts[1]).dividedBy(60);
+        return hours.plus(minutes);
+      }
+      throw new Error('Invalid time format. Expected hh:mm');
+    }
+    return value;
+  })
   TEMPO_OPERATORE?: Decimal | null;
 
   @ApiProperty({

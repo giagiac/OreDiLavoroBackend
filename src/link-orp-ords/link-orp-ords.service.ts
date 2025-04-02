@@ -142,7 +142,7 @@ export class LinkOrpOrdsService {
       // <updating-property-payload />
       ordCliRighe,
 
-      linkOrpOrd,
+      orpEffCicli: linkOrpOrd,
 
       ORP_EFF_DOC_ID: updateLinkOrpOrdDto.ORP_EFF_DOC_ID,
     });

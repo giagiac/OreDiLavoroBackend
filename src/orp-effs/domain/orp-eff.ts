@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { X1TrasCodici } from '../../x1-tras-codicis/domain/x1-tras-codici';
+import { OrdCliTras } from '../../ord-cli-tras/domain/ord-cli-tras';
 
 export class OrpEff {
   @ApiProperty({
@@ -67,4 +68,10 @@ export class OrpEff {
     nullable: true,
   })
   x1TrasCodici?: X1TrasCodici | null;
+
+  @ApiProperty({
+    type: () => OrdCliTras,
+    nullable: true,
+  })
+  ordCliTras?: OrdCliTras | null;
 }

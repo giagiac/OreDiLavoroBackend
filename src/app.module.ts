@@ -80,8 +80,11 @@ import { OperatorisModule } from './operatoris/operatoris.module';
 
 import { EpsNestjsTargaMezzisModule } from './eps-nestjs-targa-mezzis/eps-nestjs-targa-mezzis.module';
 
+import { OrdCliTrasModule } from './ord-cli-tras/ord-cli-tras.module';
+
 @Module({
   imports: [
+    OrdCliTrasModule,
     EpsNestjsTargaMezzisModule,
     OperatorisModule,
     EpsNestjsOrpEffCicliEsecsModule,

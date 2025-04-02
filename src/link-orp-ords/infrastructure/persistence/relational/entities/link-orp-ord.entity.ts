@@ -11,6 +11,7 @@ import {
   PrimaryColumn,
 } from 'typeorm';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
+import { OrdCliTrasEntity } from '../../../../../ord-cli-tras/infrastructure/persistence/relational/entities/ord-cli-tras.entity';
 
 @Entity({
   name: 'LINK_ORP_ORD',

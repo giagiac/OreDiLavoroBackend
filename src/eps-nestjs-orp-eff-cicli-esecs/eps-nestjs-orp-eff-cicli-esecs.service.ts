@@ -22,9 +22,12 @@ export class EpsNestjsOrpEffCicliEsecsService {
 
   async create(
     createEspNestjsOrpEffCicliEsecDto: CreateEpsNestjsOrpEffCicliEsecDto,
+    user: User,
   ) {
     // Do not remove comment below.
     // <creating-property />
+
+    const currentUser = await this.usersService.findById(user.id);
 
     return this.epsNestjsOrpEffCicliEsecRepository.create({
       // Do not remove comment below.
@@ -43,11 +46,13 @@ export class EpsNestjsOrpEffCicliEsecsService {
 
       DATA_INIZIO: createEspNestjsOrpEffCicliEsecDto.DATA_INIZIO,
 
-      TEMPO_OPERATORE: createEspNestjsOrpEffCicliEsecDto.TEMPO_OPERATORE,
+      TEMPO_OPERATORE:
+        createEspNestjsOrpEffCicliEsecDto.TEMPO_OPERATORE?.toString(),
 
-      TEMPO_MACCHINA: createEspNestjsOrpEffCicliEsecDto.TEMPO_MACCHINA,
+      TEMPO_MACCHINA:
+        createEspNestjsOrpEffCicliEsecDto.TEMPO_MACCHINA?.toString(),
 
-      COD_OP: createEspNestjsOrpEffCicliEsecDto.COD_OP,
+      COD_OP: currentUser?.COD_OP,
 
       COD_ART: createEspNestjsOrpEffCicliEsecDto.COD_ART,
 
@@ -142,9 +147,11 @@ export class EpsNestjsOrpEffCicliEsecsService {
 
       DATA_INIZIO: updateEspNestjsOrpEffCicliEsecDto.DATA_INIZIO,
 
-      TEMPO_OPERATORE: updateEspNestjsOrpEffCicliEsecDto.TEMPO_OPERATORE,
+      TEMPO_OPERATORE:
+        updateEspNestjsOrpEffCicliEsecDto.TEMPO_OPERATORE?.toString(),
 
-      TEMPO_MACCHINA: updateEspNestjsOrpEffCicliEsecDto.TEMPO_MACCHINA,
+      TEMPO_MACCHINA:
+        updateEspNestjsOrpEffCicliEsecDto.TEMPO_MACCHINA?.toString(),
 
       COD_OP: updateEspNestjsOrpEffCicliEsecDto.COD_OP,
 

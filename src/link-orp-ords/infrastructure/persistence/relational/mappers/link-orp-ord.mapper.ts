@@ -1,4 +1,5 @@
 import { OrdCliRigheMapper } from '../../../../../ord-cli-righes/infrastructure/persistence/relational/mappers/ord-cli-righe.mapper';
+import { OrdCliTrasMapper } from '../../../../../ord-cli-tras/infrastructure/persistence/relational/mappers/ord-cli-tras.mapper';
 import { LinkOrpOrd } from '../../../../domain/link-orp-ord';
 import { LinkOrpOrdEntity } from '../entities/link-orp-ord.entity';
 

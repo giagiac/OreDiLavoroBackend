@@ -93,6 +93,19 @@ export class EpsNestjsOrpEffCicliEsecRelationalRepository
     const entitiesSql = this.epsNestjsOrpEffCicliEsecRepository
       .createQueryBuilder('epsNestjsOrpEffCicliEsec')
       .innerJoinAndSelect('epsNestjsOrpEffCicliEsec.operatori', 'operatori')
+      .leftJoinAndSelect('epsNestjsOrpEffCicliEsec.orpEffCicli', 'orpEffCicli')
+      .leftJoinAndSelect('orpEffCicli.orpEff', 'orpEff')
+      .leftJoinAndSelect('orpEffCicli.linkOrpOrd', 'linkOrpOrd')
+      .leftJoinAndSelect('linkOrpOrd.ordCliRighe', 'ordCliRighe')
+      .leftJoinAndSelect('ordCliRighe.ordCliTras', 'ordCliTras')
+      .leftJoinAndSelect('ordCliRighe.cf', 'cf')
+      .leftJoinAndSelect('orpEff.x1TrasCodici', 'x1TrasCodici')
+      .select()
+      .addSelect(
+        `TO_CHAR("ordCliRighe".DATA_DOC, 'YY') || "x1TrasCodici".CODICE2 || "orpEff".NUM_DOC || '-' || "orpEffCicli".NUM_RIGA`,
+        'CODICE_BREVE',
+      ) // Using raw SQL for concatenation and formatted date
+
       .where('epsNestjsOrpEffCicliEsec.COD_OP =:COD_OP', {
         COD_OP: user?.COD_OP,
       })
@@ -117,7 +130,7 @@ export class EpsNestjsOrpEffCicliEsecRelationalRepository
         // Convert the current item's value to a Decimal instance
         const valueToAdd = item?.TEMPO_OPERATORE || 0;
         // Use the library's 'plus' method for addition
-        return accumulator.plus(valueToAdd);
+        return accumulator.plus(new Decimal(valueToAdd.toString()));
       },
       new Decimal(0), // Initialize the accumulator with Decimal(0)
     );

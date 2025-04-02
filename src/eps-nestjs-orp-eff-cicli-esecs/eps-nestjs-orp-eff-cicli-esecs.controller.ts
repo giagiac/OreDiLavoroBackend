@@ -54,9 +54,11 @@ export class EpsNestjsOrpEffCicliEsecsController {
   create(
     @Body()
     createEspNestjsOrpEffCicliEsecDto: CreateEpsNestjsOrpEffCicliEsecDto,
+    @User() user: UserEntity,
   ) {
     return this.epsNestjsOrpEffCicliEsecsService.create(
       createEspNestjsOrpEffCicliEsecDto,
+      user,
     );
   }
 

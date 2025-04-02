@@ -1,4 +1,5 @@
 import { OrdCliRighe } from '../../ord-cli-righes/domain/ord-cli-righe';
+import { OrdCliTras } from '../../ord-cli-tras/domain/ord-cli-tras';
 import { OrpEffCicli } from '../../orp-eff-ciclis/domain/orp-eff-cicli';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -29,7 +30,7 @@ export class LinkOrpOrd {
 
   @ApiProperty({
     type: () => OrpEffCicli,
-    nullable: false,
+    nullable: true,
   })
-  linkOrpOrd?: OrpEffCicli;
+  orpEffCicli?: OrpEffCicli;
 }

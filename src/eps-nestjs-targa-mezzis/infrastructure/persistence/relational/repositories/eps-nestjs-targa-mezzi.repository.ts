@@ -43,11 +43,11 @@ export class EpsNestjsTargaMezziRelationalRepository
     paginationOptions: IPaginationOptions;
     join: boolean;
   }): Promise<{ epsNestjsTargaMezzi: EpsNestjsTargaMezzi[]; count: number }> {
-    let entitiesSql = this.epsNestjsTargaMezziRepository
+    const entitiesSql = this.epsNestjsTargaMezziRepository
       .createQueryBuilder('epsNestjsTargaMezzi')
       .leftJoinAndSelect('epsNestjsTargaMezzi.artAna', 'artAna')
       .offset((paginationOptions.page - 1) * paginationOptions.limit)
-      .limit(paginationOptions.limit)
+      .limit(paginationOptions.limit);
 
     if (filterOptions) {
       applicaWhereLike('epsNestjsTargaMezzi', entitiesSql, filterOptions);
@@ -98,15 +98,15 @@ export class EpsNestjsTargaMezziRelationalRepository
     if (!entity) {
       const persistenceModel = EpsNestjsTargaMezziMapper.toPersistence({
         COD_ART,
-        id: "",
+        id: '',
         createdAt: new Date(),
         updatedAt: new Date(),
-        artAna: null
+        artAna: null,
       });
       const newEntity = await this.epsNestjsTargaMezziRepository.save(
         this.epsNestjsTargaMezziRepository.create(persistenceModel),
       );
-      return EpsNestjsTargaMezziMapper.toDomain(newEntity)
+      return EpsNestjsTargaMezziMapper.toDomain(newEntity);
     }
 
     const updatedEntity = await this.epsNestjsTargaMezziRepository.save(

@@ -7,7 +7,10 @@ import { EpsNestjsTargaMezziDto } from '../../dto/eps-nestjs-targa-mezzi.dto';
 
 export abstract class EpsNestjsTargaMezziRepository {
   abstract create(
-    data: Omit<EpsNestjsTargaMezzi, 'artAna' | 'id' | 'createdAt' | 'updatedAt'>,
+    data: Omit<
+      EpsNestjsTargaMezzi,
+      'artAna' | 'id' | 'createdAt' | 'updatedAt'
+    >,
   ): Promise<EpsNestjsTargaMezzi>;
 
   abstract findAllWithPagination({
@@ -20,7 +23,10 @@ export abstract class EpsNestjsTargaMezziRepository {
     sortOptions?: Array<SortDto<EpsNestjsTargaMezziDto>> | null;
     paginationOptions: IPaginationOptions;
     join: boolean;
-  }): Promise<{ epsNestjsTargaMezzi: Array<EpsNestjsTargaMezzi>; count: number }>;
+  }): Promise<{
+    epsNestjsTargaMezzi: Array<EpsNestjsTargaMezzi>;
+    count: number;
+  }>;
 
   abstract findById(
     id: EpsNestjsTargaMezzi['id'],
