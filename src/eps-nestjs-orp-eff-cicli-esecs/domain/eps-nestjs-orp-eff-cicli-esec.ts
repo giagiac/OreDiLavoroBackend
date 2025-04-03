@@ -61,6 +61,12 @@ export class EpsNestjsOrpEffCicliEsec {
     type: () => String,
     nullable: true,
   })
+  TEMPO_OPERATORE_SESSANTESIMI?: string | null;
+
+  @ApiProperty({
+    type: () => String,
+    nullable: true,
+  })
   TEMPO_MACCHINA?: string | null;
 
   @ApiProperty({

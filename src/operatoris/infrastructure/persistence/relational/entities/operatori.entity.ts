@@ -29,6 +29,9 @@ export class OperatoriEntity extends EntityRelationalHelper {
   @Column({ type: String, nullable: true })
   UTENTE?: string | null;
 
+  @Column({ type: String, nullable: true })
+  COD_PALMARE?: string | null;
+
   @OneToOne(() => UserEntity, (userEntity) => userEntity.operatori)
   @JoinColumn({
     name: 'COD_OP',

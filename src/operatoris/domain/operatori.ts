@@ -29,4 +29,10 @@ export class Operatori {
     nullable: true,
   })
   UTENTE?: string | null;
+
+  @ApiProperty({
+    type: () => String,
+    nullable: true,
+  })
+  COD_PALMARE?: string | null;
 }

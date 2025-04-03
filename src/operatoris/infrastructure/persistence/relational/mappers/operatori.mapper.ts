@@ -9,6 +9,7 @@ export class OperatoriMapper {
     domainEntity.NOME_OP = raw.NOME_OP;
     domainEntity.UTENTE = raw.UTENTE;
     domainEntity.X_COD_BADGE = raw.X_COD_BADGE;
+    domainEntity.COD_PALMARE = raw.COD_PALMARE;
 
     return domainEntity;
   }

@@ -9,6 +9,8 @@ import {
   Query,
   UseGuards,
   Req,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import {
@@ -143,6 +145,7 @@ export class EpsNestjsOrpEffCicliEsecsController {
     type: String,
     required: true,
   })
+  @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id') id: string) {
     return this.epsNestjsOrpEffCicliEsecsService.remove(id);
   }

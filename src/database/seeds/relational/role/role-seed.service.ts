@@ -41,5 +41,20 @@ export class RoleSeedService {
         }),
       );
     }
+
+    const countAutisti = await this.repository.count({
+      where: {
+        id: RoleEnum.autista,
+      },
+    });
+
+    if (!countAutisti) {
+      await this.repository.save(
+        this.repository.create({
+          id: RoleEnum.autista,
+          name: 'Autista',
+        }),
+      );
+    }
   }
 }

@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Patch,
   Post,
@@ -123,6 +125,7 @@ export class EpsNestjsTargaMezzisController {
     type: String,
     required: true,
   })
+  @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id') id: string) {
     return this.epsNestjsTargaMezzisService.remove(id);
   }

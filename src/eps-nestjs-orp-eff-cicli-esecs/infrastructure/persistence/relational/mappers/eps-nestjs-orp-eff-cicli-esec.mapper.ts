@@ -4,8 +4,13 @@ import { EpsNestjsOrpEffCicliEsec } from '../../../../domain/eps-nestjs-orp-eff-
 import { EpsNestjsOrpEffCicliEsecEntity } from '../entities/eps-nestjs-orp-eff-cicli-esec.entity';
 import { OrpEffCicli } from '../../../../../orp-eff-ciclis/domain/orp-eff-cicli';
 import { OrpEffCicliMapper } from '../../../../../orp-eff-ciclis/infrastructure/persistence/relational/mappers/orp-eff-cicli.mapper';
+import { TempoOperatoreToSessantesimiTransformer } from '../../../../../utils/transformers/tempo-in-sessaantesimi.transformer';
+
+const transformer = new TempoOperatoreToSessantesimiTransformer();
 
 export class EpsNestjsOrpEffCicliEsecMapper {
+  
+
   static toDomain(
     raw: EpsNestjsOrpEffCicliEsecEntity,
   ): EpsNestjsOrpEffCicliEsec {
@@ -43,6 +48,8 @@ export class EpsNestjsOrpEffCicliEsecMapper {
     domainEntity.DOC_ID = raw.DOC_ID;
 
     domainEntity.AZIENDA_ID = raw.AZIENDA_ID;
+
+    domainEntity.TEMPO_OPERATORE_SESSANTESIMI = transformer.convertiOreInFormatoHHMM(Number(raw.TEMPO_OPERATORE))
 
     if (raw.orpEffCicli) {
       domainEntity.orpEffCicli = OrpEffCicliMapper.toDomain(raw.orpEffCicli);

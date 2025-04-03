@@ -62,5 +62,30 @@ export class UserSeedService {
 
       await data.save();
     }
+
+    const autista = await this.model.findOne({
+      email: 'autista@example.com',
+    });
+
+    if (!autista) {
+      const salt = await bcrypt.genSalt();
+      const password = await bcrypt.hash('secret', salt);
+
+      const data = new this.model({
+        email: 'autista@example.com',
+        password: password,
+        firstName: 'Autista',
+        lastName: 'Esempio',
+        role: {
+          _id: RoleEnum.autista.toString(),
+        },
+        status: {
+          _id: StatusEnum.active.toString(),
+        },
+        COD_OP: '0002020802',
+      });
+
+      await data.save();
+    }
   }
 }
