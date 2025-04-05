@@ -21,7 +21,7 @@ export class EpsNestjsOrpEffCicliEsecsService {
   ) {}
 
   async create(
-    createEspNestjsOrpEffCicliEsecDto: CreateEpsNestjsOrpEffCicliEsecDto,
+    createEpsNestjsOrpEffCicliEsecDto: CreateEpsNestjsOrpEffCicliEsecDto,
     user: User,
   ) {
     // Do not remove comment below.
@@ -32,37 +32,39 @@ export class EpsNestjsOrpEffCicliEsecsService {
     return this.epsNestjsOrpEffCicliEsecRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
-      NUM_RIGA: createEspNestjsOrpEffCicliEsecDto.NUM_RIGA,
+      TIPO_TRASFERTA: createEpsNestjsOrpEffCicliEsecDto.TIPO_TRASFERTA,
 
-      APP_REQ3_SYNCED: createEspNestjsOrpEffCicliEsecDto.APP_REQ3_SYNCED,
+      NUM_RIGA: createEpsNestjsOrpEffCicliEsecDto.NUM_RIGA,
 
-      TEMPO_MINUTI_OP: createEspNestjsOrpEffCicliEsecDto.TEMPO_MINUTI_OP,
+      APP_REQ3_SYNCED: createEpsNestjsOrpEffCicliEsecDto.APP_REQ3_SYNCED,
 
-      TEMPO_MINUTI_MACC: createEspNestjsOrpEffCicliEsecDto.TEMPO_MINUTI_MACC,
+      TEMPO_MINUTI_OP: createEpsNestjsOrpEffCicliEsecDto.TEMPO_MINUTI_OP,
 
-      NOTE: createEspNestjsOrpEffCicliEsecDto.NOTE,
+      TEMPO_MINUTI_MACC: createEpsNestjsOrpEffCicliEsecDto.TEMPO_MINUTI_MACC,
 
-      DATA_FINE: createEspNestjsOrpEffCicliEsecDto.DATA_FINE,
+      NOTE: createEpsNestjsOrpEffCicliEsecDto.NOTE,
 
-      DATA_INIZIO: createEspNestjsOrpEffCicliEsecDto.DATA_INIZIO,
+      DATA_FINE: createEpsNestjsOrpEffCicliEsecDto.DATA_FINE,
+
+      DATA_INIZIO: createEpsNestjsOrpEffCicliEsecDto.DATA_INIZIO,
 
       TEMPO_OPERATORE:
-        createEspNestjsOrpEffCicliEsecDto.TEMPO_OPERATORE?.toString(),
+        createEpsNestjsOrpEffCicliEsecDto.TEMPO_OPERATORE?.toString(),
 
       TEMPO_MACCHINA:
-        createEspNestjsOrpEffCicliEsecDto.TEMPO_MACCHINA?.toString(),
+        createEpsNestjsOrpEffCicliEsecDto.TEMPO_MACCHINA?.toString(),
 
       COD_OP: currentUser?.COD_OP,
 
-      COD_ART: createEspNestjsOrpEffCicliEsecDto.COD_ART,
+      COD_ART: createEpsNestjsOrpEffCicliEsecDto.COD_ART,
 
-      DOC_RIGA_ESEC_ID: createEspNestjsOrpEffCicliEsecDto.DOC_RIGA_ESEC_ID,
+      DOC_RIGA_ESEC_ID: createEpsNestjsOrpEffCicliEsecDto.DOC_RIGA_ESEC_ID,
 
-      DOC_RIGA_ID: createEspNestjsOrpEffCicliEsecDto.DOC_RIGA_ID,
+      DOC_RIGA_ID: createEpsNestjsOrpEffCicliEsecDto.DOC_RIGA_ID,
 
-      DOC_ID: createEspNestjsOrpEffCicliEsecDto.DOC_ID,
+      DOC_ID: createEpsNestjsOrpEffCicliEsecDto.DOC_ID,
 
-      AZIENDA_ID: createEspNestjsOrpEffCicliEsecDto.AZIENDA_ID,
+      AZIENDA_ID: createEpsNestjsOrpEffCicliEsecDto.AZIENDA_ID,
     });
   }
 
@@ -82,26 +84,37 @@ export class EpsNestjsOrpEffCicliEsecsService {
     const DATA_INIZIO = filterOptions?.find(
       (f) => f.columnName === 'DATA_INIZIO',
     );
-    const DATA_FINE = filterOptions?.find((f) => f.columnName === 'DATA_FINE');
+    // const DATA_FINE = filterOptions?.find((f) => f.columnName === 'DATA_FINE');
+    const DATA_FINE = filterOptions?.find(
+      (f) => f.columnName === 'DATA_INIZIO',
+    );
 
-    if (DATA_INIZIO == null || DATA_FINE == null) {
-      const targetDateInizio = new Date(); // ora locale al server (GMT+1 p.e.)
-      const targetDateFine = new Date();
+    const targetDateInizio = new Date();
+    const targetDateFine = new Date();
 
-      targetDateInizio.setDate(targetDateFine.getDate() - 4);
+    if (DATA_INIZIO && DATA_INIZIO.value) {
+      // Converti il valore di DATA_INIZIO in un oggetto Date
+      targetDateInizio.setTime(Date.parse(DATA_INIZIO.value));
       targetDateInizio.setHours(0, 0, 0, 0);
-      targetDateFine.setHours(23, 59, 59, 999);
-
-      filterOptions = new Array<FilterDto<EpsNestjsOrpEffCicliEsec>>();
-      filterOptions?.push({
-        columnName: 'DATA_INIZIO',
-        value: targetDateInizio.toISOString(),
-      });
-      filterOptions?.push({
-        columnName: 'DATA_FINE',
-        value: targetDateFine.toISOString(),
-      });
+      DATA_INIZIO.value = targetDateInizio.toISOString();
     }
+
+    if (DATA_FINE && DATA_FINE.value) {
+      // Converti il valore di DATA_FINE in un oggetto Date
+      targetDateFine.setTime(Date.parse(DATA_FINE.value));
+      targetDateFine.setHours(23, 59, 59, 999);
+      DATA_FINE.value = targetDateFine.toISOString();
+    }
+
+    filterOptions = new Array<FilterDto<EpsNestjsOrpEffCicliEsec>>();
+    filterOptions.push({
+      columnName: 'DATA_INIZIO',
+      value: targetDateInizio.toISOString(),
+    });
+    filterOptions.push({
+      columnName: 'DATA_FINE',
+      value: targetDateFine.toISOString(),
+    });
 
     return this.epsNestjsOrpEffCicliEsecRepository.findAllWithPagination({
       filterOptions,
@@ -125,7 +138,7 @@ export class EpsNestjsOrpEffCicliEsecsService {
   async update(
     id: EpsNestjsOrpEffCicliEsec['id'],
 
-    updateEspNestjsOrpEffCicliEsecDto: UpdateEpsNestjsOrpEffCicliEsecDto,
+    updateEpsNestjsOrpEffCicliEsecDto: UpdateEpsNestjsOrpEffCicliEsecDto,
   ) {
     // Do not remove comment below.
     // <updating-property />
@@ -133,37 +146,39 @@ export class EpsNestjsOrpEffCicliEsecsService {
     return this.epsNestjsOrpEffCicliEsecRepository.update(id, {
       // Do not remove comment below.
       // <updating-property-payload />
-      NUM_RIGA: updateEspNestjsOrpEffCicliEsecDto.NUM_RIGA,
+      TIPO_TRASFERTA: updateEpsNestjsOrpEffCicliEsecDto.TIPO_TRASFERTA,
 
-      APP_REQ3_SYNCED: updateEspNestjsOrpEffCicliEsecDto.APP_REQ3_SYNCED,
+      NUM_RIGA: updateEpsNestjsOrpEffCicliEsecDto.NUM_RIGA,
 
-      TEMPO_MINUTI_OP: updateEspNestjsOrpEffCicliEsecDto.TEMPO_MINUTI_OP,
+      APP_REQ3_SYNCED: updateEpsNestjsOrpEffCicliEsecDto.APP_REQ3_SYNCED,
 
-      TEMPO_MINUTI_MACC: updateEspNestjsOrpEffCicliEsecDto.TEMPO_MINUTI_MACC,
+      TEMPO_MINUTI_OP: updateEpsNestjsOrpEffCicliEsecDto.TEMPO_MINUTI_OP,
 
-      NOTE: updateEspNestjsOrpEffCicliEsecDto.NOTE,
+      TEMPO_MINUTI_MACC: updateEpsNestjsOrpEffCicliEsecDto.TEMPO_MINUTI_MACC,
 
-      DATA_FINE: updateEspNestjsOrpEffCicliEsecDto.DATA_FINE,
+      NOTE: updateEpsNestjsOrpEffCicliEsecDto.NOTE,
 
-      DATA_INIZIO: updateEspNestjsOrpEffCicliEsecDto.DATA_INIZIO,
+      DATA_FINE: updateEpsNestjsOrpEffCicliEsecDto.DATA_FINE,
+
+      DATA_INIZIO: updateEpsNestjsOrpEffCicliEsecDto.DATA_INIZIO,
 
       TEMPO_OPERATORE:
-        updateEspNestjsOrpEffCicliEsecDto.TEMPO_OPERATORE?.toString(),
+        updateEpsNestjsOrpEffCicliEsecDto.TEMPO_OPERATORE?.toString(),
 
       TEMPO_MACCHINA:
-        updateEspNestjsOrpEffCicliEsecDto.TEMPO_MACCHINA?.toString(),
+        updateEpsNestjsOrpEffCicliEsecDto.TEMPO_MACCHINA?.toString(),
 
-      COD_OP: updateEspNestjsOrpEffCicliEsecDto.COD_OP,
+      COD_OP: updateEpsNestjsOrpEffCicliEsecDto.COD_OP,
 
-      COD_ART: updateEspNestjsOrpEffCicliEsecDto.COD_ART,
+      COD_ART: updateEpsNestjsOrpEffCicliEsecDto.COD_ART,
 
-      DOC_RIGA_ESEC_ID: updateEspNestjsOrpEffCicliEsecDto.DOC_RIGA_ESEC_ID,
+      DOC_RIGA_ESEC_ID: updateEpsNestjsOrpEffCicliEsecDto.DOC_RIGA_ESEC_ID,
 
-      DOC_RIGA_ID: updateEspNestjsOrpEffCicliEsecDto.DOC_RIGA_ID,
+      DOC_RIGA_ID: updateEpsNestjsOrpEffCicliEsecDto.DOC_RIGA_ID,
 
-      DOC_ID: updateEspNestjsOrpEffCicliEsecDto.DOC_ID,
+      DOC_ID: updateEpsNestjsOrpEffCicliEsecDto.DOC_ID,
 
-      AZIENDA_ID: updateEspNestjsOrpEffCicliEsecDto.AZIENDA_ID,
+      AZIENDA_ID: updateEpsNestjsOrpEffCicliEsecDto.AZIENDA_ID,
     });
   }
 

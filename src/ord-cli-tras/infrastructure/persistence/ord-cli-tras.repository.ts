@@ -14,7 +14,9 @@ export abstract class OrdCliTrasRepository {
     paginationOptions: IPaginationOptions;
   }): Promise<OrdCliTras[]>;
 
-  abstract findById(DOC_ID: OrdCliTras['DOC_ID']): Promise<NullableType<OrdCliTras>>;
+  abstract findById(
+    DOC_ID: OrdCliTras['DOC_ID'],
+  ): Promise<NullableType<OrdCliTras>>;
 
   abstract findByIds(ids: OrdCliTras['DOC_ID'][]): Promise<OrdCliTras[]>;
 

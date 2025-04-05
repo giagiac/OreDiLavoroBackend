@@ -7,7 +7,6 @@ import {
   OneToOne,
   JoinColumn,
   PrimaryColumn,
-
 } from 'typeorm';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
 import { LinkOrpOrdEntity } from '../../../../../link-orp-ords/infrastructure/persistence/relational/entities/link-orp-ord.entity';

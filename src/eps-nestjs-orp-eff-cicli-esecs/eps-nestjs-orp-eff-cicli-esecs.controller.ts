@@ -3,14 +3,15 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpException,
+  HttpStatus,
   Param,
   Patch,
   Post,
   Query,
-  UseGuards,
   Req,
-  HttpCode,
-  HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import {
@@ -20,22 +21,20 @@ import {
   ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
+import { UserEntity } from '../users/infrastructure/persistence/relational/entities/user.entity';
+import { User } from '../utils/decorators';
 import {
   InfinityPaginationResponse,
   InfinityPaginationResponseDto,
 } from '../utils/dto/infinity-pagination-response.dto';
-import {
-  infinityPagination,
-  infinityPaginationQueryBuilder,
-} from '../utils/infinity-pagination';
+import { infinityPaginationQueryBuilder } from '../utils/infinity-pagination';
+import { TempoOperatoreToSessantesimiTransformer } from '../utils/transformers/tempo-in-human-readable';
 import { EpsNestjsOrpEffCicliEsec } from './domain/eps-nestjs-orp-eff-cicli-esec';
 import { CreateEpsNestjsOrpEffCicliEsecDto } from './dto/create-eps-nestjs-orp-eff-cicli-esec.dto';
 import { FindAllEpsNestjsOrpEffCicliEsecsDto } from './dto/find-all-esp-nestjs-orp-eff-cicli-esecs.dto';
 import { UpdateEpsNestjsOrpEffCicliEsecDto } from './dto/update-esp-nestjs-orp-eff-cicli-esec.dto';
 import { EpsNestjsOrpEffCicliEsecsService } from './eps-nestjs-orp-eff-cicli-esecs.service';
-import { UserEntity } from '../users/infrastructure/persistence/relational/entities/user.entity';
-import { User } from '../utils/decorators';
-import Decimal from 'decimal.js';
+import { th } from 'date-fns/locale';
 
 @ApiTags('Epsnestjsorpeffcicliesecs')
 @ApiBearerAuth()
@@ -53,16 +52,47 @@ export class EpsNestjsOrpEffCicliEsecsController {
   @ApiCreatedResponse({
     type: EpsNestjsOrpEffCicliEsec,
   })
-  create(
+  async create(
     @Body()
     createEspNestjsOrpEffCicliEsecDto: CreateEpsNestjsOrpEffCicliEsecDto,
     @User() user: UserEntity,
   ) {
+    const { data: epsNestjsOrpEffCicliEsecs, count } =
+      await this.epsNestjsOrpEffCicliEsecsService.findAllWithPagination({
+        paginationOptions: {
+          page: 1,
+          limit: 1,
+        },
+        filterOptions: [],
+        sortOptions: [],
+        user,
+      });
+
+    const totaleTempoOperatore =
+      createEspNestjsOrpEffCicliEsecDto.TEMPO_OPERATORE?.add(
+        epsNestjsOrpEffCicliEsecs.totaleTempoOperatore,
+      );
+
+    if (totaleTempoOperatore && totaleTempoOperatore.toNumber() > 20) {
+      // throw new Error('Il tempo totale operatore non può superare 20:00');
+      throw new HttpException(
+        {
+          errors: {
+            message:
+              'Il tempo totale non può superare 20 ore nella giornata lavorativa',
+          },
+        },
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
+    }
+
     return this.epsNestjsOrpEffCicliEsecsService.create(
       createEspNestjsOrpEffCicliEsecDto,
       user,
     );
   }
+
+  transformer = new TempoOperatoreToSessantesimiTransformer();
 
   @Get()
   @ApiOkResponse({
@@ -73,7 +103,10 @@ export class EpsNestjsOrpEffCicliEsecsController {
     @Req() req: Request,
     @User() user: UserEntity,
   ): Promise<
-    InfinityPaginationResponseDto<EpsNestjsOrpEffCicliEsec> & { totale: number }
+    InfinityPaginationResponseDto<EpsNestjsOrpEffCicliEsec> & {
+      totale: string;
+      targetDateInizio: string;
+    }
   > {
     const page = query?.page ?? 1;
     let limit = query?.limit ?? 10;
@@ -101,8 +134,13 @@ export class EpsNestjsOrpEffCicliEsecsController {
     );
 
     return {
-      totale: epsNestjsOrpEffCicliEsecs.totaleTempoOperatore,
       ...paginationResult,
+      totale: this.transformer.convertiOreInFormatoHHMM(
+        epsNestjsOrpEffCicliEsecs.totaleTempoOperatore,
+      ),
+      targetDateInizio: this.transformer.convertiInGiorno(
+        epsNestjsOrpEffCicliEsecs.targetDateInizio,
+      ),
     };
   }
 

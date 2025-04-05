@@ -36,7 +36,9 @@ export class OrdCliTrasRelationalRepository implements OrdCliTrasRepository {
     return entities.map((entity) => OrdCliTrasMapper.toDomain(entity));
   }
 
-  async findById(DOC_ID: OrdCliTras['DOC_ID']): Promise<NullableType<OrdCliTras>> {
+  async findById(
+    DOC_ID: OrdCliTras['DOC_ID'],
+  ): Promise<NullableType<OrdCliTras>> {
     const entity = await this.ordCliTrasRepository.findOne({
       where: { DOC_ID },
     });

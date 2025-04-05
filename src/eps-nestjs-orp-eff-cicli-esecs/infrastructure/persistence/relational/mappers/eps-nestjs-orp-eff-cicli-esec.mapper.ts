@@ -1,20 +1,18 @@
-import Decimal from 'decimal.js';
 import { EpsNestjsOrpEffCicliEsec } from '../../../../domain/eps-nestjs-orp-eff-cicli-esec';
 
-import { EpsNestjsOrpEffCicliEsecEntity } from '../entities/eps-nestjs-orp-eff-cicli-esec.entity';
-import { OrpEffCicli } from '../../../../../orp-eff-ciclis/domain/orp-eff-cicli';
 import { OrpEffCicliMapper } from '../../../../../orp-eff-ciclis/infrastructure/persistence/relational/mappers/orp-eff-cicli.mapper';
-import { TempoOperatoreToSessantesimiTransformer } from '../../../../../utils/transformers/tempo-in-sessaantesimi.transformer';
+import { EpsNestjsOrpEffCicliEsecEntity } from '../entities/eps-nestjs-orp-eff-cicli-esec.entity';
+import { TempoOperatoreToSessantesimiTransformer } from '../../../../../utils/transformers/tempo-in-human-readable';
 
 const transformer = new TempoOperatoreToSessantesimiTransformer();
 
 export class EpsNestjsOrpEffCicliEsecMapper {
-  
-
   static toDomain(
     raw: EpsNestjsOrpEffCicliEsecEntity,
   ): EpsNestjsOrpEffCicliEsec {
     const domainEntity = new EpsNestjsOrpEffCicliEsec();
+    domainEntity.TIPO_TRASFERTA = raw.TIPO_TRASFERTA;
+
     domainEntity.NUM_RIGA = raw.NUM_RIGA;
 
     domainEntity.id = raw.id;
@@ -49,7 +47,8 @@ export class EpsNestjsOrpEffCicliEsecMapper {
 
     domainEntity.AZIENDA_ID = raw.AZIENDA_ID;
 
-    domainEntity.TEMPO_OPERATORE_SESSANTESIMI = transformer.convertiOreInFormatoHHMM(Number(raw.TEMPO_OPERATORE))
+    domainEntity.TEMPO_OPERATORE_SESSANTESIMI =
+      transformer.convertiOreInFormatoHHMM(Number(raw.TEMPO_OPERATORE));
 
     if (raw.orpEffCicli) {
       domainEntity.orpEffCicli = OrpEffCicliMapper.toDomain(raw.orpEffCicli);
@@ -62,19 +61,21 @@ export class EpsNestjsOrpEffCicliEsecMapper {
     domainEntity: EpsNestjsOrpEffCicliEsec,
   ): EpsNestjsOrpEffCicliEsecEntity {
     // Imposta DATA_INIZIO al momento attuale
-    const DATA_INIZIO = new Date();
+    const DATA_ATTUALE = new Date();
 
-    // Calcola TEMPO_OPERATORE_MS considerando la parte intera come ore e la parte decimale come centesimi di ora
-    const TEMPO_OPERATORE = Number(domainEntity.TEMPO_OPERATORE) || 0;
-    const ore = Math.floor(TEMPO_OPERATORE); // Parte intera (ore)
-    const centesimi = TEMPO_OPERATORE - ore; // Parte decimale (centesimi di ora)
-    const TEMPO_OPERATORE_MS =
-      ore * 60 * 60 * 1000 + centesimi * 60 * 60 * 1000;
+    // // Calcola TEMPO_OPERATORE_MS considerando la parte intera come ore e la parte decimale come centesimi di ora
+    // const TEMPO_OPERATORE = Number(domainEntity.TEMPO_OPERATORE) || 0;
+    // const ore = Math.floor(TEMPO_OPERATORE); // Parte intera (ore)
+    // const centesimi = TEMPO_OPERATORE - ore; // Parte decimale (centesimi di ora)
+    // const TEMPO_OPERATORE_MS =
+    //   ore * 60 * 60 * 1000 + centesimi * 60 * 60 * 1000;
 
-    // Calcola DATA_FINE aggiungendo TEMPO_OPERATORE_MS a DATA_INIZIO
-    const DATA_FINE = new Date(DATA_INIZIO.getTime() + TEMPO_OPERATORE_MS);
+    // // Calcola DATA_FINE aggiungendo TEMPO_OPERATORE_MS a DATA_INIZIO
+    // const DATA_FINE = new Date(DATA_INIZIO.getTime());
 
     const persistenceEntity = new EpsNestjsOrpEffCicliEsecEntity();
+    persistenceEntity.TIPO_TRASFERTA = domainEntity.TIPO_TRASFERTA;
+
     persistenceEntity.NUM_RIGA = domainEntity.NUM_RIGA;
 
     if (domainEntity.id) {
@@ -91,9 +92,9 @@ export class EpsNestjsOrpEffCicliEsecMapper {
 
     persistenceEntity.NOTE = domainEntity.NOTE;
 
-    persistenceEntity.DATA_FINE = DATA_FINE;
+    persistenceEntity.DATA_FINE = DATA_ATTUALE;
 
-    persistenceEntity.DATA_INIZIO = DATA_FINE;
+    persistenceEntity.DATA_INIZIO = DATA_ATTUALE;
 
     persistenceEntity.TEMPO_OPERATORE = domainEntity.TEMPO_OPERATORE;
 

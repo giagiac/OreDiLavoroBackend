@@ -1,5 +1,6 @@
-import Decimal from 'decimal.js';
-import { ValueTransformer } from 'typeorm';
+import { format as formatDate } from 'date-fns';
+import { differenceInDays } from 'date-fns';
+import { it } from 'date-fns/locale';
 
 export class TempoOperatoreToSessantesimiTransformer {
   /**
@@ -15,5 +16,17 @@ export class TempoOperatoreToSessantesimiTransformer {
 
     // Formatta il risultato in hh:mm
     return `${String(ore).padStart(2, '0')}:${String(minuti).padStart(2, '0')}`;
+  }
+
+  convertiInGiorno(date: Date): string {
+    const now = new Date();
+    const diffDays = differenceInDays(date, now);
+    const formattedDate = formatDate(date, 'EEE dd MMM yy', { locale: it });
+
+    if (diffDays > 0) {
+      return `${formattedDate} (${diffDays} giorni)`;
+    }
+
+    return `${formattedDate}`;
   }
 }

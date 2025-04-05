@@ -4,6 +4,12 @@ import { OrpEffCicli } from '../../orp-eff-ciclis/domain/orp-eff-cicli';
 
 export class EpsNestjsOrpEffCicliEsec {
   @ApiProperty({
+    type: () => String,
+    nullable: false,
+  })
+  TIPO_TRASFERTA: string;
+
+  @ApiProperty({
     type: () => Number,
     nullable: true,
   })

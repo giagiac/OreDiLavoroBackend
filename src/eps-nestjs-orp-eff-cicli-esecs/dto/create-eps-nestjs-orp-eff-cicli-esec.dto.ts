@@ -21,6 +21,13 @@ import { ValueTransformer } from 'typeorm';
 
 export class CreateEpsNestjsOrpEffCicliEsecDto {
   @ApiProperty({
+    required: true,
+    type: () => String,
+  })
+  @IsString()
+  TIPO_TRASFERTA: string;
+
+  @ApiProperty({
     required: false,
     type: () => Number,
   })

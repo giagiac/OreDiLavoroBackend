@@ -19,7 +19,7 @@ export class OrdCliTrasService {
     return this.ordCliTrasRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
-       //DOC_ID: createOrdCliTrasDto.DOC_ID,
+      //DOC_ID: createOrdCliTrasDto.DOC_ID,
 
       NOTE_DEST_MERCE: createOrdCliTrasDto.NOTE_DEST_MERCE,
 

@@ -34,6 +34,12 @@ export class DecimalToNumberTransformer implements ValueTransformer {
   name: 'EPS_NESTJS_ORP_EFF_CICLI_ESEC',
 })
 export class EpsNestjsOrpEffCicliEsecEntity extends EntityRelationalHelper {
+  @Column({
+    nullable: false,
+    type: String,
+  })
+  TIPO_TRASFERTA: string;
+
   @PrimaryGeneratedColumn()
   id: string;
 

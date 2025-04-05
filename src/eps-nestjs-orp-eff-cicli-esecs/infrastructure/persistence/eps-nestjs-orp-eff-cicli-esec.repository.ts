@@ -23,7 +23,11 @@ export abstract class EpsNestjsOrpEffCicliEsecRepository {
     paginationOptions: IPaginationOptions;
     user: User | null;
   }): Promise<{
-    data: { totaleTempoOperatore: number; list: EpsNestjsOrpEffCicliEsec[] };
+    data: {
+      targetDateInizio: Date;
+      totaleTempoOperatore: number;
+      list: EpsNestjsOrpEffCicliEsec[];
+    };
     count: number;
   }>;
 

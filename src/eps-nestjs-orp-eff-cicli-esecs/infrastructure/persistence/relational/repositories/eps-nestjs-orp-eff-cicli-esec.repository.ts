@@ -46,7 +46,11 @@ export class EpsNestjsOrpEffCicliEsecRelationalRepository
     paginationOptions: IPaginationOptions;
     user: UserEntity | null;
   }): Promise<{
-    data: { totaleTempoOperatore: number; list: EpsNestjsOrpEffCicliEsec[] };
+    data: {
+      targetDateInizio: Date;
+      totaleTempoOperatore: number;
+      list: EpsNestjsOrpEffCicliEsec[];
+    };
     count: number;
   }> {
     // --- Logica per determinare la data da usare ---
@@ -143,6 +147,7 @@ export class EpsNestjsOrpEffCicliEsecRelationalRepository
       data: {
         totaleTempoOperatore: totaleTempoOperatore.toNumber(),
         list,
+        targetDateInizio,
       },
       count: entitiesAndCount[1],
     };
