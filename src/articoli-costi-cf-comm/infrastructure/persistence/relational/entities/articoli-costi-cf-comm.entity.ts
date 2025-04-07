@@ -10,7 +10,7 @@ import {
 } from 'typeorm';
 import { ArtAnaEntity } from '../../../../../art-ana/infrastructure/persistence/relational/entities/art-ana.entity';
 import { TipoCosto } from '../../../../../articoli-costi-cf/infrastructure/persistence/relational/entities/articoli-costi-cf.entity';
-import { CfCommEntity } from '../../../../../cf-comm/infrastructure/persistence/relational/entities/cf-comm.entity';
+import { CfCommEntity } from '../../../../../cf-comms/infrastructure/persistence/relational/entities/cf-comm.entity';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
 
 @Entity({

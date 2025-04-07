@@ -1,7 +1,7 @@
 import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
 import { LinkOrpOrdEntity } from '../../../../../link-orp-ords/infrastructure/persistence/relational/entities/link-orp-ord.entity';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
-import { CfEntity } from '../../../../../cf/infrastructure/persistence/relational/entities/cf.entity';
+import { CfEntity } from '../../../../../cfs/infrastructure/persistence/relational/entities/cf.entity';
 import { OrdCliTrasEntity } from '../../../../../ord-cli-tras/infrastructure/persistence/relational/entities/ord-cli-tras.entity';
 
 @Entity({

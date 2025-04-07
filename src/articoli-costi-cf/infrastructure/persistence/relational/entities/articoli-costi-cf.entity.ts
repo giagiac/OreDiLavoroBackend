@@ -9,7 +9,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { ArtAnaEntity } from '../../../../../art-ana/infrastructure/persistence/relational/entities/art-ana.entity';
-import { CfEntity } from '../../../../../cf/infrastructure/persistence/relational/entities/cf.entity';
+import { CfEntity } from '../../../../../cfs/infrastructure/persistence/relational/entities/cf.entity';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
 
 export type TipoCosto =

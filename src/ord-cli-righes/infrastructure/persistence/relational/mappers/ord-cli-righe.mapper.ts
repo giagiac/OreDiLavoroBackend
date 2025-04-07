@@ -1,4 +1,4 @@
-import { CfMapper } from '../../../../../cf/infrastructure/persistence/relational/mappers/cf.mapper';
+import { CfMapper } from '../../../../../cfs/infrastructure/persistence/relational/mappers/cf.mapper';
 import { OrdCliTrasMapper } from '../../../../../ord-cli-tras/infrastructure/persistence/relational/mappers/ord-cli-tras.mapper';
 import { OrdCliRighe } from '../../../../domain/ord-cli-righe';
 

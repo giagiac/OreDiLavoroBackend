@@ -1,7 +1,7 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { plainToInstance, Transform, Type } from 'class-transformer';
 import { IsArray, IsNumber, IsOptional, ValidateNested } from 'class-validator';
-import { JoinDto } from '../../cf-comm/dto/cf-comm.dto';
+import { JoinDto } from '../../cf-comms/dto/cf-comm.dto';
 import { FilterDto, SortDto } from '../../utils/dto/filter-column';
 import { OthersFiltersDto } from '../../utils/dto/others-filters';
 import { OrpEffCicliEsecDto } from './orp-eff-cicli-esec.dto';

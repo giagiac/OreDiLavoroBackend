@@ -50,9 +50,9 @@ const infrastructureDatabaseModule = (databaseConfig() as DatabaseConfig)
 
 import { ArticoliCostiCfCommModule } from './articoli-costi-cf-comm/articoli-costi-cf-comm.module';
 
-import { CfCommsModule } from './cf-comm/cf-comm.module';
+import { CfCommsModule } from './cf-comms/cf-comm.module';
 
-import { CfModule } from './cf/cf.module';
+import { CfModule } from './cfs/cf.module';
 
 import { ArticoliCostiCfsModule } from './articoli-costi-cf/articoli-costi-cf.module';
 
@@ -82,8 +82,14 @@ import { EpsNestjsTargaMezzisModule } from './eps-nestjs-targa-mezzis/eps-nestjs
 
 import { OrdCliTrasModule } from './ord-cli-tras/ord-cli-tras.module';
 
+import { AppReq3HypServsModule } from './app-req3-hyp-servs/app-req3-hyp-servs.module';
+
+import { HypServReq2Module } from './hyp-serv-req2/hyp-serv-eq2.module'
+
 @Module({
   imports: [
+    AppReq3HypServsModule,
+    HypServReq2Module,
     OrdCliTrasModule,
     EpsNestjsTargaMezzisModule,
     OperatorisModule,
