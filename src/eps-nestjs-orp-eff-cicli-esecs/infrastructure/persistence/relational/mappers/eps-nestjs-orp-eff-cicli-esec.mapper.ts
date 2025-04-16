@@ -11,6 +11,8 @@ export class EpsNestjsOrpEffCicliEsecMapper {
     raw: EpsNestjsOrpEffCicliEsecEntity,
   ): EpsNestjsOrpEffCicliEsec {
     const domainEntity = new EpsNestjsOrpEffCicliEsec();
+    domainEntity.KM = raw.KM;
+
     domainEntity.TIPO_TRASFERTA = raw.TIPO_TRASFERTA;
 
     domainEntity.NUM_RIGA = raw.NUM_RIGA;
@@ -19,7 +21,7 @@ export class EpsNestjsOrpEffCicliEsecMapper {
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
 
-    domainEntity.APP_REQ3_SYNCED = raw.APP_REQ3_SYNCED;
+    domainEntity.SYNCED = raw.SYNCED;
 
     domainEntity.TEMPO_MINUTI_OP = raw.TEMPO_MINUTI_OP;
 
@@ -74,6 +76,8 @@ export class EpsNestjsOrpEffCicliEsecMapper {
     // const DATA_FINE = new Date(DATA_INIZIO.getTime());
 
     const persistenceEntity = new EpsNestjsOrpEffCicliEsecEntity();
+    persistenceEntity.KM = domainEntity.KM;
+
     persistenceEntity.TIPO_TRASFERTA = domainEntity.TIPO_TRASFERTA;
 
     persistenceEntity.NUM_RIGA = domainEntity.NUM_RIGA;
@@ -84,7 +88,7 @@ export class EpsNestjsOrpEffCicliEsecMapper {
     persistenceEntity.createdAt = domainEntity.createdAt;
     persistenceEntity.updatedAt = domainEntity.updatedAt;
 
-    persistenceEntity.APP_REQ3_SYNCED = domainEntity.APP_REQ3_SYNCED;
+    persistenceEntity.SYNCED = domainEntity.SYNCED;
 
     persistenceEntity.TEMPO_MINUTI_OP = domainEntity.TEMPO_MINUTI_OP;
 

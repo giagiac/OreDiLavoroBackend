@@ -15,6 +15,7 @@ import { OrpEffCicliEntity } from '../../../../../orp-eff-ciclis/infrastructure/
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
 
 import { ValueTransformer } from 'typeorm';
+import { TipoTrasferta } from '../../../../domain/eps-nestjs-orp-eff-cicli-esec';
 
 export class DecimalToNumberTransformer implements ValueTransformer {
   // Trasforma il valore da salvare nel database (numero -> stringa)
@@ -35,10 +36,16 @@ export class DecimalToNumberTransformer implements ValueTransformer {
 })
 export class EpsNestjsOrpEffCicliEsecEntity extends EntityRelationalHelper {
   @Column({
+    nullable: true,
+    type: Number,
+  })
+  KM?: number | null;
+
+  @Column({
     nullable: false,
     type: String,
   })
-  TIPO_TRASFERTA: string;
+  TIPO_TRASFERTA: TipoTrasferta;
 
   @PrimaryGeneratedColumn()
   id: string;
@@ -53,7 +60,7 @@ export class EpsNestjsOrpEffCicliEsecEntity extends EntityRelationalHelper {
     nullable: true,
     type: Number,
   })
-  APP_REQ3_SYNCED?: number | null;
+  SYNCED?: number | null;
 
   @Column({
     nullable: true,
@@ -176,5 +183,5 @@ export class EpsNestjsOrpEffCicliEsecEntity extends EntityRelationalHelper {
     name: 'COD_OP',
     referencedColumnName: 'COD_OP',
   })
-  operatori?: OrpEffCicliEntity | null;
+  operatori?: OperatoriEntity | null;
 }

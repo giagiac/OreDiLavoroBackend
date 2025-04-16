@@ -22,11 +22,20 @@ export class EPSNESTJSORPEFFCICLIESEC1742816354323
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(
-      `ALTER TABLE EPS_NESTJS_ORP_EFF_CICLI_ESEC DROP COLUMN "id", "createdAt", "updatedAt", "deletedAt"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE EPS_NESTJS_ORP_EFF_CICLI_ESEC DROP CONSTRAINT PK_f55da76ac1c3ac420f444d2fa22`,
-    );
+    // await queryRunner.query(
+    //   `ALTER TABLE EPS_NESTJS_ORP_EFF_CICLI_ESEC DROP COLUMN "id"`,
+    // );
+    // await queryRunner.query(
+    //   `ALTER TABLE EPS_NESTJS_ORP_EFF_CICLI_ESEC DROP COLUMN "createdAt"`,
+    // );
+    // await queryRunner.query(
+    //   `ALTER TABLE EPS_NESTJS_ORP_EFF_CICLI_ESEC DROP COLUMN "updatedAt"`,
+    // );
+    // await queryRunner.query(
+    //   `ALTER TABLE EPS_NESTJS_ORP_EFF_CICLI_ESEC DROP COLUMN "deletedAt"`,
+    // );
+    // await queryRunner.query(
+    //   `ALTER TABLE EPS_NESTJS_ORP_EFF_CICLI_ESEC DROP CONSTRAINT PK_f55da76ac1c3ac420f444d2fa22`,
+    // );
   }
 }

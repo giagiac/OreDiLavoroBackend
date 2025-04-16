@@ -18,9 +18,7 @@ export abstract class HypServReq2Repository {
     COD_CHIAVE: HypServReq2['COD_CHIAVE'],
   ): Promise<NullableType<HypServReq2>>;
 
-  abstract findByIds(
-    ids: HypServReq2['COD_CHIAVE'][],
-  ): Promise<HypServReq2[]>;
+  abstract findByIds(ids: HypServReq2['COD_CHIAVE'][]): Promise<HypServReq2[]>;
 
   abstract update(
     COD_CHIAVE: HypServReq2['COD_CHIAVE'],

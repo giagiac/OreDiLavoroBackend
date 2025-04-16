@@ -84,10 +84,16 @@ import { OrdCliTrasModule } from './ord-cli-tras/ord-cli-tras.module';
 
 import { AppReq3HypServsModule } from './app-req3-hyp-servs/app-req3-hyp-servs.module';
 
-import { HypServReq2Module } from './hyp-serv-req2/hyp-serv-eq2.module'
+import { HypServReq2Module } from './hyp-serv-req2/hyp-serv-eq2.module';
+
+import { ScheduleTasksModule } from './schedule-tasks/schedule-tasks.module';
+
+import { EpsNestjsDestinazionisModule } from './eps-nestjs-destinazionis/eps-nestjs-destinazionis.module';
 
 @Module({
   imports: [
+    EpsNestjsDestinazionisModule,
+    ScheduleTasksModule,
     AppReq3HypServsModule,
     HypServReq2Module,
     OrdCliTrasModule,

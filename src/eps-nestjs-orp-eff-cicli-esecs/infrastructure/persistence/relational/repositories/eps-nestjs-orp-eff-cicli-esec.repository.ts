@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import Decimal from 'decimal.js';
 import { In, Repository } from 'typeorm';
 import { UserEntity } from '../../../../../users/infrastructure/persistence/relational/entities/user.entity';
 import {
@@ -14,7 +15,6 @@ import { EpsNestjsOrpEffCicliEsecDto } from '../../../../dto/esp-nestjs-orp-eff-
 import { EpsNestjsOrpEffCicliEsecRepository } from '../../eps-nestjs-orp-eff-cicli-esec.repository';
 import { EpsNestjsOrpEffCicliEsecEntity } from '../entities/eps-nestjs-orp-eff-cicli-esec.entity';
 import { EpsNestjsOrpEffCicliEsecMapper } from '../mappers/eps-nestjs-orp-eff-cicli-esec.mapper';
-import Decimal from 'decimal.js';
 
 @Injectable()
 export class EpsNestjsOrpEffCicliEsecRelationalRepository
@@ -109,7 +109,6 @@ export class EpsNestjsOrpEffCicliEsecRelationalRepository
         `TO_CHAR("ordCliRighe".DATA_DOC, 'YY') || "x1TrasCodici".CODICE2 || "orpEff".NUM_DOC || '-' || "orpEffCicli".NUM_RIGA`,
         'CODICE_BREVE',
       ) // Using raw SQL for concatenation and formatted date
-
       .where('epsNestjsOrpEffCicliEsec.COD_OP =:COD_OP', {
         COD_OP: user?.COD_OP,
       })
@@ -119,7 +118,9 @@ export class EpsNestjsOrpEffCicliEsecRelationalRepository
           tInizio: targetDateInizio,
           tFine: targetDateFine,
         },
-      );
+      )
+      .offset((paginationOptions.page - 1) * paginationOptions.limit)
+      .limit(paginationOptions.limit);
     // .offset((paginationOptions.page - 1) * paginationOptions.limit)
     // .limit(paginationOptions.limit);
 

@@ -12,14 +12,18 @@ import { IPaginationOptions } from '../../../../../utils/types/pagination-option
 import { Cf } from '../../../../domain/cf';
 import { CfDto } from '../../../../dto/cf.dto';
 import { CfRepository } from '../../cf.repository';
-import { CfEntity } from '../entities/cf.entity';
+import { CfEntity, DEFAULT } from '../entities/cf.entity';
 import { CfMapper } from '../mappers/cf.mapper';
+import { ArticoliCostiCfEntity } from '../../../../../articoli-costi-cf/infrastructure/persistence/relational/entities/articoli-costi-cf.entity';
+import { ArticoliCostiCf } from '../../../../../articoli-costi-cf/domain/articoli-costi-cf';
 
 @Injectable()
 export class CfRelationalRepository implements CfRepository {
   constructor(
     @InjectRepository(CfEntity)
     private readonly cfRepository: Repository<CfEntity>,
+    @InjectRepository(ArticoliCostiCfEntity)
+    private readonly articoliCostiCfRepository: Repository<ArticoliCostiCfEntity>,
   ) {}
 
   async create(data: Cf): Promise<Cf> {
@@ -29,39 +33,6 @@ export class CfRelationalRepository implements CfRepository {
     );
     return CfMapper.toDomain(newEntity);
   }
-
-  // applicaWhereLike(
-  //   columnName: string,
-  //   queryBuilder: SelectQueryBuilder<CfEntity>,
-  //   filtri: Array<FilterDto<CfDto>> | null,
-  // ) {
-  //   if (filtri && filtri.length > 0) {
-  //     filtri.forEach((filtro) => {
-  //       if (filtro.columnName && filtro.value) {
-  //         queryBuilder.andWhere(
-  //           `LOWER(${columnName}.${filtro.columnName}) like LOWER('${filtro.value}%')`,
-  //         );
-  //       }
-  //     });
-  //   }
-  // }
-
-  // applicaSort(
-  //   columnName: string,
-  //   queryBuilder: SelectQueryBuilder<CfEntity>,
-  //   sort: Array<SortCfDto> | null,
-  // ) {
-  //   if (sort && sort.length > 0) {
-  //     sort.forEach((sortItem) => {
-  //       if (sortItem.orderBy && sortItem.order) {
-  //         queryBuilder.addOrderBy(
-  //           `LPAD(${columnName}.${sortItem.orderBy},10)`,
-  //           sortItem.order.toUpperCase() as any,
-  //         );
-  //       }
-  //     });
-  //   }
-  // }
 
   async findAllWithPagination({
     filterOptions,
@@ -74,12 +45,6 @@ export class CfRelationalRepository implements CfRepository {
     paginationOptions: IPaginationOptions;
     join: boolean;
   }): Promise<{ cf: Cf[]; count: number }> {
-    // const entities = await this.cfRepository.find({
-    //   skip: (paginationOptions.page - 1) * paginationOptions.limit,
-    //   take: paginationOptions.limit,
-    //   relations: ['cfComm', 'cfComm.articoliCostiCf'],
-    // });
-
     let entitiesSql;
 
     if (join == true) {
@@ -87,8 +52,6 @@ export class CfRelationalRepository implements CfRepository {
         .createQueryBuilder('cf')
         .distinct()
         .innerJoin('cf.cfComm', 'cfComm')
-        // .leftJoinAndSelect('cf.articoliCostiCf', 'articoliCostiCf')
-        //.leftJoinAndSelect('articoliCostiCf.artCosti', 'artCosti')
 
         .leftJoinAndSelect('cf.articoliCostiCf', 'articoliCostiCf')
         .leftJoinAndSelect('articoliCostiCf.artAna', 'artAna')
@@ -99,17 +62,10 @@ export class CfRelationalRepository implements CfRepository {
     } else {
       entitiesSql = this.cfRepository
         .createQueryBuilder('cf')
-        // .leftJoinAndSelect('cf.articoliCostiCf', 'articoliCostiCf')
-        // .leftJoinAndSelect('articoliCostiCf.artCosti', 'artCosti')
-
         .leftJoinAndSelect('cf.articoliCostiCf', 'articoliCostiCf')
         .leftJoinAndSelect('articoliCostiCf.artAna', 'artAna')
         .leftJoinAndSelect('artAna.artCosti', 'artCosti')
 
-        //.innerJoinAndSelect('cf.cfComm', 'cfComm')
-        //.leftJoinAndSelect('cfComm.articoliCostiCf', 'articoliCostiCf')
-        //.leftJoinAndSelect('cf.cfComm', 'cfComm', 'cf.COD_CF = cfComm.COD_CF') // Aggiungi la relazione e la condizione di join
-        //.innerJoinAndSelect('cfComm.articoliCostiCf', 'articoliCostiCf', "cfComm.CF_COMM_ID = articoliCostiCf.CF_COMM_ID")
         .offset((paginationOptions.page - 1) * paginationOptions.limit)
         .limit(paginationOptions.limit);
     }
@@ -124,9 +80,32 @@ export class CfRelationalRepository implements CfRepository {
 
     const entitiesAndCount = await entitiesSql.getManyAndCount();
 
+    let cfEntities: Array<Cf> = entitiesAndCount[0].map((entity) =>
+      CfMapper.toDomain(entity),
+    );
+    let cfCount = entitiesAndCount[1];
+
+    if (paginationOptions.page == 1) {
+      const articoliCostiCf = await this.articoliCostiCfRepository
+        .createQueryBuilder('articoliCostiCf')
+        .leftJoinAndSelect('articoliCostiCf.artAna', 'artAna')
+        .leftJoinAndSelect('artAna.artCosti', 'artCosti')
+        .where('articoliCostiCf.COD_CF=:COD_CF', { COD_CF: DEFAULT.COD_CF })
+        .getMany();
+
+      cfEntities = [
+        {
+          COD_CF: DEFAULT.COD_CF,
+          articoliCostiCf: articoliCostiCf,
+        },
+        ...cfEntities,
+      ];
+      cfCount += 1;
+    }
+
     return {
-      cf: entitiesAndCount[0].map((entity) => CfMapper.toDomain(entity)),
-      count: entitiesAndCount[1],
+      cf: cfEntities,
+      count: cfCount,
     };
   }
 

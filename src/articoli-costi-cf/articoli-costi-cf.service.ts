@@ -24,18 +24,11 @@ export class ArticoliCostiCfService {
     });
   }
 
-  async update(
-    COD_CF: ArticoliCostiCf['COD_CF'],
-
-    updateArticoliCostiCfDto: UpdateArticoliCostiCfDto,
-  ) {
+  async update(updateArticoliCostiCfDto: UpdateArticoliCostiCfDto) {
     // Do not remove comment below.
     // <updating-property />
 
-    return this.articoliCostiCfRepository.update(
-      COD_CF,
-      updateArticoliCostiCfDto,
-    );
+    return this.articoliCostiCfRepository.update(updateArticoliCostiCfDto);
   }
 
   remove(COD_CF: ArticoliCostiCf['COD_CF']) {

@@ -98,7 +98,10 @@ export class AppReq3HypServsController {
     @Param('COD_CHIAVE') COD_CHIAVE: number,
     @Body() updateAppReq3HypServDto: UpdateAppReq3HypServDto,
   ) {
-    return this.appReq3HypServsService.update(COD_CHIAVE, updateAppReq3HypServDto);
+    return this.appReq3HypServsService.update(
+      COD_CHIAVE,
+      updateAppReq3HypServDto,
+    );
   }
 
   @Delete(':COD_CHIAVE')

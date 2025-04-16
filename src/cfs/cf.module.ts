@@ -4,6 +4,7 @@ import databaseConfig from '../database/config/database.config';
 import { CfController } from './cf.controller';
 import { CfService } from './cf.service';
 import { RelationalCfPersistenceModule } from './infrastructure/persistence/relational/relational-persistence.module';
+import { ArticoliCostiCfsModule } from '../articoli-costi-cf/articoli-costi-cf.module';
 
 const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig)
   .isDocumentDatabase
@@ -14,6 +15,7 @@ const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig)
   imports: [
     // import modules, etc.
     infrastructurePersistenceModule,
+    ArticoliCostiCfsModule,
   ],
   controllers: [CfController],
   providers: [CfService],

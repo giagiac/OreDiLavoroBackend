@@ -29,4 +29,18 @@ export class TempoOperatoreToSessantesimiTransformer {
 
     return `${formattedDate}`;
   }
+
+  convertiPerServizioHG(date: Date): string {
+    const formattedDate = formatDate(date, 'yyyyMMdd', { locale: it });
+
+    return `${formattedDate}`;
+  }
+
+  convertInMinuti(tempo: string): string {
+    const tempoFloat = parseFloat(tempo);
+    const ore = Math.floor(tempoFloat);
+    const minutiDecimali = tempoFloat - ore;
+    const minuti = Math.round(minutiDecimali * 60);
+    return String(ore * 60 + minuti);
+  }
 }

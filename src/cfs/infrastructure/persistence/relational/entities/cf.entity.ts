@@ -11,6 +11,10 @@ import { EntityRelationalHelper } from '../../../../../utils/relational-entity-h
 import { ArticoliCostiCfEntity } from '../../../../../articoli-costi-cf/infrastructure/persistence/relational/entities/articoli-costi-cf.entity';
 import { OrdCliRigheEntity } from '../../../../../ord-cli-righes/infrastructure/persistence/relational/entities/ord-cli-righe.entity';
 
+export enum DEFAULT {
+  COD_CF = 'DEFAULT_CF',
+}
+
 @Entity({
   name: 'CF',
 })

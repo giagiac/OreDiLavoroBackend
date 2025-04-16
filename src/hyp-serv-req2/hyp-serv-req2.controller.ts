@@ -36,9 +36,7 @@ import { FindAllHypServReq2Dto } from './dto/find-all-hyp-serv-req2.dto';
   version: '1',
 })
 export class HypServReq2Controller {
-  constructor(
-    private readonly hypServReq2Service: HypServReq2Service,
-  ) {}
+  constructor(private readonly hypServReq2Service: HypServReq2Service) {}
 
   @Post()
   @ApiCreatedResponse({

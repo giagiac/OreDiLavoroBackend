@@ -1,18 +1,12 @@
-import {
-  Column,
-  Entity,
-  PrimaryGeneratedColumn
-} from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
 
 @Entity({
   name: 'HYPSERV_REQ2',
 })
 export class HypServReq2Entity extends EntityRelationalHelper {
-  @PrimaryGeneratedColumn({
-    type: 'int',
-  })
-  COD_CHIAVE: number;
+  @PrimaryGeneratedColumn()
+  COD_CHIAVE: string;
 
   @Column({
     nullable: true,

@@ -27,8 +27,6 @@ export class AppReq3HypServMapper {
     domainEntity.STRINGA_ESITO_ELAB = raw.STRINGA_ESITO_ELAB;
 
     return domainEntity;
-
-    return domainEntity;
   }
 
   static toPersistence(domainEntity: AppReq3HypServ): AppReq3HypServEntity {

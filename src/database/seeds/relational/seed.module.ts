@@ -13,15 +13,18 @@ import { EpsNestjsOrpEffCicliEsecSeedModule } from './epsNestjsOrpEffCicliEsec/e
 import { RoleSeedModule } from './role/role-seed.module';
 import { StatusSeedModule } from './status/status-seed.module';
 import { UserSeedModule } from './user/user-seed.module';
+import { EpsNestjsDestinazioniSeedModule } from './eps-nestjs-destinazioni/eps-nestjs-destinazioni-seed.module';
 
 @Module({
   imports: [
+    EpsNestjsDestinazioniSeedModule,
     RoleSeedModule,
     StatusSeedModule,
     UserSeedModule,
     ArticoliCostiCfSeedModule,
     ArticoliCostiCfCommSeedModule,
     EpsNestjsOrpEffCicliEsecSeedModule,
+    EpsNestjsDestinazioniSeedModule,
     ConfigModule.forRoot({
       isGlobal: true,
       load: [databaseConfig, appConfig],

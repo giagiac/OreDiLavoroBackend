@@ -20,7 +20,7 @@ export abstract class ArticoliCostiCfRepository {
   // abstract findByIds(ids: ArticoliCostiCf['id'][]): Promise<ArticoliCostiCf[]>;
 
   abstract update(
-    id: ArticoliCostiCf['id'],
+    // id: ArticoliCostiCf['id'],
     payload: DeepPartial<ArticoliCostiCf>,
   ): Promise<ArticoliCostiCf | null>;
 

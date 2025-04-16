@@ -64,21 +64,13 @@ export class ArticoliCostiCfController {
     );
   }
 
-  @Patch(':COD_CF')
-  @ApiParam({
-    name: 'COD_CF',
-    type: String,
-    required: true,
-  })
+  @Patch()
   @ApiCreatedResponse({
     type: ArticoliCostiCf,
   })
   @HttpCode(HttpStatus.CREATED)
-  update(
-    @Param('COD_CF') COD_CF: string,
-    @Body() updateArticoliCostiCfDto: UpdateArticoliCostiCfDto,
-  ) {
-    return this.articoliCostiCfService.update(COD_CF, updateArticoliCostiCfDto);
+  update(@Body() updateArticoliCostiCfDto: UpdateArticoliCostiCfDto) {
+    return this.articoliCostiCfService.update(updateArticoliCostiCfDto);
   }
 
   @Delete(':id')

@@ -1,15 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { User } from '../users/domain/user';
+import { UsersService } from '../users/users.service';
+import { FilterDto, SortDto } from '../utils/dto/filter-column';
 import { IPaginationOptions } from '../utils/types/pagination-options';
 import { EpsNestjsOrpEffCicliEsec } from './domain/eps-nestjs-orp-eff-cicli-esec';
 import { CreateEpsNestjsOrpEffCicliEsecDto } from './dto/create-eps-nestjs-orp-eff-cicli-esec.dto';
+import { EpsNestjsOrpEffCicliEsecDto } from './dto/esp-nestjs-orp-eff-cicli-esec.dto';
 import { UpdateEpsNestjsOrpEffCicliEsecDto } from './dto/update-esp-nestjs-orp-eff-cicli-esec.dto';
 import { EpsNestjsOrpEffCicliEsecRepository } from './infrastructure/persistence/eps-nestjs-orp-eff-cicli-esec.repository';
-import { SessionService } from '../session/session.service';
-import { UsersService } from '../users/users.service';
-import { FilterDto, SortDto } from '../utils/dto/filter-column';
-import { EpsNestjsOrpEffCicliEsecDto } from './dto/esp-nestjs-orp-eff-cicli-esec.dto';
-import { UserEntity } from '../users/infrastructure/persistence/relational/entities/user.entity';
-import { User } from '../users/domain/user';
 
 @Injectable()
 export class EpsNestjsOrpEffCicliEsecsService {
@@ -29,14 +27,27 @@ export class EpsNestjsOrpEffCicliEsecsService {
 
     const currentUser = await this.usersService.findById(user.id);
 
+    if (currentUser?.COD_OP == null) {
+      throw new HttpException(
+        {
+          errors: {
+            message: 'Codice Operatore non definito',
+          },
+        },
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
+    }
+
     return this.epsNestjsOrpEffCicliEsecRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
+      KM: createEpsNestjsOrpEffCicliEsecDto.KM,
+
       TIPO_TRASFERTA: createEpsNestjsOrpEffCicliEsecDto.TIPO_TRASFERTA,
 
       NUM_RIGA: createEpsNestjsOrpEffCicliEsecDto.NUM_RIGA,
 
-      APP_REQ3_SYNCED: createEpsNestjsOrpEffCicliEsecDto.APP_REQ3_SYNCED,
+      SYNCED: createEpsNestjsOrpEffCicliEsecDto.SYNCED,
 
       TEMPO_MINUTI_OP: createEpsNestjsOrpEffCicliEsecDto.TEMPO_MINUTI_OP,
 
@@ -84,7 +95,6 @@ export class EpsNestjsOrpEffCicliEsecsService {
     const DATA_INIZIO = filterOptions?.find(
       (f) => f.columnName === 'DATA_INIZIO',
     );
-    // const DATA_FINE = filterOptions?.find((f) => f.columnName === 'DATA_FINE');
     const DATA_FINE = filterOptions?.find(
       (f) => f.columnName === 'DATA_INIZIO',
     );
@@ -146,11 +156,13 @@ export class EpsNestjsOrpEffCicliEsecsService {
     return this.epsNestjsOrpEffCicliEsecRepository.update(id, {
       // Do not remove comment below.
       // <updating-property-payload />
+      KM: updateEpsNestjsOrpEffCicliEsecDto.KM,
+
       TIPO_TRASFERTA: updateEpsNestjsOrpEffCicliEsecDto.TIPO_TRASFERTA,
 
       NUM_RIGA: updateEpsNestjsOrpEffCicliEsecDto.NUM_RIGA,
 
-      APP_REQ3_SYNCED: updateEpsNestjsOrpEffCicliEsecDto.APP_REQ3_SYNCED,
+      SYNCED: updateEpsNestjsOrpEffCicliEsecDto.SYNCED,
 
       TEMPO_MINUTI_OP: updateEpsNestjsOrpEffCicliEsecDto.TEMPO_MINUTI_OP,
 

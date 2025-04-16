@@ -9,9 +9,7 @@ import { HypServReq2Mapper } from '../mappers/hyp-serv-req2.mapper';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
 
 @Injectable()
-export class HypServReq2RelationalRepository
-  implements HypServReq2Repository
-{
+export class HypServReq2RelationalRepository implements HypServReq2Repository {
   constructor(
     @InjectRepository(HypServReq2Entity)
     private readonly hypServReq2Repository: Repository<HypServReq2Entity>,
@@ -42,15 +40,13 @@ export class HypServReq2RelationalRepository
     COD_CHIAVE: HypServReq2['COD_CHIAVE'],
   ): Promise<NullableType<HypServReq2>> {
     const entity = await this.hypServReq2Repository.findOne({
-      where: { COD_CHIAVE },
+      where: { COD_CHIAVE: String(COD_CHIAVE) },
     });
 
     return entity ? HypServReq2Mapper.toDomain(entity) : null;
   }
 
-  async findByIds(
-    ids: HypServReq2['COD_CHIAVE'][],
-  ): Promise<HypServReq2[]> {
+  async findByIds(ids: HypServReq2['COD_CHIAVE'][]): Promise<HypServReq2[]> {
     const entities = await this.hypServReq2Repository.find({
       where: { COD_CHIAVE: In(ids) },
     });
@@ -63,7 +59,7 @@ export class HypServReq2RelationalRepository
     payload: Partial<HypServReq2>,
   ): Promise<HypServReq2> {
     const entity = await this.hypServReq2Repository.findOne({
-      where: { COD_CHIAVE },
+      where: { COD_CHIAVE: String(COD_CHIAVE) },
     });
 
     if (!entity) {

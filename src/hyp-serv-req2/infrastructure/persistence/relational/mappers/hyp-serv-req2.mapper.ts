@@ -5,7 +5,6 @@ import { HypServReq2Entity } from '../entities/hyp-serv-req2.entity';
 export class HypServReq2Mapper {
   static toDomain(raw: HypServReq2Entity): HypServReq2 {
     const domainEntity = new HypServReq2();
-    domainEntity.COD_CHIAVE = raw.COD_CHIAVE;
 
     domainEntity.NUM_AZIENDA = raw.NUM_AZIENDA;
 
@@ -32,7 +31,6 @@ export class HypServReq2Mapper {
 
   static toPersistence(domainEntity: HypServReq2): HypServReq2Entity {
     const persistenceEntity = new HypServReq2Entity();
-    persistenceEntity.COD_CHIAVE = domainEntity.COD_CHIAVE;
 
     persistenceEntity.NUM_AZIENDA = domainEntity.NUM_AZIENDA;
 

@@ -12,9 +12,7 @@ import { EntityRelationalHelper } from '../../../../../utils/relational-entity-h
   name: 'APP_REQ3_HYPSERV',
 })
 export class AppReq3HypServEntity extends EntityRelationalHelper {
-  @PrimaryGeneratedColumn({
-    type: 'int',
-  })
+  @PrimaryGeneratedColumn('uuid')
   COD_CHIAVE: number;
 
   @Column({

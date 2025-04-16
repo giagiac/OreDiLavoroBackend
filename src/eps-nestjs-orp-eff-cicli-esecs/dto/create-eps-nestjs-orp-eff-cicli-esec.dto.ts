@@ -4,7 +4,6 @@ import {
   IsNumber,
   IsOptional,
   IsString,
-  Validate,
 } from 'class-validator';
 
 import {
@@ -17,15 +16,23 @@ import {
   Transform,
 } from 'class-transformer';
 import Decimal from 'decimal.js';
-import { ValueTransformer } from 'typeorm';
+import { TipoTrasferta } from '../domain/eps-nestjs-orp-eff-cicli-esec';
 
 export class CreateEpsNestjsOrpEffCicliEsecDto {
+  @ApiProperty({
+    required: false,
+    type: () => Number,
+  })
+  @IsOptional()
+  @IsNumber()
+  KM?: number | null;
+
   @ApiProperty({
     required: true,
     type: () => String,
   })
   @IsString()
-  TIPO_TRASFERTA: string;
+  TIPO_TRASFERTA: TipoTrasferta;
 
   @ApiProperty({
     required: false,
@@ -41,7 +48,7 @@ export class CreateEpsNestjsOrpEffCicliEsecDto {
   })
   @IsOptional()
   @IsNumber()
-  APP_REQ3_SYNCED?: number | null;
+  SYNCED?: number | null;
 
   @ApiProperty({
     required: false,

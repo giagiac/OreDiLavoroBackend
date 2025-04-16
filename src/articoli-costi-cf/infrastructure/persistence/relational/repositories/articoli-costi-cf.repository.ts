@@ -56,14 +56,11 @@ export class ArticoliCostiCfRelationalRepository
     return entities.map((entity) => ArticoliCostiCfMapper.toDomain(entity));
   }
 
-  async update(
-    COD_CF: ArticoliCostiCf['COD_CF'],
-    payload: ArticoliCostiCf,
-  ): Promise<ArticoliCostiCf | null> {
+  async update(payload: ArticoliCostiCf): Promise<ArticoliCostiCf | null> {
     await this.articoliCostiCfRepository.manager.transaction(async () => {
       const entity: ArticoliCostiCfEntity | null =
         await this.articoliCostiCfRepository.findOne({
-          where: { COD_CF, TIPO_COSTO: payload.TIPO_COSTO },
+          where: { COD_CF: payload.COD_CF, TIPO_COSTO: payload.TIPO_COSTO },
         });
 
       if (entity) {
@@ -88,7 +85,7 @@ export class ArticoliCostiCfRelationalRepository
         .createQueryBuilder('articoliCostiCf')
         .leftJoinAndSelect('articoliCostiCf.artAna', 'artAna') // Assumi che la relazione sia "artAna"
         .leftJoinAndSelect('artAna.artCosti', 'artCosti')
-        .where('articoliCostiCf.COD_CF = :COD_CF', { COD_CF })
+        .where('articoliCostiCf.COD_CF = :COD_CF', { COD_CF: payload.COD_CF })
         .andWhere('articoliCostiCf.TIPO_COSTO = :TIPO_COSTO', {
           TIPO_COSTO: payload.TIPO_COSTO,
         })

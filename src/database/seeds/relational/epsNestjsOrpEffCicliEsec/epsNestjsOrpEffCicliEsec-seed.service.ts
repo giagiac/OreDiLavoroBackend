@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-
+import { TipoTrasferta } from '../../../../eps-nestjs-orp-eff-cicli-esecs/domain/eps-nestjs-orp-eff-cicli-esec';
 import { Repository } from 'typeorm';
 import { EpsNestjsOrpEffCicliEsecEntity } from '../../../../eps-nestjs-orp-eff-cicli-esecs/infrastructure/persistence/relational/entities/eps-nestjs-orp-eff-cicli-esec.entity';
 
@@ -22,7 +22,7 @@ export class EpsNestjsOrpEffCicliEsecSeedService {
       const currentDate = new Date();
       await this.repository.save(
         this.repository.create({
-          APP_REQ3_SYNCED: 0,
+          SYNCED: 0,
           TEMPO_MINUTI_OP: 0,
           TEMPO_MINUTI_MACC: 0,
           NOTE: 'Una mia nota...',
@@ -37,11 +37,12 @@ export class EpsNestjsOrpEffCicliEsecSeedService {
           DOC_ID: '2024-OP-0004007',
           NUM_RIGA: 1,
           AZIENDA_ID: 1,
+          TIPO_TRASFERTA: 'in_sede',
         }),
       );
       await this.repository.save(
         this.repository.create({
-          APP_REQ3_SYNCED: 0,
+          SYNCED: 0,
           TEMPO_MINUTI_OP: 0,
           TEMPO_MINUTI_MACC: 0,
           NOTE: 'Una mia nota...',
@@ -56,6 +57,7 @@ export class EpsNestjsOrpEffCicliEsecSeedService {
           DOC_ID: '2024-OP-0004007',
           NUM_RIGA: 2,
           AZIENDA_ID: 1,
+          TIPO_TRASFERTA: 'in_giornata',
         }),
       );
     }

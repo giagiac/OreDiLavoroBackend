@@ -5,9 +5,7 @@ import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { CreateHypServReq2Dto } from './create-hyp-serv-req2.dto';
 import { IsOptional, IsNumber, IsString, IsDate } from 'class-validator';
 
-export class UpdateHypServReq2Dto extends PartialType(
-  CreateHypServReq2Dto,
-) {
+export class UpdateHypServReq2Dto extends PartialType(CreateHypServReq2Dto) {
   @ApiProperty({
     required: false,
     type: () => Number,

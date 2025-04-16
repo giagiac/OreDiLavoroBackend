@@ -2,12 +2,30 @@ import { ApiProperty } from '@nestjs/swagger';
 import Decimal from 'decimal.js';
 import { OrpEffCicli } from '../../orp-eff-ciclis/domain/orp-eff-cicli';
 
+export type TipoTrasferta =
+  | 'in_sede'
+  | 'in_giornata'
+  | 'in_giornata_dopo_21'
+  | 'fuori_sede_andata'
+  | 'fuori_sede_ritorno'
+  | 'ancora_in_missione_5'
+  | 'ancora_in_missione_10'
+  | 'ancora_in_missione_15'
+  | 'ancora_in_missione_20'
+  | 'step1_KmAutista';
+
 export class EpsNestjsOrpEffCicliEsec {
+  @ApiProperty({
+    type: () => Number,
+    nullable: true,
+  })
+  KM?: number | null;
+
   @ApiProperty({
     type: () => String,
     nullable: false,
   })
-  TIPO_TRASFERTA: string;
+  TIPO_TRASFERTA: TipoTrasferta;
 
   @ApiProperty({
     type: () => Number,
@@ -25,7 +43,7 @@ export class EpsNestjsOrpEffCicliEsec {
     type: () => Number,
     nullable: true,
   })
-  APP_REQ3_SYNCED?: number | null;
+  SYNCED?: number | null;
 
   @ApiProperty({
     type: () => Decimal,
