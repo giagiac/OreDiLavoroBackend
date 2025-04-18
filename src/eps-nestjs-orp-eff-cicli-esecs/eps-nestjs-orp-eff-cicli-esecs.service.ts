@@ -8,6 +8,7 @@ import { CreateEpsNestjsOrpEffCicliEsecDto } from './dto/create-eps-nestjs-orp-e
 import { EpsNestjsOrpEffCicliEsecDto } from './dto/esp-nestjs-orp-eff-cicli-esec.dto';
 import { UpdateEpsNestjsOrpEffCicliEsecDto } from './dto/update-esp-nestjs-orp-eff-cicli-esec.dto';
 import { EpsNestjsOrpEffCicliEsecRepository } from './infrastructure/persistence/eps-nestjs-orp-eff-cicli-esec.repository';
+import { UserEntity } from '../users/infrastructure/persistence/relational/entities/user.entity';
 
 @Injectable()
 export class EpsNestjsOrpEffCicliEsecsService {
@@ -20,7 +21,7 @@ export class EpsNestjsOrpEffCicliEsecsService {
 
   async create(
     createEpsNestjsOrpEffCicliEsecDto: CreateEpsNestjsOrpEffCicliEsecDto,
-    user: User,
+    user: UserEntity,
   ) {
     // Do not remove comment below.
     // <creating-property />
@@ -41,6 +42,11 @@ export class EpsNestjsOrpEffCicliEsecsService {
     return this.epsNestjsOrpEffCicliEsecRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
+      APP_REQ3_HYPSERV_COD_CHIAVE:
+        createEpsNestjsOrpEffCicliEsecDto.APP_REQ3_HYPSERV_COD_CHIAVE,
+
+      HYPSERV_REQ2_COD_CHIAVE: createEpsNestjsOrpEffCicliEsecDto.HYPSERV_REQ2_COD_CHIAVE,
+
       KM: createEpsNestjsOrpEffCicliEsecDto.KM,
 
       TIPO_TRASFERTA: createEpsNestjsOrpEffCicliEsecDto.TIPO_TRASFERTA,
@@ -85,10 +91,10 @@ export class EpsNestjsOrpEffCicliEsecsService {
     paginationOptions,
     user,
   }: {
-    filterOptions?: Array<FilterDto<EpsNestjsOrpEffCicliEsec>> | null;
+    filterOptions?: Array<FilterDto<EpsNestjsOrpEffCicliEsecDto>> | null;
     sortOptions?: Array<SortDto<EpsNestjsOrpEffCicliEsecDto>> | null;
     paginationOptions: IPaginationOptions;
-    user: User;
+    user: UserEntity;
   }) {
     const currentUser = await this.usersService.findById(user.id);
 
@@ -116,7 +122,7 @@ export class EpsNestjsOrpEffCicliEsecsService {
       DATA_FINE.value = targetDateFine.toISOString();
     }
 
-    filterOptions = new Array<FilterDto<EpsNestjsOrpEffCicliEsec>>();
+    filterOptions = new Array<FilterDto<EpsNestjsOrpEffCicliEsecDto>>();
     filterOptions.push({
       columnName: 'DATA_INIZIO',
       value: targetDateInizio.toISOString(),
@@ -156,6 +162,11 @@ export class EpsNestjsOrpEffCicliEsecsService {
     return this.epsNestjsOrpEffCicliEsecRepository.update(id, {
       // Do not remove comment below.
       // <updating-property-payload />
+      APP_REQ3_HYPSERV_COD_CHIAVE:
+        updateEpsNestjsOrpEffCicliEsecDto.APP_REQ3_HYPSERV_COD_CHIAVE,
+
+      HYPSERV_REQ2_COD_CHIAVE: updateEpsNestjsOrpEffCicliEsecDto.HYPSERV_REQ2_COD_CHIAVE,
+
       KM: updateEpsNestjsOrpEffCicliEsecDto.KM,
 
       TIPO_TRASFERTA: updateEpsNestjsOrpEffCicliEsecDto.TIPO_TRASFERTA,

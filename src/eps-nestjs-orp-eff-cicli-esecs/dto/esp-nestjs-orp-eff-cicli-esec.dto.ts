@@ -6,6 +6,21 @@ export class EpsNestjsOrpEffCicliEsecDto {
   @IsString()
   @IsNotEmpty()
   id: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  COD_OP: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  DATA_INIZIO
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  DATA_FINE
 }
 
 export class JoinDto {

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import Decimal from 'decimal.js';
 import { In, Repository } from 'typeorm';
-import { UserEntity } from '../../../../../users/infrastructure/persistence/relational/entities/user.entity';
+import { User } from '../../../../../users/domain/user';
 import {
   applicaSort,
   FilterDto,
@@ -41,10 +41,10 @@ export class EpsNestjsOrpEffCicliEsecRelationalRepository
     paginationOptions,
     user,
   }: {
-    filterOptions?: Array<FilterDto<EpsNestjsOrpEffCicliEsec>> | null;
+    filterOptions?: Array<FilterDto<EpsNestjsOrpEffCicliEsecDto>> | null;
     sortOptions?: Array<SortDto<EpsNestjsOrpEffCicliEsecDto>> | null;
     paginationOptions: IPaginationOptions;
-    user: UserEntity | null;
+    user: User | null;
   }): Promise<{
     data: {
       targetDateInizio: Date;
@@ -98,6 +98,12 @@ export class EpsNestjsOrpEffCicliEsecRelationalRepository
       .createQueryBuilder('epsNestjsOrpEffCicliEsec')
       .innerJoinAndSelect('epsNestjsOrpEffCicliEsec.operatori', 'operatori')
       .leftJoinAndSelect('epsNestjsOrpEffCicliEsec.orpEffCicli', 'orpEffCicli')
+      // per ora non serve mi baso su HYPSERV_REQ2_COD_CHIAVE e APP_REQ3_HYPSERV_COD_CHIAVE
+      // .leftJoinAndSelect('epsNestjsOrpEffCicliEsec.hypServReq2', 'hypServReq2')
+      // .leftJoinAndSelect(
+      //   'epsNestjsOrpEffCicliEsec.appReq3HypServ',
+      //   'appReq3HypServ',
+      // )
       .leftJoinAndSelect('orpEffCicli.orpEff', 'orpEff')
       .leftJoinAndSelect('orpEffCicli.linkOrpOrd', 'linkOrpOrd')
       .leftJoinAndSelect('linkOrpOrd.ordCliRighe', 'ordCliRighe')
@@ -119,8 +125,8 @@ export class EpsNestjsOrpEffCicliEsecRelationalRepository
           tFine: targetDateFine,
         },
       )
-      .offset((paginationOptions.page - 1) * paginationOptions.limit)
-      .limit(paginationOptions.limit);
+      // .offset((paginationOptions.page - 1) * paginationOptions.limit)
+      // .limit(paginationOptions.limit);
     // .offset((paginationOptions.page - 1) * paginationOptions.limit)
     // .limit(paginationOptions.limit);
 

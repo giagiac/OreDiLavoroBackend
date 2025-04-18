@@ -49,6 +49,28 @@ export class OperatorisService {
     });
   }
 
+  findAllEsecuzioniWithPagination({
+    filterOptions,
+    sortOptions,
+    paginationOptions,
+    join,
+  }: {
+    filterOptions?: Array<FilterDto<OperatoriDto>> | null;
+    sortOptions?: Array<SortDto<OperatoriDto>> | null;
+    paginationOptions: IPaginationOptions;
+    join: boolean;
+  }) {
+    return this.operatoriRepository.findAllEsecuzioniWithPagination({
+      filterOptions,
+      sortOptions,
+      paginationOptions: {
+        page: paginationOptions.page,
+        limit: paginationOptions.limit,
+      },
+      join,
+    });
+  }
+
   findById(COD_OP: Operatori['COD_OP']) {
     return this.operatoriRepository.findById(COD_OP);
   }

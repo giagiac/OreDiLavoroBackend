@@ -14,8 +14,9 @@ export class SessionService {
   }
 
   create(
-    data: Omit<Session, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>,
+    data: Omit<Session, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt' | 'user.operatori'>,
   ): Promise<Session> {
+    delete data.user.operatori
     return this.sessionRepository.create(data);
   }
 

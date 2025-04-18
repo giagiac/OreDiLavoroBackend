@@ -18,6 +18,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { FilterUserDto, SortUserDto } from './dto/query-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserRepository } from './infrastructure/persistence/user.repository';
+import { UserEntity } from './infrastructure/persistence/relational/entities/user.entity';
 
 @Injectable()
 export class UsersService {
@@ -146,6 +147,10 @@ export class UsersService {
 
   findById(id: User['id']): Promise<NullableType<User>> {
     return this.usersRepository.findById(id);
+  }
+
+  findByCodOp(COD_OP: User['COD_OP']): Promise<NullableType<UserEntity>> {
+    return this.usersRepository.findByCodOp(COD_OP);
   }
 
   findByIds(ids: User['id'][]): Promise<User[]> {

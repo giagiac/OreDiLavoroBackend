@@ -9,6 +9,7 @@ import { FilterUserDto, SortUserDto } from '../../../../dto/query-user.dto';
 import { UserRepository } from '../../user.repository';
 import { UserSchemaClass } from '../entities/user.schema';
 import { UserMapper } from '../mappers/user.mapper';
+import { UserEntity } from '../../relational/entities/user.entity';
 
 @Injectable()
 export class UsersDocumentRepository implements UserRepository {
@@ -61,6 +62,12 @@ export class UsersDocumentRepository implements UserRepository {
   async findById(id: User['id']): Promise<NullableType<User>> {
     const userObject = await this.usersModel.findById(id);
     return userObject ? UserMapper.toDomain(userObject) : null;
+  }
+
+  async findByCodOp(COD_OP: User['COD_OP']): Promise<NullableType<UserEntity>> {
+    // TODO: non è corretto!!!
+    const userObject = await this.usersModel.findById(COD_OP) as UserEntity
+    return userObject ? userObject : null;
   }
 
   async findByIds(ids: User['id'][]): Promise<User[]> {

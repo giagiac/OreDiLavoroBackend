@@ -1,6 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import Decimal from 'decimal.js';
 import { OrpEffCicli } from '../../orp-eff-ciclis/domain/orp-eff-cicli';
+import { HypServReq2 } from '../../hyp-serv-req2/domain/hyp-serv-req2';
+import { AppReq3HypServ } from '../../app-req3-hyp-servs/domain/app-req3-hyp-serv';
 
 export type TipoTrasferta =
   | 'in_sede'
@@ -15,6 +17,18 @@ export type TipoTrasferta =
   | 'step1_KmAutista';
 
 export class EpsNestjsOrpEffCicliEsec {
+  @ApiProperty({
+    type: () => String,
+    nullable: true,
+  })
+  APP_REQ3_HYPSERV_COD_CHIAVE?: string | null;
+
+  @ApiProperty({
+    type: () => String,
+    nullable: true,
+  })
+  HYPSERV_REQ2_COD_CHIAVE?: string | null;
+
   @ApiProperty({
     type: () => Number,
     nullable: true,
@@ -146,4 +160,16 @@ export class EpsNestjsOrpEffCicliEsec {
     nullable: true,
   })
   orpEffCicli?: OrpEffCicli | null;
+
+  @ApiProperty({
+    type: () => HypServReq2,
+    nullable: true,
+  })
+  hypServReq2?: HypServReq2 | null;
+
+  @ApiProperty({
+    type: () => AppReq3HypServ,
+    nullable: true,
+  })
+  appReq3HypServ?: AppReq3HypServ | null;
 }

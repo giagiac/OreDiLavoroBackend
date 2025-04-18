@@ -4,6 +4,7 @@ import { IPaginationOptions } from '../../../utils/types/pagination-options';
 import { User } from '../../domain/user';
 
 import { FilterUserDto, SortUserDto } from '../../dto/query-user.dto';
+import { UserEntity } from './relational/entities/user.entity';
 
 export abstract class UserRepository {
   abstract create(
@@ -21,6 +22,7 @@ export abstract class UserRepository {
   }): Promise<User[]>;
 
   abstract findById(id: User['id']): Promise<NullableType<User>>;
+  abstract findByCodOp(COD_OP: User['COD_OP']): Promise<NullableType<UserEntity>>;
   abstract findByIds(ids: User['id'][]): Promise<User[]>;
   abstract findByEmail(email: User['email']): Promise<NullableType<User>>;
   abstract findBySocialIdAndProvider({

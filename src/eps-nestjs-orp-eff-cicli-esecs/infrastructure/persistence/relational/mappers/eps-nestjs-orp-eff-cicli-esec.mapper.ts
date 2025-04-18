@@ -3,6 +3,8 @@ import { EpsNestjsOrpEffCicliEsec } from '../../../../domain/eps-nestjs-orp-eff-
 import { OrpEffCicliMapper } from '../../../../../orp-eff-ciclis/infrastructure/persistence/relational/mappers/orp-eff-cicli.mapper';
 import { EpsNestjsOrpEffCicliEsecEntity } from '../entities/eps-nestjs-orp-eff-cicli-esec.entity';
 import { TempoOperatoreToSessantesimiTransformer } from '../../../../../utils/transformers/tempo-in-human-readable';
+import { HypServReq2Mapper } from '../../../../../hyp-serv-req2/infrastructure/persistence/relational/mappers/hyp-serv-req2.mapper';
+import { AppReq3HypServMapper } from '../../../../../app-req3-hyp-servs/infrastructure/persistence/relational/mappers/app-req3-hyp-serv.mapper';
 
 const transformer = new TempoOperatoreToSessantesimiTransformer();
 
@@ -11,6 +13,10 @@ export class EpsNestjsOrpEffCicliEsecMapper {
     raw: EpsNestjsOrpEffCicliEsecEntity,
   ): EpsNestjsOrpEffCicliEsec {
     const domainEntity = new EpsNestjsOrpEffCicliEsec();
+    domainEntity.APP_REQ3_HYPSERV_COD_CHIAVE = raw.APP_REQ3_HYPSERV_COD_CHIAVE;
+
+    domainEntity.HYPSERV_REQ2_COD_CHIAVE = raw.HYPSERV_REQ2_COD_CHIAVE;
+
     domainEntity.KM = raw.KM;
 
     domainEntity.TIPO_TRASFERTA = raw.TIPO_TRASFERTA;
@@ -56,6 +62,16 @@ export class EpsNestjsOrpEffCicliEsecMapper {
       domainEntity.orpEffCicli = OrpEffCicliMapper.toDomain(raw.orpEffCicli);
     }
 
+    if (raw.hypServReq2) {
+      domainEntity.hypServReq2 = HypServReq2Mapper.toDomain(raw.hypServReq2);
+    }
+
+    if (raw.appReq3HypServ) {
+      domainEntity.appReq3HypServ = AppReq3HypServMapper.toDomain(
+        raw.appReq3HypServ,
+      );
+    }
+
     return domainEntity;
   }
 
@@ -76,6 +92,12 @@ export class EpsNestjsOrpEffCicliEsecMapper {
     // const DATA_FINE = new Date(DATA_INIZIO.getTime());
 
     const persistenceEntity = new EpsNestjsOrpEffCicliEsecEntity();
+    persistenceEntity.APP_REQ3_HYPSERV_COD_CHIAVE =
+      domainEntity.APP_REQ3_HYPSERV_COD_CHIAVE;
+
+    persistenceEntity.HYPSERV_REQ2_COD_CHIAVE =
+      domainEntity.HYPSERV_REQ2_COD_CHIAVE;
+
     persistenceEntity.KM = domainEntity.KM;
 
     persistenceEntity.TIPO_TRASFERTA = domainEntity.TIPO_TRASFERTA;

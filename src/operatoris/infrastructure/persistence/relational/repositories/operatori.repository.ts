@@ -73,6 +73,57 @@ export class OperatoriRelationalRepository implements OperatoriRepository {
     };
   }
 
+  async findAllEsecuzioniWithPagination({
+    filterOptions,
+    sortOptions,
+    paginationOptions,
+    join,
+  }: {
+    filterOptions?: Array<FilterDto<OperatoriDto>> | null;
+    sortOptions?: Array<SortDto<OperatoriDto>> | null;
+    paginationOptions: IPaginationOptions;
+    join: boolean;
+  }): Promise<{ operatori: Operatori[]; count: number }> {
+    // --- Logica per determinare la data da usare ---
+    const today = new Date(); // Data odierna di default
+    let targetDateInizio = today; // Inizializza la data target con oggi
+    let targetDateFine = today;
+
+    const entitiesSql = this.operatoriRepository
+      .createQueryBuilder('operatori')
+      .leftJoinAndSelect('operatori.user', 'user')
+      .innerJoin(
+        'operatori.epsNestjsOrpEffCicliEsec',
+        'epsNestjsOrpEffCicliEsec',
+      )
+      .andWhere(
+        '(TRUNC(epsNestjsOrpEffCicliEsec.DATA_INIZIO) <= TRUNC(:tFine) AND TRUNC(epsNestjsOrpEffCicliEsec.DATA_FINE) >= TRUNC(:tInizio))',
+        {
+          tInizio: targetDateInizio,
+          tFine: targetDateFine,
+        },
+      )
+      .offset((paginationOptions.page - 1) * paginationOptions.limit)
+      .limit(paginationOptions.limit);
+
+    if (filterOptions) {
+      applicaWhereFullLike('operatori', entitiesSql, filterOptions);
+    }
+
+    if (sortOptions) {
+      applicaSort('operatori', entitiesSql, sortOptions);
+    }
+
+    const entitiesAndCount = await entitiesSql.getManyAndCount();
+
+    return {
+      operatori: entitiesAndCount[0].map((entity) =>
+        OperatoriMapper.toDomain(entity),
+      ),
+      count: entitiesAndCount[1],
+    };
+  }
+
   async findById(
     COD_OP: Operatori['COD_OP'],
   ): Promise<NullableType<Operatori>> {

@@ -22,6 +22,18 @@ export abstract class OperatoriRepository {
     join: boolean;
   }): Promise<{ operatori: Array<Operatori>; count: number }>;
 
+  abstract findAllEsecuzioniWithPagination({
+    filterOptions,
+    sortOptions,
+    paginationOptions,
+    join,
+  }: {
+    filterOptions?: Array<FilterDto<OperatoriDto>> | null;
+    sortOptions?: Array<SortDto<OperatoriDto>> | null;
+    paginationOptions: IPaginationOptions;
+    join: boolean;
+  }): Promise<{ operatori: Array<Operatori>; count: number }>;
+
   abstract findById(
     COD_OP: Operatori['COD_OP'],
   ): Promise<NullableType<Operatori>>;

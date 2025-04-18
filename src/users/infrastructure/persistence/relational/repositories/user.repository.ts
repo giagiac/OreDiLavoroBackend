@@ -68,6 +68,14 @@ export class UsersRelationalRepository implements UserRepository {
     return entity ? UserMapper.toDomain(entity) : null;
   }
 
+  async findByCodOp(COD_OP: User['COD_OP']): Promise<NullableType<UserEntity>> {
+    const entity = await this.usersRepository.findOne({
+      where: { COD_OP: COD_OP || '' },
+    });
+
+    return entity ? entity : null;
+  }
+
   async findByIds(ids: User['id'][]): Promise<User[]> {
     const entities = await this.usersRepository.find({
       where: { id: In(ids) },

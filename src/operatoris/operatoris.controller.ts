@@ -84,6 +84,41 @@ export class OperatorisController {
     return infinityPaginationQueryBuilder(operatori, count);
   }
 
+  @Get('operatori-esecuzioni')
+  @ApiOkResponse({
+    type: InfinityPaginationResponse(Operatori),
+  })
+  async findAllEsecuzioni(
+    @Query() query: FindAllOperatorisDto,
+  ): Promise<InfinityPaginationResponseDto<Operatori>> {
+    const page = query?.page ?? 1;
+    let limit = query?.limit ?? 10;
+    if (limit > 50) {
+      limit = 50;
+    }
+
+    const filters = query.filters;
+    const sort = query.sort;
+    const join =
+      query.othersFilters != null &&
+      query.othersFilters.findIndex(
+        (it) => it.key == 'join' && it.value == 'true',
+      ) > -1;
+
+    const { operatori, count } =
+      await this.operatorisService.findAllEsecuzioniWithPagination({
+        paginationOptions: {
+          page,
+          limit,
+        },
+        filterOptions: filters,
+        sortOptions: sort,
+        join,
+      });
+
+    return infinityPaginationQueryBuilder(operatori, count);
+  }
+
   @Get(':COD_OP')
   @ApiParam({
     name: 'COD_OP',

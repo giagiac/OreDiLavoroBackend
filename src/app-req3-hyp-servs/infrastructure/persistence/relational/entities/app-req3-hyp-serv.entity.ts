@@ -5,8 +5,11 @@ import {
   UpdateDateColumn,
   Column,
   PrimaryColumn,
+  JoinColumn,
+  OneToOne,
 } from 'typeorm';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
+import { EpsNestjsOrpEffCicliEsecEntity } from '../../../../../eps-nestjs-orp-eff-cicli-esecs/infrastructure/persistence/relational/entities/eps-nestjs-orp-eff-cicli-esec.entity';
 
 @Entity({
   name: 'APP_REQ3_HYPSERV',
@@ -93,4 +96,15 @@ export class AppReq3HypServEntity extends EntityRelationalHelper {
     type: String,
   })
   STRINGA_ESITO_ELAB?: string;
+
+  // riferimento inverso a eps-nestjs-orp-eff-cicli-esec
+  @OneToOne(
+    () => EpsNestjsOrpEffCicliEsecEntity,
+    (epsNestjsOrpEffCicliEsec) => epsNestjsOrpEffCicliEsec.hypServReq2,
+  )
+  @JoinColumn({
+    name: 'COD_CHIAVE',
+    referencedColumnName: 'APP_REQ3_HYPSERV_COD_CHIAVE',
+  })
+  epsNestjsOrpEffCicliEsec?: EpsNestjsOrpEffCicliEsecEntity | null;
 }

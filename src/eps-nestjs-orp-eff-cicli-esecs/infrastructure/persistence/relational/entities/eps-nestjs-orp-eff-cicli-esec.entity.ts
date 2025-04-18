@@ -15,6 +15,8 @@ import { OrpEffCicliEntity } from '../../../../../orp-eff-ciclis/infrastructure/
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
 
 import { ValueTransformer } from 'typeorm';
+import { AppReq3HypServEntity } from '../../../../../app-req3-hyp-servs/infrastructure/persistence/relational/entities/app-req3-hyp-serv.entity';
+import { HypServReq2Entity } from '../../../../../hyp-serv-req2/infrastructure/persistence/relational/entities/hyp-serv-req2.entity';
 import { TipoTrasferta } from '../../../../domain/eps-nestjs-orp-eff-cicli-esec';
 
 export class DecimalToNumberTransformer implements ValueTransformer {
@@ -35,6 +37,18 @@ export class DecimalToNumberTransformer implements ValueTransformer {
   name: 'EPS_NESTJS_ORP_EFF_CICLI_ESEC',
 })
 export class EpsNestjsOrpEffCicliEsecEntity extends EntityRelationalHelper {
+  @Column({
+    nullable: true,
+    type: String,
+  })
+  APP_REQ3_HYPSERV_COD_CHIAVE?: string | null;
+
+  @Column({
+    nullable: true,
+    type: String,
+  })
+  HYPSERV_REQ2_COD_CHIAVE?: string | null;
+
   @Column({
     nullable: true,
     type: Number,
@@ -184,4 +198,26 @@ export class EpsNestjsOrpEffCicliEsecEntity extends EntityRelationalHelper {
     referencedColumnName: 'COD_OP',
   })
   operatori?: OperatoriEntity | null;
+
+  // tabella di HG dopo aver passato i dati al servizio - servirà per lo STORICO
+  @OneToOne(
+    () => HypServReq2Entity,
+    (hypServReq2) => hypServReq2.epsNestjsOrpEffCicliEsec,
+  )
+  @JoinColumn({
+    name: 'HYPSERV_REQ2_COD_CHIAVE',
+    referencedColumnName: 'COD_CHIAVE',
+  })
+  hypServReq2?: HypServReq2Entity | null;
+
+  // tabella di HG dopo aver passato i dati al servizio - servirà per lo STORICO
+  @OneToOne(
+    () => AppReq3HypServEntity,
+    (appReq3HypServ) => appReq3HypServ.epsNestjsOrpEffCicliEsec,
+  )
+  @JoinColumn({
+    name: 'APP_REQ3_HYPSERV_COD_CHIAVE',
+    referencedColumnName: 'COD_CHIAVE',
+  })
+  appReq3HypServ?: AppReq3HypServEntity | null;
 }

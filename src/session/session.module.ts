@@ -9,7 +9,7 @@ import { SessionService } from './session.service';
 // <database-block>
 const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig)
   .isDocumentDatabase
-  ? DocumentSessionPersistenceModule
+  ? RelationalSessionPersistenceModule
   : RelationalSessionPersistenceModule;
 // </database-block>
 

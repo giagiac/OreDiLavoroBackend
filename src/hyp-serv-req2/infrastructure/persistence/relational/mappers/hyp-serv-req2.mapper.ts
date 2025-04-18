@@ -25,8 +25,6 @@ export class HypServReq2Mapper {
     domainEntity.STRINGA_ESITO_ELAB = raw.STRINGA_ESITO_ELAB;
 
     return domainEntity;
-
-    return domainEntity;
   }
 
   static toPersistence(domainEntity: HypServReq2): HypServReq2Entity {

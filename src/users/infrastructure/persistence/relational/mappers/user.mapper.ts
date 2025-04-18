@@ -1,5 +1,6 @@
 import { FileEntity } from '../../../../../files/infrastructure/persistence/relational/entities/file.entity';
 import { FileMapper } from '../../../../../files/infrastructure/persistence/relational/mappers/file.mapper';
+import { OperatoriMapper } from '../../../../../operatoris/infrastructure/persistence/relational/mappers/operatori.mapper';
 import { RoleEntity } from '../../../../../roles/infrastructure/persistence/relational/entities/role.entity';
 import { StatusEntity } from '../../../../../statuses/infrastructure/persistence/relational/entities/status.entity';
 import { User } from '../../../../domain/user';
@@ -26,7 +27,9 @@ export class UserMapper {
 
     domainEntity.COD_OP = raw.COD_OP;
 
-    domainEntity.operatori = raw.operatori;
+    if (raw.operatori) {
+      domainEntity.operatori = OperatoriMapper.toDomain(raw.operatori);
+    }
 
     return domainEntity;
   }

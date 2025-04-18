@@ -1,5 +1,12 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
+import { EpsNestjsOrpEffCicliEsecEntity } from '../../../../../eps-nestjs-orp-eff-cicli-esecs/infrastructure/persistence/relational/entities/eps-nestjs-orp-eff-cicli-esec.entity';
 
 @Entity({
   name: 'HYPSERV_REQ2',
@@ -80,4 +87,17 @@ export class HypServReq2Entity extends EntityRelationalHelper {
     type: String,
   })
   STRINGA_ESITO_ELAB?: string;
+
+  // tabella di HG - dati dei cicli DOC_RIGA_ID - l'utente cerca per codice COMMESSA :
+  // il codice COMMESSA BREVE, l'ultimo carattere è in numero del ciclo
+  // riferimento inverso a eps-nestjs-orp-eff-cicli-esec
+  @OneToOne(
+    () => EpsNestjsOrpEffCicliEsecEntity,
+    (epsNestjsOrpEffCicliEsec) => epsNestjsOrpEffCicliEsec.hypServReq2,
+  )
+  @JoinColumn({
+    name: 'COD_CHIAVE',
+    referencedColumnName: 'HYPSERV_REQ2_COD_CHIAVE',
+  })
+  epsNestjsOrpEffCicliEsec?: EpsNestjsOrpEffCicliEsecEntity | null;
 }

@@ -70,6 +70,11 @@ export class UserSchemaClass extends EntityDocumentHelper {
 
   @Prop()
   deletedAt: Date;
+
+  @Prop({
+    type: String,
+  })
+  COD_OP: string | null;
 }
 
 export const UserSchema = SchemaFactory.createForClass(UserSchemaClass);

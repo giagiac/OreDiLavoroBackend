@@ -51,7 +51,7 @@ const hypservEsecuzioniDefaultParams = [
 ].map((it) => it + separator);
 
 // prettier-ignore
-let appReqComponentiDefaultParams = [
+const appReqComponentiDefaultParams = [
   'tv_row_head.DOC_ID=', '', separator, // 1
   '*', separator,
   'RV1', separator,
@@ -172,6 +172,11 @@ export class ScheduleTasksRelationalRepository
           .innerJoinAndSelect('operatori.user', 'user')
           .innerJoinAndSelect('user.role', 'role')
 
+          .leftJoinAndSelect('epsNestjsOrpEffCicliEsec.hypServReq2', 'hypServReq2')
+          .leftJoinAndSelect(
+            'epsNestjsOrpEffCicliEsec.appReq3HypServ',
+            'appReq3HypServ',
+          )
           .leftJoinAndSelect(
             'epsNestjsOrpEffCicliEsec.orpEffCicli',
             'orpEffCicli',
@@ -255,7 +260,12 @@ export class ScheduleTasksRelationalRepository
             case 'step1_KmAutista':
               // genero -> componente con calcolo costo KM x1
               await this.GeneroEsecuzioniOperatore(manager, entity);
-              await this.GeneroComponentiCiclo(1, entity.KM || 0, manager, entity);
+              await this.GeneroComponentiCiclo(
+                1,
+                entity.KM || 0,
+                manager,
+                entity,
+              );
               break;
             default:
               throw Error(`${entity.TIPO_TRASFERTA} TIPO_TRASFERTA previsto`);
@@ -282,7 +292,7 @@ export class ScheduleTasksRelationalRepository
       entity.DATA_FINE != null &&
       entity.TEMPO_OPERATORE != null
     ) {
-      let max = await manager
+      const max = await manager
         .getRepository(HypServReq2Entity)
         .createQueryBuilder()
         .select('MAX(PROGR) + 1', 'maxProgr')
@@ -316,7 +326,7 @@ export class ScheduleTasksRelationalRepository
         .getRepository(EpsNestjsOrpEffCicliEsecEntity)
         .createQueryBuilder()
         .update()
-        .set({ SYNCED: 1 })
+        .set({ SYNCED: 1, HYPSERV_REQ2_COD_CHIAVE: entity.id })
         .where('id = :id', { id: entity.id })
         .execute();
     } else {
@@ -351,7 +361,7 @@ export class ScheduleTasksRelationalRepository
         return;
       }
 
-      let max = await manager
+      const max = await manager
         .getRepository(HypServReq2Entity)
         .createQueryBuilder()
         .select('MAX(PROGR) + 1', 'maxProgr')
@@ -458,7 +468,7 @@ export class ScheduleTasksRelationalRepository
             .getRepository(EpsNestjsOrpEffCicliEsecEntity)
             .createQueryBuilder()
             .update()
-            .set({ SYNCED: 1 })
+            .set({ SYNCED: 1, APP_REQ3_HYPSERV_COD_CHIAVE: entity.id })
             .where('id = :id', { id: entity.id })
             .execute();
         } else {

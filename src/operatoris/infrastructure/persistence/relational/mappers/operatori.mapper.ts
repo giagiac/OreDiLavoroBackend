@@ -1,3 +1,5 @@
+import { EpsNestjsOrpEffCicliEsecsModule } from '../../../../../eps-nestjs-orp-eff-cicli-esecs/eps-nestjs-orp-eff-cicli-esecs.module';
+import { EpsNestjsOrpEffCicliEsecMapper } from '../../../../../eps-nestjs-orp-eff-cicli-esecs/infrastructure/persistence/relational/mappers/eps-nestjs-orp-eff-cicli-esec.mapper';
 import { Operatori } from '../../../../domain/operatori';
 import { OperatoriEntity } from '../entities/operatori.entity';
 
@@ -10,6 +12,12 @@ export class OperatoriMapper {
     domainEntity.UTENTE = raw.UTENTE;
     domainEntity.X_COD_BADGE = raw.X_COD_BADGE;
     domainEntity.COD_PALMARE = raw.COD_PALMARE;
+
+    if (raw.epsNestjsOrpEffCicliEsec != null) {
+      domainEntity.epsNestjsOrpEffCicliEsec = raw.epsNestjsOrpEffCicliEsec.map(
+        (it) => EpsNestjsOrpEffCicliEsecMapper.toDomain(it),
+      );
+    }
 
     return domainEntity;
   }

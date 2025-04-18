@@ -2,6 +2,7 @@ import {
   Column,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToMany,
   OneToOne,
   PrimaryColumn,
@@ -39,16 +40,14 @@ export class OperatoriEntity extends EntityRelationalHelper {
   })
   user?: UserEntity | null;
 
-  // tabella di HG - dati dei cicli DOC_RIGA_ID - l'utente cerca per codice COMMESSA :
-  // il codice COMMESSA BREVE, l'ultimo carattere è in numero del ciclo
   // riferimento inverso a eps-nestjs-orp-eff-cicli-esec
   @OneToMany(
     () => EpsNestjsOrpEffCicliEsecEntity,
-    (epsNestjsOrpEffCicliEsec) => epsNestjsOrpEffCicliEsec.orpEffCicli,
+    (epsNestjsOrpEffCicliEsec) => epsNestjsOrpEffCicliEsec.operatori,
   )
   @JoinColumn({
     name: 'COD_OP',
     referencedColumnName: 'COD_OP',
   })
-  epsNestjsOrpEffCicliEsec?: EpsNestjsOrpEffCicliEsecEntity | null;
+  epsNestjsOrpEffCicliEsec?: Array<EpsNestjsOrpEffCicliEsecEntity> | null;
 }

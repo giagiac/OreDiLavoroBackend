@@ -21,6 +21,22 @@ import { TipoTrasferta } from '../domain/eps-nestjs-orp-eff-cicli-esec';
 export class CreateEpsNestjsOrpEffCicliEsecDto {
   @ApiProperty({
     required: false,
+    type: () => String,
+  })
+  @IsOptional()
+  @IsString()
+  APP_REQ3_HYPSERV_COD_CHIAVE?: string | null;
+
+  @ApiProperty({
+    required: false,
+    type: () => String,
+  })
+  @IsOptional()
+  @IsString()
+  HYPSERV_REQ2_COD_CHIAVE?: string | null;
+
+  @ApiProperty({
+    required: false,
     type: () => Number,
   })
   @IsOptional()

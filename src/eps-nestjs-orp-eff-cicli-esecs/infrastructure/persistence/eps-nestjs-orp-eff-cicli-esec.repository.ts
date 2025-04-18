@@ -17,7 +17,7 @@ export abstract class EpsNestjsOrpEffCicliEsecRepository {
     paginationOptions,
     user,
   }: {
-    filterOptions?: Array<FilterDto<EpsNestjsOrpEffCicliEsec>> | null;
+    filterOptions?: Array<FilterDto<EpsNestjsOrpEffCicliEsecDto>> | null;
     sortOptions?: Array<SortDto<EpsNestjsOrpEffCicliEsecDto>> | null;
     paginationOptions: IPaginationOptions;
     user: User | null;

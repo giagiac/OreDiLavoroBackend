@@ -35,6 +35,10 @@ import { FindAllEpsNestjsOrpEffCicliEsecsDto } from './dto/find-all-esp-nestjs-o
 import { UpdateEpsNestjsOrpEffCicliEsecDto } from './dto/update-esp-nestjs-orp-eff-cicli-esec.dto';
 import { EpsNestjsOrpEffCicliEsecsService } from './eps-nestjs-orp-eff-cicli-esecs.service';
 import { th } from 'date-fns/locale';
+import { SaveOptions, RemoveOptions } from 'typeorm';
+import { OperatoriEntity } from '../operatoris/infrastructure/persistence/relational/entities/operatori.entity';
+import { UsersService } from '../users/users.service';
+import { UserMapper } from '../users/infrastructure/persistence/document/mappers/user.mapper';
 
 @ApiTags('Epsnestjsorpeffcicliesecs')
 @ApiBearerAuth()
@@ -46,6 +50,7 @@ import { th } from 'date-fns/locale';
 export class EpsNestjsOrpEffCicliEsecsController {
   constructor(
     private readonly epsNestjsOrpEffCicliEsecsService: EpsNestjsOrpEffCicliEsecsService,
+    private readonly userService: UsersService,
   ) {}
 
   @Post()
@@ -144,18 +149,83 @@ export class EpsNestjsOrpEffCicliEsecsController {
     };
   }
 
-  @Get(':id')
-  @ApiParam({
-    name: 'id',
-    type: String,
-    required: true,
-  })
+  @Get('operatore')
   @ApiOkResponse({
-    type: EpsNestjsOrpEffCicliEsec,
+    type: InfinityPaginationResponse(EpsNestjsOrpEffCicliEsec),
   })
-  findById(@Param('id') id: string) {
-    return this.epsNestjsOrpEffCicliEsecsService.findById(id);
+  async findAllOperatori(
+    @Query() query: FindAllEpsNestjsOrpEffCicliEsecsDto,
+    @Req() req: Request,
+  ): Promise<
+    InfinityPaginationResponseDto<EpsNestjsOrpEffCicliEsec> & {
+      totale: string;
+      targetDateInizio: string;
+    }
+  > {
+    const page = query?.page ?? 1;
+    let limit = query?.limit ?? 10;
+    if (limit > 200) {
+      limit = 200;
+    }
+
+    const filters = query.filters;
+    const sort = query.sort;
+
+    const COD_OP = filters?.find((it)=>it.columnName == 'COD_OP')?.value
+
+    const user = await this.userService.findByCodOp(COD_OP)
+
+    if(!user){
+      throw new HttpException(
+        {
+          errors: {
+            message:
+              'Utente non trovato',
+          },
+        },
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
+    }
+
+    const { data: epsNestjsOrpEffCicliEsecs, count } =
+      await this.epsNestjsOrpEffCicliEsecsService.findAllWithPagination({
+        paginationOptions: {
+          page,
+          limit,
+        },
+        filterOptions: filters,
+        sortOptions: sort,
+        user,
+      });
+
+    const paginationResult = infinityPaginationQueryBuilder(
+      epsNestjsOrpEffCicliEsecs.list,
+      count,
+    );
+
+    return {
+      ...paginationResult,
+      totale: this.transformer.convertiOreInFormatoHHMM(
+        epsNestjsOrpEffCicliEsecs.totaleTempoOperatore,
+      ),
+      targetDateInizio: this.transformer.convertiInGiorno(
+        epsNestjsOrpEffCicliEsecs.targetDateInizio,
+      ),
+    };
   }
+
+  // @Get(':id')
+  // @ApiParam({
+  //   name: 'id',
+  //   type: String,
+  //   required: true,
+  // })
+  // @ApiOkResponse({
+  //   type: EpsNestjsOrpEffCicliEsec,
+  // })
+  // findById(@Param('id') id: string) {
+  //   return this.epsNestjsOrpEffCicliEsecsService.findById(id);
+  // }
 
   @Patch(':id')
   @ApiParam({
