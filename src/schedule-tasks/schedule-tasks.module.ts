@@ -17,9 +17,6 @@ const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig)
   imports: [
     // import modules, etc.
     infrastructurePersistenceModule,
-    AppReq3HypServsModule,
-    EpsNestjsDestinazionisModule,
-    HypServReq2Module,
   ],
   controllers: [ScheduleTasksController],
   providers: [ScheduleTasksService, Logger],

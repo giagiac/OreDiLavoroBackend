@@ -1,16 +1,12 @@
 import {
-  CreateDateColumn,
-  Entity,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
   Column,
-  OneToOne,
+  Entity,
   JoinColumn,
-  PrimaryColumn,
+  OneToOne,
+  PrimaryColumn
 } from 'typeorm';
-import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
-import { LinkOrpOrdEntity } from '../../../../../link-orp-ords/infrastructure/persistence/relational/entities/link-orp-ord.entity';
 import { OrdCliRigheEntity } from '../../../../../ord-cli-righes/infrastructure/persistence/relational/entities/ord-cli-righe.entity';
+import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
 
 @Entity({
   name: 'ORD_CLI_TRAS',

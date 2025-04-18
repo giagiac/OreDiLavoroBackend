@@ -124,9 +124,9 @@ export class EpsNestjsOrpEffCicliEsecRelationalRepository
           tInizio: targetDateInizio,
           tFine: targetDateFine,
         },
-      )
-      // .offset((paginationOptions.page - 1) * paginationOptions.limit)
-      // .limit(paginationOptions.limit);
+      );
+    // .offset((paginationOptions.page - 1) * paginationOptions.limit)
+    // .limit(paginationOptions.limit);
     // .offset((paginationOptions.page - 1) * paginationOptions.limit)
     // .limit(paginationOptions.limit);
 

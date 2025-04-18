@@ -205,7 +205,18 @@ export class EpsNestjsOrpEffCicliEsecsService {
     });
   }
 
-  remove(id: EpsNestjsOrpEffCicliEsec['id']) {
+  async remove(id: EpsNestjsOrpEffCicliEsec['id']) {
+    const result = await this.epsNestjsOrpEffCicliEsecRepository.findById(id);
+    if (result && result.SYNCED != null && result.SYNCED > 0) {
+      throw new HttpException(
+      {
+        errors: {
+        message: 'Record già processato',
+        },
+      },
+      HttpStatus.UNPROCESSABLE_ENTITY,
+      );
+    }
     return this.epsNestjsOrpEffCicliEsecRepository.remove(id);
   }
 }

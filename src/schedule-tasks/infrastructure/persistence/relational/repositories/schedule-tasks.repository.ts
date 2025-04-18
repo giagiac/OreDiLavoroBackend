@@ -23,6 +23,10 @@ import {
 } from '../entities/schedule-tasks.entity';
 import { ScheduleTasksMapper } from '../mappers/schedule-tasks.mapper';
 import Decimal from 'decimal.js';
+import { OrpEffCicliEntity } from '../../../../../orp-eff-ciclis/infrastructure/persistence/relational/entities/orp-eff-cicli.entity';
+import { ArticoliCostiCfEntity } from '../../../../../articoli-costi-cf/infrastructure/persistence/relational/entities/articoli-costi-cf.entity';
+import { ArticoliCostiCfCommEntity } from '../../../../../articoli-costi-cf-comm/infrastructure/persistence/relational/entities/articoli-costi-cf-comm.entity';
+import { TipoTrasferta } from '../../../../../eps-nestjs-orp-eff-cicli-esecs/domain/eps-nestjs-orp-eff-cicli-esec';
 
 const transformer = new TempoOperatoreToSessantesimiTransformer();
 
@@ -68,12 +72,10 @@ export class ScheduleTasksRelationalRepository
     private readonly scheduleTasksRepository: Repository<ScheduleTasksEntity>,
     @InjectRepository(EpsNestjsOrpEffCicliEsecEntity)
     private readonly epsNestjsOrpEffCicliEsecRepository: Repository<EpsNestjsOrpEffCicliEsecEntity>,
-    @InjectRepository(AppReq3HypServEntity)
-    private readonly appReq3HypServRepository: Repository<AppReq3HypServEntity>,
-    @InjectRepository(EpsNestjsDestinazioniEntity)
-    private readonly epsNestjsDestinazioniRepository: Repository<EpsNestjsDestinazioniEntity>,
-    @InjectRepository(HypServReq2Entity)
-    private readonly hypServReq2Repository: Repository<HypServReq2Entity>,
+    @InjectRepository(ArticoliCostiCfEntity)
+    private readonly articoliCostiCfRepository: Repository<ArticoliCostiCfEntity>,
+    @InjectRepository(ArticoliCostiCfCommEntity)
+    private readonly articoliCostiCfCommRepository: Repository<ArticoliCostiCfCommEntity>,
   ) {}
 
   async create(data: ScheduleTasks): Promise<ScheduleTasks> {
@@ -172,7 +174,10 @@ export class ScheduleTasksRelationalRepository
           .innerJoinAndSelect('operatori.user', 'user')
           .innerJoinAndSelect('user.role', 'role')
 
-          .leftJoinAndSelect('epsNestjsOrpEffCicliEsec.hypServReq2', 'hypServReq2')
+          .leftJoinAndSelect(
+            'epsNestjsOrpEffCicliEsec.hypServReq2',
+            'hypServReq2',
+          )
           .leftJoinAndSelect(
             'epsNestjsOrpEffCicliEsec.appReq3HypServ',
             'appReq3HypServ',
@@ -220,48 +225,47 @@ export class ScheduleTasksRelationalRepository
             case 'in_giornata':
               // genero -> esecuzione e componente con calcolo costo (dataMatrix) KM x2
               await this.GeneroEsecuzioniOperatore(manager, entity);
-              await this.GeneroComponentiCiclo(2, null, manager, entity);
+              await this.GeneroComponentiCiclo(2, manager, entity);
               break;
             case 'in_giornata_dopo_21':
               // genero -> esecuzione e componente con calcolo costo (dataMatrix) KM x2
               await this.GeneroEsecuzioniOperatore(manager, entity);
-              await this.GeneroComponentiCiclo(2, null, manager, entity);
+              await this.GeneroComponentiCiclo(2, manager, entity);
               break;
             case 'fuori_sede_andata':
               // genero -> esecuzione e componente con calcolo costo (dataMatrix) KM x1
               await this.GeneroEsecuzioniOperatore(manager, entity);
-              await this.GeneroComponentiCiclo(1, null, manager, entity);
+              await this.GeneroComponentiCiclo(1, manager, entity);
               break;
             case 'fuori_sede_ritorno':
               // genero -> esecuzione e componente con calcolo costo (dataMatrix) KM x1
               await this.GeneroEsecuzioniOperatore(manager, entity);
-              await this.GeneroComponentiCiclo(1, null, manager, entity);
+              await this.GeneroComponentiCiclo(1, manager, entity);
               break;
             case 'ancora_in_missione_5':
               // genero -> esecuzione e componente con calcolo costo 5 KM x1
               await this.GeneroEsecuzioniOperatore(manager, entity);
-              await this.GeneroComponentiCiclo(1, 5, manager, entity);
+              await this.GeneroComponentiCicloKmManuali(5, manager, entity);
               break;
             case 'ancora_in_missione_10':
               // genero -> esecuzione e componente con calcolo costo 10 KM x1
               await this.GeneroEsecuzioniOperatore(manager, entity);
-              await this.GeneroComponentiCiclo(1, 10, manager, entity);
+              await this.GeneroComponentiCicloKmManuali(10, manager, entity);
               break;
             case 'ancora_in_missione_15':
               // genero -> esecuzione e componente con calcolo costo 15 KM x1
               await this.GeneroEsecuzioniOperatore(manager, entity);
-              await this.GeneroComponentiCiclo(1, 15, manager, entity);
+              await this.GeneroComponentiCicloKmManuali(15, manager, entity);
               break;
             case 'ancora_in_missione_20':
               // genero -> esecuzione e componente con calcolo costo 20 KM x1
               await this.GeneroEsecuzioniOperatore(manager, entity);
-              await this.GeneroComponentiCiclo(1, 20, manager, entity);
+              await this.GeneroComponentiCicloKmManuali(20, manager, entity);
               break;
             case 'step1_KmAutista':
               // genero -> componente con calcolo costo KM x1
               await this.GeneroEsecuzioniOperatore(manager, entity);
-              await this.GeneroComponentiCiclo(
-                1,
+              await this.GeneroComponentiCicloKmManuali(
                 entity.KM || 0,
                 manager,
                 entity,
@@ -334,9 +338,9 @@ export class ScheduleTasksRelationalRepository
     }
   }
 
-  async GeneroComponentiCiclo(
-    xVolte: number,
-    kmManuali: number | null,
+  // Genero un componente in un ORDINE DI PRODUZIONE - il componente serve per il recuperare il COSTO al KM (non ha nulla a che vedere con il COD_ART dell'ordCli - ORDINE CLIENTE)
+  async GeneroComponentiCicloKmManuali(
+    kmManuali: number,
     manager: EntityManager,
     entity: EpsNestjsOrpEffCicliEsecEntity,
   ) {
@@ -360,6 +364,87 @@ export class ScheduleTasksRelationalRepository
         );
         return;
       }
+      if (entity.orpEffCicli == null) {
+        await this.SalvoConErrore(
+          TIPO_ERRORI_SYNC.MANCANZA_ORD_CLI,
+          manager,
+          entity.id,
+        );
+        return;
+      }
+
+      const max = await manager
+        .getRepository(HypServReq2Entity)
+        .createQueryBuilder()
+        .select('MAX(PROGR) + 1', 'maxProgr')
+        .getRawOne();
+
+      let km = String(kmManuali);
+
+      console.info(`Km manuali da cf_comm: ${entity.id} -> ${km}`);
+
+      const componente = this.makeComponentiOrpEff(
+        entity.orpEffCicli.DOC_ID,
+        entity.COD_ART,
+        km,
+      );
+
+      const result = await manager
+        .getRepository(AppReq3HypServEntity)
+        .createQueryBuilder()
+        .insert()
+        .into(AppReq3HypServEntity)
+        .values([
+          {
+            UTENTE_FROM: entity.COD_OP,
+            PROGR: max?.maxProgr || 1,
+            CHIAVE_ESTERNA: entity.id,
+            NUM_AZIENDA: entity.AZIENDA_ID,
+            DATAORA_RICHIESTA: new Date(),
+            COD_REQ3_HYPSERV:
+              APP_REQ3_HYPSERV_TIPO_RICHIESTA.COMPONENTI_ORP_EFF,
+            CAMPO_PARAMETRI: componente,
+          },
+        ])
+        .execute();
+
+      const update = await manager
+        .getRepository(EpsNestjsOrpEffCicliEsecEntity)
+        .createQueryBuilder()
+        .update()
+        .set({ SYNCED: 1, APP_REQ3_HYPSERV_COD_CHIAVE: entity.id })
+        .where('id = :id', { id: entity.id })
+        .execute();
+    } else {
+      console.error('Non tutti i parametri previsti sono stati definiti');
+    }
+  }
+
+  async GeneroComponentiCiclo(
+    xVolte: number,
+    manager: EntityManager,
+    entity: EpsNestjsOrpEffCicliEsecEntity,
+  ) {
+    if (
+      entity.DOC_RIGA_ID != null &&
+      entity.COD_OP != null &&
+      entity.DATA_INIZIO != null &&
+      entity.DATA_FINE != null &&
+      entity.TEMPO_OPERATORE != null
+    ) {
+      const role = entity.operatori?.user?.role;
+      if (RoleEnum.autista != role?.id) {
+        // non sono autista
+        return;
+      }
+      // if (entity.COD_ART == null) {
+      //   await this.SalvoConErrore(
+      //     TIPO_ERRORI_SYNC.MANCANZA_COD_ART_COMP,
+      //     manager,
+      //     entity.id,
+      //   );
+      //   return;
+      // }
 
       const max = await manager
         .getRepository(HypServReq2Entity)
@@ -379,25 +464,52 @@ export class ScheduleTasksRelationalRepository
             // cerco nelle SEDI
             const ordCliTras =
               entity.orpEffCicli?.linkOrpOrd?.[0]?.ordCliRighe?.ordCliTras;
-            let km = String(kmManuali);
-            if (kmManuali == null) {
-              km = await this.fetchGoogleDistanza(
-                xVolte,
+            let km = await this.fetchGoogleDistanza(
+              xVolte,
+              manager,
+              this.cfSedePrincipale,
+              '',
+              ordCliTras.STATO_DEST_MERCE || '',
+              ordCliTras.PROVINCIA_DEST_MERCE || '',
+              ordCliTras.COMUNE_DEST_MERCE || '',
+              ordCliTras.CAP_DEST_MERCE || '',
+              ordCliTras.INDI_DEST_MERCE || '',
+            );
+
+            console.info(`Km da CF_COMM: ${entity.id} -> ${km}`);
+
+            const COD_CF = entity.orpEffCicli?.linkOrpOrd?.[0]?.ordCliRighe?.cf?.COD_CF
+            const NUM_DEST = entity.orpEffCicli?.linkOrpOrd?.[0]?.ordCliRighe?.ordCliTras.NUM_DEST
+
+            if (COD_CF == null || NUM_DEST == null) {
+              await this.SalvoConErrore(
+                TIPO_ERRORI_SYNC.MANCANZA_ORD_CLI_RIGHE_CF_COMM_ID,
                 manager,
-                this.cfSedePrincipale,
-                '',
-                ordCliTras.STATO_DEST_MERCE || '',
-                ordCliTras.PROVINCIA_DEST_MERCE || '',
-                ordCliTras.COMUNE_DEST_MERCE || '',
-                ordCliTras.CAP_DEST_MERCE || '',
-                ordCliTras.INDI_DEST_MERCE || '',
+                entity.id,
               );
+              return;
             }
-            console.info(`Km sede principale: ${entity.id} -> ${km}`);
+
+            const CF_COMM_ID = COD_CF + NUM_DEST
+
+            const COD_ART = await this.CercoEpsNestjsArticoliCostiCfComm(
+              manager,
+              CF_COMM_ID,
+              entity.TIPO_TRASFERTA,
+            );
+
+            if (COD_ART == null) {
+              await this.SalvoConErrore(
+                TIPO_ERRORI_SYNC.MANCANZA_COD_ART_COSTI_CF_DEFAULT,
+                manager,
+                entity.id,
+              );
+              return;
+            }
 
             const componente = this.makeComponentiOrpEff(
               entity.orpEffCicli.DOC_ID,
-              entity.COD_ART,
+              COD_ART,
               km,
             );
 
@@ -422,25 +534,53 @@ export class ScheduleTasksRelationalRepository
           } else {
             // cerco nella testata
             const cf = entity.orpEffCicli?.linkOrpOrd?.[0]?.ordCliRighe.cf;
-            let km = String(kmManuali);
-            if (kmManuali == null) {
-              km = await this.fetchGoogleDistanza(
-                xVolte,
-                manager,
-                this.cfSedePrincipale,
-                '',
-                cf?.STATO_CF || '',
-                cf?.PROVINCIA_CF || '',
-                cf?.COMUNE_CF || '',
-                cf?.CAP_CF || '',
-                cf?.INDI_CF || '',
-              );
+            if (cf == null) {
             }
-            console.info(`Km destinazione: ${entity.id} -> ${km}`);
+
+            let km = await this.fetchGoogleDistanza(
+              xVolte,
+              manager,
+              this.cfSedePrincipale,
+              '',
+              cf?.STATO_CF || '',
+              cf?.PROVINCIA_CF || '',
+              cf?.COMUNE_CF || '',
+              cf?.CAP_CF || '',
+              cf?.INDI_CF || '',
+            );
+
+            console.info(`Km da CF: ${entity.id} -> ${km}`);
+
+            const COD_CF =
+              entity.orpEffCicli?.linkOrpOrd?.[0]?.ordCliRighe?.cf?.COD_CF ||
+              null;
+            if (COD_CF == null) {
+              await this.SalvoConErrore(
+                TIPO_ERRORI_SYNC.MANCANZA_ORD_CLI_RIGHE_COD_CF,
+                manager,
+                entity.id,
+              );
+              return;
+            }
+
+            const COD_ART = await this.CercoEpsNestjsArticoliCostiCf(
+              manager,
+              COD_CF,
+              entity.TIPO_TRASFERTA,
+            );
+
+            if (COD_ART == null) {
+              await this.SalvoConErrore(
+                TIPO_ERRORI_SYNC.MANCANZA_COD_ART_COSTI_CF_DEFAULT,
+                manager,
+                entity.id,
+              );
+              return;
+            }
 
             const componente = this.makeComponentiOrpEff(
               entity.orpEffCicli.DOC_ID,
-              entity.COD_ART,
+              COD_ART,
               km,
             );
 
@@ -488,6 +628,80 @@ export class ScheduleTasksRelationalRepository
     } else {
       console.error('Non tutti i parametri previsti sono stati definiti');
     }
+  }
+
+  async CercoEpsNestjsArticoliCostiCf(
+    manager: EntityManager,
+    COD_CF: string,
+    TIPO_TRASFERTA: TipoTrasferta,
+  ): Promise<string | null> {
+    let TIPO_COSTO;
+
+    switch (TIPO_TRASFERTA) {
+      case 'in_giornata':
+        TIPO_COSTO = 'IN_GIORNATA'; // Or map to a common type like 'GIORNATA'
+        break;
+      case 'in_giornata_dopo_21':
+        // Assign TIPO_COSTO for daily trips
+        TIPO_COSTO = 'IN_GIORNATA_DOPO_21'; // Or map to a common type like 'GIORNATA'
+        break;
+      case 'fuori_sede_andata':
+        TIPO_COSTO = 'PERNOTTO_FUORISEDE_ANDATA';
+        break;
+      case 'fuori_sede_ritorno':
+        TIPO_COSTO = 'PERNOTTO_FUORISEDE_RITORNO';
+        break;
+      default:
+        // Handle unknown or default cases
+        console.warn(`Unknown TIPO_TRASFERTA: ${TIPO_TRASFERTA}`);
+        break;
+    }
+
+    const articoliCostiCf = await manager
+      .getRepository(ArticoliCostiCfEntity)
+      .createQueryBuilder('articoliCostiCfEntity')
+      .select()
+      .where('COD_CF=:COD_CF AND TIPO_COSTO=:TIPO_COSTO', { COD_CF, TIPO_COSTO })
+      .getOne();
+
+    return articoliCostiCf?.COD_ART || null;
+  }
+
+  async CercoEpsNestjsArticoliCostiCfComm(
+    manager: EntityManager,
+    CF_COMM_ID: string,
+    TIPO_TRASFERTA: TipoTrasferta,
+  ): Promise<string | null> {
+    let TIPO_COSTO;
+
+    switch (TIPO_TRASFERTA) {
+      case 'in_giornata':
+        TIPO_COSTO = 'IN_GIORNATA'; // Or map to a common type like 'GIORNATA'
+        break;
+      case 'in_giornata_dopo_21':
+        // Assign TIPO_COSTO for daily trips
+        TIPO_COSTO = 'IN_GIORNATA_DOPO_21'; // Or map to a common type like 'GIORNATA'
+        break;
+      case 'fuori_sede_andata':
+        TIPO_COSTO = 'PERNOTTO_FUORISEDE_ANDATA';
+        break;
+      case 'fuori_sede_ritorno':
+        TIPO_COSTO = 'PERNOTTO_FUORISEDE_RITORNO';
+        break;
+      default:
+        // Handle unknown or default cases
+        console.warn(`Unknown TIPO_TRASFERTA: ${TIPO_TRASFERTA}`);
+        break;
+    }
+
+    const articoliCostiCfComm = await manager
+      .getRepository(ArticoliCostiCfCommEntity)
+      .createQueryBuilder('articoliCostiCfCommEntity')
+      .select()
+      .where('CF_COMM_ID=:CF_COMM_ID AND TIPO_COSTO=:TIPO_COSTO', { CF_COMM_ID, TIPO_COSTO })
+      .getOne();
+
+    return articoliCostiCfComm?.COD_ART || null;
   }
 
   private makeEsecuzioneOrpEffCicli(
