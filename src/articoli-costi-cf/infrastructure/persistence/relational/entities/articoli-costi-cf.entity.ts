@@ -12,11 +12,11 @@ import { ArtAnaEntity } from '../../../../../art-ana/infrastructure/persistence/
 import { CfEntity } from '../../../../../cfs/infrastructure/persistence/relational/entities/cf.entity';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
 
-export type TipoCosto =
-  | 'IN_GIORNATA'
-  | 'IN_GIORNATA_DOPO_21'
-  | 'PERNOTTO_FUORISEDE_ANDATA'
-  | 'PERNOTTO_FUORISEDE_RITORNO';
+export type TipoTrasferta =
+  | 'in_giornata'
+  | 'in_giornata_dopo_21'
+  | 'fuori_sede_andata'
+  | 'fuori_sede_ritorno';
 
 @Entity({
   name: 'EPS_NESTJS_ARTICOLI_COSTI_CF',
@@ -25,7 +25,7 @@ export class ArticoliCostiCfEntity extends EntityRelationalHelper {
   @Column({
     type: String,
   })
-  TIPO_COSTO?: TipoCosto;
+  TIPO_TRASFERTA?: TipoTrasferta;
 
   @Column({
     nullable: true,

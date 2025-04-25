@@ -3,7 +3,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import axios from 'axios';
 import { EntityManager, In, Repository } from 'typeorm';
 import { AppReq3HypServEntity } from '../../../../../app-req3-hyp-servs/infrastructure/persistence/relational/entities/app-req3-hyp-serv.entity';
-import { CfEntity } from '../../../../../cfs/infrastructure/persistence/relational/entities/cf.entity';
+import {
+  CfEntity,
+  DEFAULT,
+} from '../../../../../cfs/infrastructure/persistence/relational/entities/cf.entity';
 import { EpsNestjsDestinazioniEntity } from '../../../../../eps-nestjs-destinazionis/infrastructure/persistence/relational/entities/eps-nestjs-destinazioni.entity';
 import { EpsNestjsOrpEffCicliEsecEntity } from '../../../../../eps-nestjs-orp-eff-cicli-esecs/infrastructure/persistence/relational/entities/eps-nestjs-orp-eff-cicli-esec.entity';
 import { HypServReq2Entity } from '../../../../../hyp-serv-req2/infrastructure/persistence/relational/entities/hyp-serv-req2.entity';
@@ -244,27 +247,27 @@ export class ScheduleTasksRelationalRepository
               break;
             case 'ancora_in_missione_5':
               // genero -> esecuzione e componente con calcolo costo 5 KM x1
-              await this.GeneroEsecuzioniOperatore(manager, entity);
+              // await this.GeneroEsecuzioniOperatore(manager, entity);
               await this.GeneroComponentiCicloKmManuali(5, manager, entity);
               break;
             case 'ancora_in_missione_10':
               // genero -> esecuzione e componente con calcolo costo 10 KM x1
-              await this.GeneroEsecuzioniOperatore(manager, entity);
+              // await this.GeneroEsecuzioniOperatore(manager, entity);
               await this.GeneroComponentiCicloKmManuali(10, manager, entity);
               break;
             case 'ancora_in_missione_15':
               // genero -> esecuzione e componente con calcolo costo 15 KM x1
-              await this.GeneroEsecuzioniOperatore(manager, entity);
+              // await this.GeneroEsecuzioniOperatore(manager, entity);
               await this.GeneroComponentiCicloKmManuali(15, manager, entity);
               break;
             case 'ancora_in_missione_20':
               // genero -> esecuzione e componente con calcolo costo 20 KM x1
-              await this.GeneroEsecuzioniOperatore(manager, entity);
+              // await this.GeneroEsecuzioniOperatore(manager, entity);
               await this.GeneroComponentiCicloKmManuali(20, manager, entity);
               break;
             case 'step1_KmAutista':
               // genero -> componente con calcolo costo KM x1
-              await this.GeneroEsecuzioniOperatore(manager, entity);
+              // await this.GeneroEsecuzioniOperatore(manager, entity);
               await this.GeneroComponentiCicloKmManuali(
                 entity.KM || 0,
                 manager,
@@ -354,6 +357,11 @@ export class ScheduleTasksRelationalRepository
       const role = entity.operatori?.user?.role;
       if (RoleEnum.autista != role?.id) {
         // non sono autista
+        await this.SalvoConErrore(
+          TIPO_ERRORI_SYNC.MANCANZA_RUOLO_TIPO_AUTISTA,
+          manager,
+          entity.id,
+        );
         return;
       }
       if (entity.COD_ART == null) {
@@ -381,7 +389,7 @@ export class ScheduleTasksRelationalRepository
 
       let km = String(kmManuali);
 
-      console.info(`Km manuali da cf_comm: ${entity.id} -> ${km}`);
+      console.info(`Km manuali direttamente da autista: ${entity.id} -> ${km}`);
 
       const componente = this.makeComponentiOrpEff(
         entity.orpEffCicli.DOC_ID,
@@ -435,22 +443,53 @@ export class ScheduleTasksRelationalRepository
       const role = entity.operatori?.user?.role;
       if (RoleEnum.autista != role?.id) {
         // non sono autista
+        // esco perchè il calcolo dei km è da attribuirsi solo a chi fa l'autista - il resto va considerato come ore di lavoro
         return;
       }
-      // if (entity.COD_ART == null) {
-      //   await this.SalvoConErrore(
-      //     TIPO_ERRORI_SYNC.MANCANZA_COD_ART_COMP,
-      //     manager,
-      //     entity.id,
-      //   );
-      //   return;
-      // }
 
       const max = await manager
-        .getRepository(HypServReq2Entity)
-        .createQueryBuilder()
-        .select('MAX(PROGR) + 1', 'maxProgr')
-        .getRawOne();
+      .getRepository(HypServReq2Entity)
+      .createQueryBuilder()
+      .select('MAX(PROGR) + 1', 'maxProgr')
+      .getRawOne();
+
+      // imposto in modo secco il COD_ART tra i componenti dell'ODP
+
+      if(entity.COD_ART != null){
+        if (entity.orpEffCicli == null) {
+          await this.SalvoConErrore(
+            TIPO_ERRORI_SYNC.MANCANZA_ORD_CLI,
+            manager,
+            entity.id,
+          );
+          return; // Exit if orpEffCicli is null
+        }
+        const componente = this.makeComponentiOrpEff(
+          entity.orpEffCicli.DOC_ID, // Access is now safe
+          entity.COD_ART,
+          String(entity.KM || 0), // Assuming KM should be passed as QUANT_DIST
+        );
+
+        const result = await manager
+          .getRepository(AppReq3HypServEntity)
+          .createQueryBuilder()
+          .insert()
+          .into(AppReq3HypServEntity)
+          .values([
+            {
+              UTENTE_FROM: entity.COD_OP,
+              PROGR: max?.maxProgr || 1,
+              CHIAVE_ESTERNA: entity.id,
+              NUM_AZIENDA: entity.AZIENDA_ID,
+              DATAORA_RICHIESTA: new Date(),
+              COD_REQ3_HYPSERV:
+                APP_REQ3_HYPSERV_TIPO_RICHIESTA.COMPONENTI_ORP_EFF,
+              CAMPO_PARAMETRI: componente,
+            },
+          ])
+          .execute();
+          return
+      }
 
       if (entity.orpEffCicli?.linkOrpOrd?.length ?? 0 > 0) {
         if (
@@ -478,8 +517,11 @@ export class ScheduleTasksRelationalRepository
 
             console.info(`Km da CF_COMM: ${entity.id} -> ${km}`);
 
-            const COD_CF = entity.orpEffCicli?.linkOrpOrd?.[0]?.ordCliRighe?.cf?.COD_CF
-            const NUM_DEST = entity.orpEffCicli?.linkOrpOrd?.[0]?.ordCliRighe?.ordCliTras.NUM_DEST
+            const COD_CF =
+              entity.orpEffCicli?.linkOrpOrd?.[0]?.ordCliRighe?.cf?.COD_CF;
+            const NUM_DEST =
+              entity.orpEffCicli?.linkOrpOrd?.[0]?.ordCliRighe?.ordCliTras
+                .NUM_DEST;
 
             if (COD_CF == null || NUM_DEST == null) {
               await this.SalvoConErrore(
@@ -490,7 +532,7 @@ export class ScheduleTasksRelationalRepository
               return;
             }
 
-            const CF_COMM_ID = COD_CF + NUM_DEST
+            const CF_COMM_ID = COD_CF + NUM_DEST;
 
             const COD_ART = await this.CercoEpsNestjsArticoliCostiCfComm(
               manager,
@@ -635,36 +677,31 @@ export class ScheduleTasksRelationalRepository
     COD_CF: string,
     TIPO_TRASFERTA: TipoTrasferta,
   ): Promise<string | null> {
-    let TIPO_COSTO;
-
-    switch (TIPO_TRASFERTA) {
-      case 'in_giornata':
-        TIPO_COSTO = 'IN_GIORNATA'; // Or map to a common type like 'GIORNATA'
-        break;
-      case 'in_giornata_dopo_21':
-        // Assign TIPO_COSTO for daily trips
-        TIPO_COSTO = 'IN_GIORNATA_DOPO_21'; // Or map to a common type like 'GIORNATA'
-        break;
-      case 'fuori_sede_andata':
-        TIPO_COSTO = 'PERNOTTO_FUORISEDE_ANDATA';
-        break;
-      case 'fuori_sede_ritorno':
-        TIPO_COSTO = 'PERNOTTO_FUORISEDE_RITORNO';
-        break;
-      default:
-        // Handle unknown or default cases
-        console.warn(`Unknown TIPO_TRASFERTA: ${TIPO_TRASFERTA}`);
-        break;
-    }
-
     const articoliCostiCf = await manager
       .getRepository(ArticoliCostiCfEntity)
       .createQueryBuilder('articoliCostiCfEntity')
-      .select()
-      .where('COD_CF=:COD_CF AND TIPO_COSTO=:TIPO_COSTO', { COD_CF, TIPO_COSTO })
+      .select(['articoliCostiCfEntity.COD_ART'])
+      .where('COD_CF=:COD_CF AND TIPO_TRASFERTA=:TIPO_TRASFERTA', {
+        COD_CF,
+        TIPO_TRASFERTA,
+      })
       .getOne();
 
-    return articoliCostiCf?.COD_ART || null;
+    if (articoliCostiCf?.COD_ART) {
+      return articoliCostiCf.COD_ART;
+    }
+
+    const articoliCostiCfDefault = await manager
+      .getRepository(ArticoliCostiCfEntity)
+      .createQueryBuilder('articoliCostiCfEntity')
+      .select(['articoliCostiCfEntity.COD_ART'])
+      .where('COD_CF=:COD_CF AND TIPO_TRASFERTA=:TIPO_TRASFERTA', {
+        COD_CF: DEFAULT.COD_CF,
+        TIPO_TRASFERTA,
+      })
+      .getOne();
+
+    return articoliCostiCfDefault?.COD_ART ?? null;
   }
 
   async CercoEpsNestjsArticoliCostiCfComm(
@@ -672,33 +709,14 @@ export class ScheduleTasksRelationalRepository
     CF_COMM_ID: string,
     TIPO_TRASFERTA: TipoTrasferta,
   ): Promise<string | null> {
-    let TIPO_COSTO;
-
-    switch (TIPO_TRASFERTA) {
-      case 'in_giornata':
-        TIPO_COSTO = 'IN_GIORNATA'; // Or map to a common type like 'GIORNATA'
-        break;
-      case 'in_giornata_dopo_21':
-        // Assign TIPO_COSTO for daily trips
-        TIPO_COSTO = 'IN_GIORNATA_DOPO_21'; // Or map to a common type like 'GIORNATA'
-        break;
-      case 'fuori_sede_andata':
-        TIPO_COSTO = 'PERNOTTO_FUORISEDE_ANDATA';
-        break;
-      case 'fuori_sede_ritorno':
-        TIPO_COSTO = 'PERNOTTO_FUORISEDE_RITORNO';
-        break;
-      default:
-        // Handle unknown or default cases
-        console.warn(`Unknown TIPO_TRASFERTA: ${TIPO_TRASFERTA}`);
-        break;
-    }
-
     const articoliCostiCfComm = await manager
       .getRepository(ArticoliCostiCfCommEntity)
       .createQueryBuilder('articoliCostiCfCommEntity')
       .select()
-      .where('CF_COMM_ID=:CF_COMM_ID AND TIPO_COSTO=:TIPO_COSTO', { CF_COMM_ID, TIPO_COSTO })
+      .where('CF_COMM_ID=:CF_COMM_ID AND TIPO_TRASFERTA=:TIPO_TRASFERTA', {
+        CF_COMM_ID,
+        TIPO_TRASFERTA,
+      })
       .getOne();
 
     return articoliCostiCfComm?.COD_ART || null;

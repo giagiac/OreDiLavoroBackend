@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { ArtAna } from '../../art-ana/domain/art-ana';
-import { TipoCosto } from '../infrastructure/persistence/relational/entities/articoli-costi-cf.entity';
+import { TipoTrasferta } from '../infrastructure/persistence/relational/entities/articoli-costi-cf.entity';
 
 export class ArticoliCostiCf {
   @ApiProperty({
@@ -13,7 +13,7 @@ export class ArticoliCostiCf {
     type: () => String,
     required: true,
   })
-  TIPO_COSTO?: TipoCosto;
+  TIPO_TRASFERTA?: TipoTrasferta;
 
   @ApiProperty({
     type: String,

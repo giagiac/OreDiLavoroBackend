@@ -65,7 +65,7 @@ export class ArticoliCostiCfCommRelationalRepository
     await this.articoliCostiCfCommRepository.manager.transaction(async () => {
       const entity: ArticoliCostiCfCommEntity | null =
         await this.articoliCostiCfCommRepository.findOne({
-          where: { CF_COMM_ID, TIPO_COSTO: payload.TIPO_COSTO },
+          where: { CF_COMM_ID, TIPO_TRASFERTA: payload.TIPO_TRASFERTA },
         });
 
       // const entity: ArticoliCostiCfCommEntity | null =
@@ -74,8 +74,8 @@ export class ArticoliCostiCfCommRelationalRepository
       //     //.leftJoinAndSelect('articoliCostiCfComm.artAna', 'artAna') // Assumi che la relazione sia "artAna"
       //     //.leftJoinAndSelect('artAna.artCosti', 'artCosti')
       //     .where('articoliCostiCfComm.CF_COMM_ID = :CF_COMM_ID', { CF_COMM_ID })
-      //     .andWhere('articoliCostiCfComm.TIPO_COSTO = :TIPO_COSTO', {
-      //       TIPO_COSTO: payload.TIPO_COSTO,
+      //     .andWhere('articoliCostiCfComm.TIPO_TRASFERTA = :TIPO_TRASFERTA', {
+      //       TIPO_TRASFERTA: payload.TIPO_TRASFERTA,
       //     })
       //     .getOne();
 
@@ -100,8 +100,8 @@ export class ArticoliCostiCfCommRelationalRepository
         .leftJoinAndSelect('articoliCostiCfComm.artAna', 'artAna') // Assumi che la relazione sia "artAna"
         .leftJoinAndSelect('artAna.artCosti', 'artCosti')
         .where('articoliCostiCfComm.CF_COMM_ID = :CF_COMM_ID', { CF_COMM_ID })
-        .andWhere('articoliCostiCfComm.TIPO_COSTO = :TIPO_COSTO', {
-          TIPO_COSTO: payload.TIPO_COSTO,
+        .andWhere('articoliCostiCfComm.TIPO_TRASFERTA = :TIPO_TRASFERTA', {
+          TIPO_TRASFERTA: payload.TIPO_TRASFERTA,
         })
         .getOne();
 

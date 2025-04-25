@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsOptional } from 'class-validator';
-import { TipoCosto } from '../../articoli-costi-cf/infrastructure/persistence/relational/entities/articoli-costi-cf.entity';
+import { TipoTrasferta } from '../../articoli-costi-cf/infrastructure/persistence/relational/entities/articoli-costi-cf.entity';
 
 export class CreateArticoliCostiCfCommDto {
   @ApiProperty({
@@ -8,7 +8,7 @@ export class CreateArticoliCostiCfCommDto {
     type: () => String,
   })
   @IsString()
-  TIPO_COSTO?: TipoCosto;
+  TIPO_TRASFERTA?: TipoTrasferta;
 
   @ApiProperty({
     required: false,

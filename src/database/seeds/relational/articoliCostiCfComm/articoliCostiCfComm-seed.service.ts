@@ -15,34 +15,34 @@ export class ArticoliCostiCfCommSeedService {
     const countAdmin = await this.repository.count({});
 
     if (!countAdmin) {
-      await this.repository.save(
-        this.repository.create({
-          COD_ART: '10140400099',
-          CF_COMM_ID: '000004_1',
-          TIPO_COSTO: 'IN_GIORNATA',
-        }),
-      );
-      await this.repository.save(
-        this.repository.create({
-          COD_ART: '10140400095',
-          CF_COMM_ID: '000004_1',
-          TIPO_COSTO: 'IN_GIORNATA_DOPO_21',
-        }),
-      );
-      await this.repository.save(
-        this.repository.create({
-          COD_ART: '10140400099',
-          CF_COMM_ID: '000004_1',
-          TIPO_COSTO: 'PERNOTTO_FUORISEDE_ANDATA',
-        }),
-      );
-      await this.repository.save(
-        this.repository.create({
-          COD_ART: '10040900002',
-          CF_COMM_ID: '000004_1',
-          TIPO_COSTO: 'PERNOTTO_FUORISEDE_RITORNO',
-        }),
-      );
+      // await this.repository.save(
+      //   this.repository.create({
+      //     COD_ART: '10140400099',
+      //     CF_COMM_ID: '000004_1',
+      //     TIPO_TRASFERTA: 'in_giornata',
+      //   }),
+      // );
+      // await this.repository.save(
+      //   this.repository.create({
+      //     COD_ART: '10140400095',
+      //     CF_COMM_ID: '000004_1',
+      //     TIPO_TRASFERTA: 'in_giornata_dopo_21',
+      //   }),
+      // );
+      // await this.repository.save(
+      //   this.repository.create({
+      //     COD_ART: '10140400099',
+      //     CF_COMM_ID: '000004_1',
+      //     TIPO_TRASFERTA: 'fuori_sede_andata',
+      //   }),
+      // );
+      // await this.repository.save(
+      //   this.repository.create({
+      //     COD_ART: '10040900002',
+      //     CF_COMM_ID: '000004_1',
+      //     TIPO_TRASFERTA: 'fuori_sede_ritorno',
+      //   }),
+      // );
     }
   }
 }

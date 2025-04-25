@@ -9,7 +9,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { ArtAnaEntity } from '../../../../../art-ana/infrastructure/persistence/relational/entities/art-ana.entity';
-import { TipoCosto } from '../../../../../articoli-costi-cf/infrastructure/persistence/relational/entities/articoli-costi-cf.entity';
+import { TipoTrasferta } from '../../../../../articoli-costi-cf/infrastructure/persistence/relational/entities/articoli-costi-cf.entity';
 import { CfCommEntity } from '../../../../../cf-comms/infrastructure/persistence/relational/entities/cf-comm.entity';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
 
@@ -20,7 +20,7 @@ export class ArticoliCostiCfCommEntity extends EntityRelationalHelper {
   @Column({
     type: String,
   })
-  TIPO_COSTO?: TipoCosto;
+  TIPO_TRASFERTA?: TipoTrasferta;
 
   @Column({
     nullable: true,

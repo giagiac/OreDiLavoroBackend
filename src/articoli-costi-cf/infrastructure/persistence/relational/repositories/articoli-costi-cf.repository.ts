@@ -60,7 +60,7 @@ export class ArticoliCostiCfRelationalRepository
     await this.articoliCostiCfRepository.manager.transaction(async () => {
       const entity: ArticoliCostiCfEntity | null =
         await this.articoliCostiCfRepository.findOne({
-          where: { COD_CF: payload.COD_CF, TIPO_COSTO: payload.TIPO_COSTO },
+          where: { COD_CF: payload.COD_CF, TIPO_TRASFERTA: payload.TIPO_TRASFERTA },
         });
 
       if (entity) {
@@ -86,8 +86,8 @@ export class ArticoliCostiCfRelationalRepository
         .leftJoinAndSelect('articoliCostiCf.artAna', 'artAna') // Assumi che la relazione sia "artAna"
         .leftJoinAndSelect('artAna.artCosti', 'artCosti')
         .where('articoliCostiCf.COD_CF = :COD_CF', { COD_CF: payload.COD_CF })
-        .andWhere('articoliCostiCf.TIPO_COSTO = :TIPO_COSTO', {
-          TIPO_COSTO: payload.TIPO_COSTO,
+        .andWhere('articoliCostiCf.TIPO_TRASFERTA = :TIPO_TRASFERTA', {
+          TIPO_TRASFERTA: payload.TIPO_TRASFERTA,
         })
         .getOne();
 

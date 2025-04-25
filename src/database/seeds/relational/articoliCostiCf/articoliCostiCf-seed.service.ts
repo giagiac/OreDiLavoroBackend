@@ -19,28 +19,28 @@ export class ArticoliCostiCfSeedService {
         this.repository.create({
           COD_ART: '10030100003',
           COD_CF: '000004',
-          TIPO_COSTO: 'IN_GIORNATA',
+          TIPO_TRASFERTA: 'in_giornata',
         }),
       );
       await this.repository.save(
         this.repository.create({
           COD_ART: '10070500002',
           COD_CF: '000004',
-          TIPO_COSTO: 'IN_GIORNATA_DOPO_21',
+          TIPO_TRASFERTA: 'in_giornata_dopo_21',
         }),
       );
       await this.repository.save(
         this.repository.create({
           COD_ART: '10040900009',
           COD_CF: '000004',
-          TIPO_COSTO: 'PERNOTTO_FUORISEDE_ANDATA',
+          TIPO_TRASFERTA: 'fuori_sede_andata',
         }),
       );
       await this.repository.save(
         this.repository.create({
           COD_ART: '10040900008',
           COD_CF: '000004',
-          TIPO_COSTO: 'PERNOTTO_FUORISEDE_RITORNO',
+          TIPO_TRASFERTA: 'fuori_sede_ritorno',
         }),
       );
     }

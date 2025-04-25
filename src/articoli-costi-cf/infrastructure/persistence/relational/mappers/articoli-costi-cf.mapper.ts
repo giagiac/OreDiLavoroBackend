@@ -5,7 +5,7 @@ import { ArticoliCostiCfEntity } from '../entities/articoli-costi-cf.entity';
 export class ArticoliCostiCfMapper {
   static toDomain(raw: ArticoliCostiCfEntity): ArticoliCostiCf {
     const domainEntity = new ArticoliCostiCf();
-    domainEntity.TIPO_COSTO = raw.TIPO_COSTO;
+    domainEntity.TIPO_TRASFERTA = raw.TIPO_TRASFERTA;
 
     domainEntity.COD_ART = raw.COD_ART;
 
@@ -15,7 +15,7 @@ export class ArticoliCostiCfMapper {
 
     domainEntity.COD_CF = raw.COD_CF;
     domainEntity.COD_ART = raw.COD_ART;
-    domainEntity.TIPO_COSTO = raw.TIPO_COSTO;
+    domainEntity.TIPO_TRASFERTA = raw.TIPO_TRASFERTA;
 
     if (raw.artAna) {
       domainEntity.artAna = ArtAnaMapper.toDomain(raw.artAna);
@@ -26,7 +26,7 @@ export class ArticoliCostiCfMapper {
 
   static toPersistence(domainEntity: ArticoliCostiCf): ArticoliCostiCfEntity {
     const persistenceEntity = new ArticoliCostiCfEntity();
-    persistenceEntity.TIPO_COSTO = domainEntity.TIPO_COSTO;
+    persistenceEntity.TIPO_TRASFERTA = domainEntity.TIPO_TRASFERTA;
     persistenceEntity.COD_ART = domainEntity.COD_ART;
     persistenceEntity.COD_CF = domainEntity.COD_CF;
 
