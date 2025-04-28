@@ -27,10 +27,14 @@ import {
 } from '../utils/dto/infinity-pagination-response.dto';
 import { infinityPagination } from '../utils/infinity-pagination';
 import { FindAllScheduleTasksDto } from './dto/find-all-schedule-tasks.dto';
+import { RolesGuard } from '../roles/roles.guard';
+import { RoleEnum } from '../roles/roles.enum';
+import { Roles } from '../roles/roles.decorator';
 
 @ApiTags('Scheduletasks')
 @ApiBearerAuth()
-@UseGuards(AuthGuard('jwt'))
+@Roles(RoleEnum.admin)
+@UseGuards(AuthGuard('jwt'), RolesGuard)
 @Controller({
   path: 'schedule-tasks',
   version: '1',
@@ -76,6 +80,19 @@ export class ScheduleTasksController {
     return await this.scheduleTasksService.findAllEsec();
   }
 
+  @Get('find-all-esec-by-id/:id')
+  @ApiParam({
+    name: 'id',
+    type: String,
+    required: true,
+  })
+  @ApiOkResponse({
+    type: ScheduleTasks, // Consider changing the return type of findAllEsecById to Promise<ScheduleTasks> or adjust this type
+  })
+  async findAllEsecById(@Param('id') id: string): Promise<any> {
+    return await this.scheduleTasksService.findAllEsecById(id);
+  }
+
   @Get(':id')
   @ApiParam({
     name: 'id',
@@ -113,13 +130,5 @@ export class ScheduleTasksController {
   })
   remove(@Param('id') id: string) {
     return this.scheduleTasksService.remove(id);
-  }
-
-  // -------------------------------------------------------
-
-  @Post('trigger')
-  async triggerAsyncTask() {
-    await this.scheduleTasksService.myAsyncTask();
-    return { message: 'Attività asincrona avviata tramite API.' };
   }
 }

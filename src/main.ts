@@ -15,17 +15,16 @@ import validationOptions from './utils/validation-options';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    cors: false,
-    // {
-    //   origin: [
-    //     'https://ore-di-lavoro-frontend.vercel.app', // <--- Sostituisci con l'URL esatto della tua app Vercel
-    //     // Aggiungi qui altre origini se necessario (es. per sviluppo locale)
-    //     // 'http://localhost:3000',
-    //   ],
-    //   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS', // Specifica i metodi consentiti
-    //   allowedHeaders: 'Content-Type,Accept,Authorization', // Specifica gli header consentiti
-    //   credentials: true, // <-- MOLTO IMPORTANTE se usi cookie o header Authorization
-    // },
+    //false,
+    cors: {
+      origin: [
+        'https://ore-di-lavoro-frontend.vercel.app', // <--- Sostituisci con l'URL esatto della tua app Vercel
+        'http://192.168.5.110:3000', // Aggiungi qui altre origini se necessario (es. per sviluppo locale)
+      ],
+      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS', // Specifica i metodi consentiti
+      allowedHeaders: 'Content-Type,Accept,Authorization,x-custom-lang', // Specifica gli header consentiti
+      credentials: true, // <-- MOLTO IMPORTANTE se usi cookie o header Authorization
+    },
   });
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
   const configService = app.get(ConfigService<AllConfigType>);

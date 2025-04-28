@@ -14,7 +14,7 @@ export abstract class ScheduleTasksRepository {
     paginationOptions: IPaginationOptions;
   }): Promise<ScheduleTasks[]>;
 
-  abstract findAllEsec(): Promise<any>;
+  abstract findAllEsec(id: ScheduleTasks['id'] | null): Promise<any>;
 
   abstract findById(
     id: ScheduleTasks['id'],

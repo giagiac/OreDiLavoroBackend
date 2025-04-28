@@ -152,7 +152,7 @@ export class ScheduleTasksRelationalRepository
 
   cfSedePrincipale: CfEntity;
 
-  async findAllEsec(): Promise<any> {
+  async findAllEsec(id: ScheduleTasks['id'] | null): Promise<any> {
     // const esecs = this.epsNestjsOrpEffCicliEsecEntity.findAndCount()
     // return esecs;
 
@@ -201,6 +201,10 @@ export class ScheduleTasksRelationalRepository
             'CODICE_BREVE',
           )
           .andWhere('SYNCED = 0 OR SYNCED IS NULL');
+
+        if (id) {
+          entitiesSql.andWhere('epsNestjsOrpEffCicliEsec.id = :id', { id });
+        }
 
         const entities = await entitiesSql.getMany();
 
@@ -448,14 +452,14 @@ export class ScheduleTasksRelationalRepository
       }
 
       const max = await manager
-      .getRepository(HypServReq2Entity)
-      .createQueryBuilder()
-      .select('MAX(PROGR) + 1', 'maxProgr')
-      .getRawOne();
+        .getRepository(HypServReq2Entity)
+        .createQueryBuilder()
+        .select('MAX(PROGR) + 1', 'maxProgr')
+        .getRawOne();
 
       // imposto in modo secco il COD_ART tra i componenti dell'ODP
 
-      if(entity.COD_ART != null){
+      if (entity.COD_ART != null) {
         if (entity.orpEffCicli == null) {
           await this.SalvoConErrore(
             TIPO_ERRORI_SYNC.MANCANZA_ORD_CLI,
@@ -488,7 +492,7 @@ export class ScheduleTasksRelationalRepository
             },
           ])
           .execute();
-          return
+        return;
       }
 
       if (entity.orpEffCicli?.linkOrpOrd?.length ?? 0 > 0) {

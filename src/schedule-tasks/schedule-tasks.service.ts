@@ -42,7 +42,11 @@ export class ScheduleTasksService implements OnApplicationBootstrap {
   }
 
   findAllEsec() {
-    return this.scheduleTasksRepository.findAllEsec();
+    return this.scheduleTasksRepository.findAllEsec(null);
+  }
+
+  findAllEsecById(id: ScheduleTasks['id']) {
+    return this.scheduleTasksRepository.findAllEsec(id);
   }
 
   findById(id: ScheduleTasks['id']) {
@@ -81,41 +85,41 @@ export class ScheduleTasksService implements OnApplicationBootstrap {
 
   // private readonly logger = new Logger(ScheduleTasksService.name);
 
-  async createEsec() {
-    // Do not remove comment below.
-    // <creating-property />
+  // async createEsec() {
+  //   // Do not remove comment below.
+  //   // <creating-property />
 
-    // this.epsNestjsOrpEffCicliEsecRepository.findAllEsec()
+  //   // this.epsNestjsOrpEffCicliEsecRepository.findAllEsec()
 
-    // return this.scheduleTasksRepository.create({
-    //   // Do not remove comment below.
-    //   // <creating-property-payload />
-    // });
+  //   // return this.scheduleTasksRepository.create({
+  //   //   // Do not remove comment below.
+  //   //   // <creating-property-payload />
+  //   // });
 
-    // const allEsec = this.scheduleTasksRepository.findAllEsec();
+  //   // const allEsec = this.scheduleTasksRepository.findAllEsec();
 
-    return [];
-  }
+  //   return [];
+  // }
 
-  async myAsyncTask() {
-    this.createEsec();
-    this.logger.log('2. Esecuzione della funzione asincrona...');
-    // Qui inserisci la logica della tua funzione
-    await new Promise((resolve) => setTimeout(resolve, 2000)); // Esempio di operazione asincrona
-    await this.myAsyncTask2();
-    this.logger.log('3. Funzione asincrona completata.');
-  }
+  // async myAsyncTask() {
+  //   this.createEsec();
+  //   this.logger.log('2. Esecuzione della funzione asincrona...');
+  //   // Qui inserisci la logica della tua funzione
+  //   await new Promise((resolve) => setTimeout(resolve, 2000)); // Esempio di operazione asincrona
+  //   await this.myAsyncTask2();
+  //   this.logger.log('3. Funzione asincrona completata.');
+  // }
 
-  async myAsyncTask2() {
-    this.logger.log('4. Esecuzione della funzione asincrona...');
-    // Qui inserisci la logica della tua funzione
-    // this.appReq3HypServRepository.create({
-    //   COD_REQ3_HYPSERV: Math.floor(Math.random() * 1000000).toString(),
-    // })
-    this.logger.log('5. Funzione asincrona completata.');
-  }
+  // async myAsyncTask2() {
+  //   this.logger.log('4. Esecuzione della funzione asincrona...');
+  //   // Qui inserisci la logica della tua funzione
+  //   // this.appReq3HypServRepository.create({
+  //   //   COD_REQ3_HYPSERV: Math.floor(Math.random() * 1000000).toString(),
+  //   // })
+  //   this.logger.log('5. Funzione asincrona completata.');
+  // }
 
-  @Cron('*/60 * * * * *', {
+  @Cron('59 59 23 * * *', {
     // Esegue la funzione ogni giorno a mezzanotte (00:00)
     name: 'myDailyTask',
     timeZone: 'Europe/Rome', // Specifica il fuso orario (opzionale, ma consigliato)
@@ -124,6 +128,7 @@ export class ScheduleTasksService implements OnApplicationBootstrap {
   })
   async handleCron() {
     this.logger.log("1. Avvio dell'attività pianificata...");
-    await this.myAsyncTask();
+    // await this.myAsyncTask();
+    return await this.scheduleTasksRepository.findAllEsec(null);
   }
 }
