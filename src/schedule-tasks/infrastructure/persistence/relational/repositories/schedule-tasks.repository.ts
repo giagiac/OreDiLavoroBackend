@@ -424,7 +424,11 @@ export class ScheduleTasksRelationalRepository
         .getRepository(EpsNestjsOrpEffCicliEsecEntity)
         .createQueryBuilder()
         .update()
-        .set({ SYNCED: 1, APP_REQ3_HYPSERV_COD_CHIAVE: entity.id })
+        .set({
+          SYNCED: 1,
+          APP_REQ3_HYPSERV_COD_CHIAVE: entity.id,
+          KM: kmManuali,
+        })
         .where('id = :id', { id: entity.id })
         .execute();
     } else {
@@ -459,7 +463,10 @@ export class ScheduleTasksRelationalRepository
 
       // imposto in modo secco il COD_ART tra i componenti dell'ODP
 
-      if (entity.COD_ART != null) {
+      if (
+        entity.COD_ART != null &&
+        entity.TIPO_TRASFERTA === 'step1_KmAutista'
+      ) {
         if (entity.orpEffCicli == null) {
           await this.SalvoConErrore(
             TIPO_ERRORI_SYNC.MANCANZA_ORD_CLI,
@@ -577,6 +584,18 @@ export class ScheduleTasksRelationalRepository
                 },
               ])
               .execute();
+
+            const update = await manager
+              .getRepository(EpsNestjsOrpEffCicliEsecEntity)
+              .createQueryBuilder()
+              .update()
+              .set({
+                SYNCED: 1,
+                APP_REQ3_HYPSERV_COD_CHIAVE: entity.id,
+                KM: Number(km.replaceAll(',', '.')),
+              })
+              .where('id = :id', { id: entity.id })
+              .execute();
           } else {
             // cerco nella testata
             const cf = entity.orpEffCicli?.linkOrpOrd?.[0]?.ordCliRighe.cf;
@@ -648,15 +667,19 @@ export class ScheduleTasksRelationalRepository
                 },
               ])
               .execute();
-          }
 
-          const update = await manager
-            .getRepository(EpsNestjsOrpEffCicliEsecEntity)
-            .createQueryBuilder()
-            .update()
-            .set({ SYNCED: 1, APP_REQ3_HYPSERV_COD_CHIAVE: entity.id })
-            .where('id = :id', { id: entity.id })
-            .execute();
+            const update = await manager
+              .getRepository(EpsNestjsOrpEffCicliEsecEntity)
+              .createQueryBuilder()
+              .update()
+              .set({
+                SYNCED: 1,
+                APP_REQ3_HYPSERV_COD_CHIAVE: entity.id,
+                KM: Number(km.replaceAll(',', '.')),
+              })
+              .where('id = :id', { id: entity.id })
+              .execute();
+          }
         } else {
           await this.SalvoConErrore(
             TIPO_ERRORI_SYNC.MANCANZA_ORD_CLI_RIGHE_COD_CF,
