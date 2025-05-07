@@ -1,22 +1,45 @@
-FROM node:22.13.1-alpine
+# 1. Development stage: Build the application
+FROM node:20-alpine AS development
 
-RUN apk add --no-cache bash
-RUN npm i -g @nestjs/cli typescript ts-node
+# Set the working directory in the container
+WORKDIR /app
 
-COPY package*.json /tmp/app/
-RUN cd /tmp/app && npm install
+# Copy package.json and package-lock.json
+COPY package*.json ./
 
-COPY . /usr/src/app
-RUN cp -a /tmp/app/node_modules /usr/src/app
-COPY ./wait-for-it.sh /opt/wait-for-it.sh
-RUN chmod +x /opt/wait-for-it.sh
-COPY ./startup.relational.dev.sh /opt/startup.relational.dev.sh
-RUN chmod +x /opt/startup.relational.dev.sh
-RUN sed -i 's/\r//g' /opt/wait-for-it.sh
-RUN sed -i 's/\r//g' /opt/startup.relational.dev.sh
+# Install all dependencies (including devDependencies needed for build)
+RUN npm install
 
-WORKDIR /usr/src/app
-RUN if [ ! -f .env ]; then cp env-example-relational .env; fi
+# Copy the rest of the application source code
+COPY . .
+
+# Build the TypeScript application
 RUN npm run build
 
-CMD ["/opt/startup.relational.dev.sh"]
+# 2. Production stage: Setup the final image
+FROM node:20-alpine AS production
+
+# Set environment variable
+ARG NODE_ENV=production
+ENV NODE_ENV=${NODE_ENV}
+
+# Set the working directory
+WORKDIR /app
+
+# Copy package.json and package-lock.json
+COPY package*.json ./
+
+# Install only production dependencies and ignore scripts
+# If you have Oracle dependencies requiring LD_LIBRARY_PATH, ensure the production environment or base image has them.
+# Consider adding RUN apk add --no-cache libaio if Oracle Instant Client is needed and not in the base image.
+RUN npm install --omit=dev --ignore-scripts
+
+# Copy the built application from the development stage
+COPY --from=development /app/dist ./dist
+
+# Expose the port the app runs on (default 3000, but can be overridden by .env)
+EXPOSE 3000
+
+# Command to run the application
+# This uses the 'start:prod' script from package.json
+CMD ["npm", "run", "start:prod"]
