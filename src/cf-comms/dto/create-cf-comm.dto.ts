@@ -1,8 +1,8 @@
 import {
+  IsNumber,
   IsOptional,
   // decorators here
   IsString,
-  IsNumber,
 } from 'class-validator';
 
 import {
@@ -17,7 +17,7 @@ export class CreateCfCommDto {
   })
   @IsOptional()
   @IsString()
-  NODE_SEDE?: string | null;
+  NOTE_SEDE?: string | null;
 
   @ApiProperty({
     required: false,
@@ -111,22 +111,6 @@ export class CreateCfCommDto {
   })
   @IsString()
   NUM_SEDE: string;
-
-  @ApiProperty({
-    required: false,
-    type: () => Number,
-  })
-  @IsOptional()
-  @IsNumber()
-  X_CIVICO_NUMERO?: number | null;
-
-  @ApiProperty({
-    required: false,
-    type: () => String,
-  })
-  @IsOptional()
-  @IsString()
-  X_FRAZIONE?: string | null;
 
   @ApiProperty({
     required: false,

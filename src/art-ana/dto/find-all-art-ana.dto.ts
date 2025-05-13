@@ -1,12 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { plainToInstance, Transform, Type } from 'class-transformer';
-import {
-  IsArray,
-  IsNumber,
-  IsOptional,
-  IsString,
-  ValidateNested,
-} from 'class-validator';
+import { IsArray, IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { ArtAna } from '../domain/art-ana';
 import { OthersFiltersDto } from '../../utils/dto/others-filters';
 import { FilterDto } from '../../utils/dto/filter-column';
@@ -57,22 +51,14 @@ export class FindAllArtAnaDto {
 
   @IsArray()
   @IsOptional()
-  @Transform(({ value }) =>
-    value
-      ? plainToInstance(Array<OthersFiltersDto<JoinDto>>, JSON.parse(value))
-      : undefined,
-  )
+  @Transform(({ value }) => (value ? plainToInstance(Array<OthersFiltersDto<JoinDto>>, JSON.parse(value)) : undefined))
   @ValidateNested({ each: true })
   @Type(() => OthersFiltersDto)
   othersFilters?: OthersFiltersDto<JoinDto>[] | null;
 
   @IsArray()
   @IsOptional()
-  @Transform(({ value }) =>
-    value
-      ? plainToInstance(Array<FilterDto<ArtAnaDto>>, JSON.parse(value))
-      : undefined,
-  )
+  @Transform(({ value }) => (value ? plainToInstance(Array<FilterDto<ArtAnaDto>>, JSON.parse(value)) : undefined))
   @ValidateNested({ each: true })
   @Type(() => FilterDto)
   filters?: FilterDto<ArtAnaDto>[] | null;
@@ -80,9 +66,7 @@ export class FindAllArtAnaDto {
   @IsArray()
   @IsOptional()
   @Transform(({ value }) => {
-    return value
-      ? plainToInstance(Array<SortArtAnaDto>, JSON.parse(value))
-      : undefined;
+    return value ? plainToInstance(Array<SortArtAnaDto>, JSON.parse(value)) : undefined;
   })
   @ValidateNested({ each: true })
   @Type(() => SortArtAnaDto)

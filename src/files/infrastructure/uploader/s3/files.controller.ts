@@ -1,19 +1,7 @@
-import {
-  Controller,
-  Post,
-  UploadedFile,
-  UseGuards,
-  UseInterceptors,
-} from '@nestjs/common';
+import { Controller, Post, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
-import {
-  ApiBearerAuth,
-  ApiBody,
-  ApiConsumes,
-  ApiCreatedResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
 import { FileResponseDto } from './dto/file-response.dto';
 import { FilesS3Service } from './files.service';
 
@@ -44,9 +32,7 @@ export class FilesS3Controller {
     },
   })
   @UseInterceptors(FileInterceptor('file'))
-  async uploadFile(
-    @UploadedFile() file: Express.MulterS3.File,
-  ): Promise<FileResponseDto> {
+  async uploadFile(@UploadedFile() file: Express.MulterS3.File): Promise<FileResponseDto> {
     return this.filesService.create(file);
   }
 }

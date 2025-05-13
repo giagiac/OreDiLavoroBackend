@@ -25,6 +25,14 @@ export class CreateEpsNestjsOrpEffCicliEsecDto {
   })
   @IsOptional()
   @IsString()
+  ERROR_SYNC?: string | null;
+
+  @ApiProperty({
+    required: false,
+    type: () => String,
+  })
+  @IsOptional()
+  @IsString()
   APP_REQ3_HYPSERV_COD_CHIAVE?: string | null;
 
   @ApiProperty({
@@ -57,14 +65,6 @@ export class CreateEpsNestjsOrpEffCicliEsecDto {
   @IsOptional()
   @IsNumber()
   NUM_RIGA?: number | null;
-
-  @ApiProperty({
-    required: false,
-    type: () => Number,
-  })
-  @IsOptional()
-  @IsNumber()
-  SYNCED?: number | null;
 
   @ApiProperty({
     required: false,

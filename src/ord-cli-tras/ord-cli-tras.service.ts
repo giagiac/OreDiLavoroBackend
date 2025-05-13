@@ -41,11 +41,7 @@ export class OrdCliTrasService {
     });
   }
 
-  findAllWithPagination({
-    paginationOptions,
-  }: {
-    paginationOptions: IPaginationOptions;
-  }) {
+  findAllWithPagination({ paginationOptions }: { paginationOptions: IPaginationOptions }) {
     return this.ordCliTrasRepository.findAllWithPagination({
       paginationOptions: {
         page: paginationOptions.page,

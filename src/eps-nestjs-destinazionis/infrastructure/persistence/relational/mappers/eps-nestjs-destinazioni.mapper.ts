@@ -20,9 +20,7 @@ export class EpsNestjsDestinazioniMapper {
     return domainEntity;
   }
 
-  static toPersistence(
-    domainEntity: EpsNestjsDestinazioni,
-  ): EpsNestjsDestinazioniEntity {
+  static toPersistence(domainEntity: EpsNestjsDestinazioni): EpsNestjsDestinazioniEntity {
     const persistenceEntity = new EpsNestjsDestinazioniEntity();
     persistenceEntity.RESPONSE = domainEntity.RESPONSE;
 

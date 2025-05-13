@@ -20,33 +20,21 @@ export class CfCommRelationalRepository implements CfCommRepository {
 
   async create(data: CfComm): Promise<CfComm> {
     const persistenceModel = CfCommMapper.toPersistence(data);
-    const newEntity = await this.cfCommRepository.save(
-      this.cfCommRepository.create(persistenceModel),
-    );
+    const newEntity = await this.cfCommRepository.save(this.cfCommRepository.create(persistenceModel));
     return CfCommMapper.toDomain(newEntity);
   }
 
-  applicaWhereLike(
-    columnName: string,
-    queryBuilder: SelectQueryBuilder<CfCommEntity>,
-    filtri: Array<FilterDto<CfCommDto>> | null,
-  ) {
+  applicaWhereLike(columnName: string, queryBuilder: SelectQueryBuilder<CfCommEntity>, filtri: Array<FilterDto<CfCommDto>> | null) {
     if (filtri && filtri.length > 0) {
       filtri.forEach((filtro) => {
         if (filtro.columnName && filtro.value) {
-          queryBuilder.andWhere(
-            `LOWER(${columnName}.${filtro.columnName}) like LOWER('${filtro.value}%')`,
-          );
+          queryBuilder.andWhere(`LOWER(${columnName}.${filtro.columnName}) like LOWER('${filtro.value}%')`);
         }
       });
     }
   }
 
-  applicaWhere(
-    columnName: string,
-    queryBuilder: SelectQueryBuilder<CfCommEntity>,
-    filtri: Array<FilterDto<CfCommDto>> | null,
-  ) {
+  applicaWhere(columnName: string, queryBuilder: SelectQueryBuilder<CfCommEntity>, filtri: Array<FilterDto<CfCommDto>> | null) {
     if (filtri && filtri.length > 0) {
       filtri.forEach((filtro) => {
         if (filtro.columnName && filtro.value) {
@@ -60,18 +48,11 @@ export class CfCommRelationalRepository implements CfCommRepository {
     }
   }
 
-  applicaSort(
-    columnName: string,
-    queryBuilder: SelectQueryBuilder<CfCommEntity>,
-    sort: Array<SortCfCommDto> | null,
-  ) {
+  applicaSort(columnName: string, queryBuilder: SelectQueryBuilder<CfCommEntity>, sort: Array<SortCfCommDto> | null) {
     if (sort && sort.length > 0) {
       sort.forEach((sortItem) => {
         if (sortItem.orderBy && sortItem.order) {
-          queryBuilder.addOrderBy(
-            `LPAD(${columnName}.${sortItem.orderBy},10)`,
-            sortItem.order.toUpperCase() as any,
-          );
+          queryBuilder.addOrderBy(`LPAD(${columnName}.${sortItem.orderBy},10)`, sortItem.order.toUpperCase() as any);
         }
       });
     }
@@ -191,10 +172,7 @@ export class CfCommRelationalRepository implements CfCommRepository {
   //   return aEntities.map((entity) => CfCommMapper.toDomain(entity));
   // }
 
-  async update(
-    id: CfComm['COD_CF'],
-    payload: Partial<CfComm>,
-  ): Promise<CfComm> {
+  async update(id: CfComm['COD_CF'], payload: Partial<CfComm>): Promise<CfComm> {
     const entity = await this.cfCommRepository.findOne({
       where: { CF_COMM_ID: id },
     });

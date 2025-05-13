@@ -13,12 +13,11 @@
         },
         {
             "type": "node",
-            "request": "launch",
+            "request": "attach",
             "name": "Launch Program",
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${file}",
             "preLaunchTask": "tsc: build - tsconfig.json",
             "outFiles": [
                 "${workspaceFolder}/dist/**/*.js"

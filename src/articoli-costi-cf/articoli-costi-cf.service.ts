@@ -11,11 +11,7 @@ export class ArticoliCostiCfService {
     private readonly articoliCostiCfRepository: ArticoliCostiCfRepository,
   ) {}
 
-  findAllWithPagination({
-    paginationOptions,
-  }: {
-    paginationOptions: IPaginationOptions;
-  }) {
+  findAllWithPagination({ paginationOptions }: { paginationOptions: IPaginationOptions }) {
     return this.articoliCostiCfRepository.findAllWithPagination({
       paginationOptions: {
         page: paginationOptions.page,

@@ -10,19 +10,14 @@ import { ScheduleTasksRelationalRepository } from './repositories/schedule-tasks
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([
-      ScheduleTasksEntity,
-      EpsNestjsOrpEffCicliEsecEntity,
-      ArticoliCostiCfEntity,
-      ArticoliCostiCfCommEntity
-    ]),
+    TypeOrmModule.forFeature([ScheduleTasksEntity, EpsNestjsOrpEffCicliEsecEntity, ArticoliCostiCfEntity, ArticoliCostiCfCommEntity]),
     ScheduleModule.forRoot(),
   ],
   providers: [
     {
       provide: ScheduleTasksRepository,
       useClass: ScheduleTasksRelationalRepository,
-    }
+    },
   ],
   exports: [ScheduleTasksRepository],
 })

@@ -4,6 +4,4 @@
 import { PartialType } from '@nestjs/swagger';
 import { CreateArticoliCostiCfCommDto } from './create-articoli-costi-cf-comm.dto';
 
-export class UpdateArticoliCostiCfCommDto extends PartialType(
-  CreateArticoliCostiCfCommDto,
-) {}
+export class UpdateArticoliCostiCfCommDto extends PartialType(CreateArticoliCostiCfCommDto) {}

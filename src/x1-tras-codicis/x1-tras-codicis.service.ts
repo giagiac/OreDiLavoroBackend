@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { CreateX1TrasCodiciDto } from './dto/create-x1-tras-codici.dto';
-import { UpdateX1TrasCodiciDto } from './dto/update-x1-tras-codici.dto';
-import { X1TrasCodiciRepository } from './infrastructure/persistence/x1-tras-codici.repository';
 import { IPaginationOptions } from '../utils/types/pagination-options';
 import { X1TrasCodici } from './domain/x1-tras-codici';
+import { UpdateX1TrasCodiciDto } from './dto/update-x1-tras-codici.dto';
+import { X1TrasCodiciRepository } from './infrastructure/persistence/x1-tras-codici.repository';
+import { CreateX1TrasCodiciDto } from './dto/create-x1-tras-codici.dto';
 
 @Injectable()
 export class X1TrasCodicisService {
@@ -23,11 +23,7 @@ export class X1TrasCodicisService {
     // });
   }
 
-  findAllWithPagination({
-    paginationOptions,
-  }: {
-    paginationOptions: IPaginationOptions;
-  }) {
+  findAllWithPagination({ paginationOptions }: { paginationOptions: IPaginationOptions }) {
     return this.x1TrasCodiciRepository.findAllWithPagination({
       paginationOptions: {
         page: paginationOptions.page,

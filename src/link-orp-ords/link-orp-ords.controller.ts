@@ -1,30 +1,11 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  UseGuards,
-  Query,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
 import { LinkOrpOrdsService } from './link-orp-ords.service';
 import { CreateLinkOrpOrdDto } from './dto/create-link-orp-ord.dto';
 import { UpdateLinkOrpOrdDto } from './dto/update-link-orp-ord.dto';
-import {
-  ApiBearerAuth,
-  ApiCreatedResponse,
-  ApiOkResponse,
-  ApiParam,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiParam, ApiTags } from '@nestjs/swagger';
 import { LinkOrpOrd } from './domain/link-orp-ord';
 import { AuthGuard } from '@nestjs/passport';
-import {
-  InfinityPaginationResponse,
-  InfinityPaginationResponseDto,
-} from '../utils/dto/infinity-pagination-response.dto';
+import { InfinityPaginationResponse, InfinityPaginationResponseDto } from '../utils/dto/infinity-pagination-response.dto';
 import { infinityPagination } from '../utils/infinity-pagination';
 import { FindAllLinkOrpOrdsDto } from './dto/find-all-link-orp-ords.dto';
 
@@ -50,9 +31,7 @@ export class LinkOrpOrdsController {
   @ApiOkResponse({
     type: InfinityPaginationResponse(LinkOrpOrd),
   })
-  async findAll(
-    @Query() query: FindAllLinkOrpOrdsDto,
-  ): Promise<InfinityPaginationResponseDto<LinkOrpOrd>> {
+  async findAll(@Query() query: FindAllLinkOrpOrdsDto): Promise<InfinityPaginationResponseDto<LinkOrpOrd>> {
     const page = query?.page ?? 1;
     let limit = query?.limit ?? 10;
     if (limit > 50) {
@@ -92,10 +71,7 @@ export class LinkOrpOrdsController {
   @ApiOkResponse({
     type: LinkOrpOrd,
   })
-  update(
-    @Param('id') id: string,
-    @Body() updateLinkOrpOrdDto: UpdateLinkOrpOrdDto,
-  ) {
+  update(@Param('id') id: string, @Body() updateLinkOrpOrdDto: UpdateLinkOrpOrdDto) {
     return this.linkOrpOrdsService.update(id, updateLinkOrpOrdDto);
   }
 

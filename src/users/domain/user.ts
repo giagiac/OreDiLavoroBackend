@@ -8,9 +8,7 @@ import { Status } from '../../statuses/domain/status';
 import { Operatori } from '../../operatoris/domain/operatori';
 
 // <database-block>
-const idType = (databaseConfig() as DatabaseConfig).isDocumentDatabase
-  ? String
-  : Number;
+const idType = (databaseConfig() as DatabaseConfig).isDocumentDatabase ? String : Number;
 // </database-block>
 
 export class User {

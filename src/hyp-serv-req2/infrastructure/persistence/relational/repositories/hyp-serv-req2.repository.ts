@@ -17,17 +17,11 @@ export class HypServReq2RelationalRepository implements HypServReq2Repository {
 
   async create(data: HypServReq2): Promise<HypServReq2> {
     const persistenceModel = HypServReq2Mapper.toPersistence(data);
-    const newEntity = await this.hypServReq2Repository.save(
-      this.hypServReq2Repository.create(persistenceModel),
-    );
+    const newEntity = await this.hypServReq2Repository.save(this.hypServReq2Repository.create(persistenceModel));
     return HypServReq2Mapper.toDomain(newEntity);
   }
 
-  async findAllWithPagination({
-    paginationOptions,
-  }: {
-    paginationOptions: IPaginationOptions;
-  }): Promise<HypServReq2[]> {
+  async findAllWithPagination({ paginationOptions }: { paginationOptions: IPaginationOptions }): Promise<HypServReq2[]> {
     const entities = await this.hypServReq2Repository.find({
       skip: (paginationOptions.page - 1) * paginationOptions.limit,
       take: paginationOptions.limit,
@@ -36,9 +30,7 @@ export class HypServReq2RelationalRepository implements HypServReq2Repository {
     return entities.map((entity) => HypServReq2Mapper.toDomain(entity));
   }
 
-  async findById(
-    COD_CHIAVE: HypServReq2['COD_CHIAVE'],
-  ): Promise<NullableType<HypServReq2>> {
+  async findById(COD_CHIAVE: HypServReq2['COD_CHIAVE']): Promise<NullableType<HypServReq2>> {
     const entity = await this.hypServReq2Repository.findOne({
       where: { COD_CHIAVE: String(COD_CHIAVE) },
     });
@@ -54,10 +46,7 @@ export class HypServReq2RelationalRepository implements HypServReq2Repository {
     return entities.map((entity) => HypServReq2Mapper.toDomain(entity));
   }
 
-  async update(
-    COD_CHIAVE: HypServReq2['COD_CHIAVE'],
-    payload: Partial<HypServReq2>,
-  ): Promise<HypServReq2> {
+  async update(COD_CHIAVE: HypServReq2['COD_CHIAVE'], payload: Partial<HypServReq2>): Promise<HypServReq2> {
     const entity = await this.hypServReq2Repository.findOne({
       where: { COD_CHIAVE: String(COD_CHIAVE) },
     });

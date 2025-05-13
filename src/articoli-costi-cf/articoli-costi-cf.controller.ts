@@ -1,27 +1,7 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Param,
-  Patch,
-  Query,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import {
-  ApiBearerAuth,
-  ApiCreatedResponse,
-  ApiOkResponse,
-  ApiParam,
-  ApiTags,
-} from '@nestjs/swagger';
-import {
-  InfinityPaginationResponse,
-  InfinityPaginationResponseDto,
-} from '../utils/dto/infinity-pagination-response.dto';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiParam, ApiTags } from '@nestjs/swagger';
+import { InfinityPaginationResponse, InfinityPaginationResponseDto } from '../utils/dto/infinity-pagination-response.dto';
 import { infinityPagination } from '../utils/infinity-pagination';
 import { ArticoliCostiCfService } from './articoli-costi-cf.service';
 import { ArticoliCostiCf } from './domain/articoli-costi-cf';
@@ -36,17 +16,13 @@ import { UpdateArticoliCostiCfDto } from './dto/update-articoli-costi-cf.dto';
   version: '1',
 })
 export class ArticoliCostiCfController {
-  constructor(
-    private readonly articoliCostiCfService: ArticoliCostiCfService,
-  ) {}
+  constructor(private readonly articoliCostiCfService: ArticoliCostiCfService) {}
 
   @Get()
   @ApiOkResponse({
     type: InfinityPaginationResponse(ArticoliCostiCf),
   })
-  async findAll(
-    @Query() query: FindAllArticoliCostiCfDto,
-  ): Promise<InfinityPaginationResponseDto<ArticoliCostiCf>> {
+  async findAll(@Query() query: FindAllArticoliCostiCfDto): Promise<InfinityPaginationResponseDto<ArticoliCostiCf>> {
     const page = query?.page ?? 1;
     let limit = query?.limit ?? 10;
     if (limit > 50) {

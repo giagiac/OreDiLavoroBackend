@@ -6,7 +6,7 @@ export class CfComm {
     type: () => String,
     nullable: true,
   })
-  NODE_SEDE?: string | null;
+  NOTE_SEDE?: string | null;
 
   @ApiProperty({
     type: () => String,
@@ -85,18 +85,6 @@ export class CfComm {
     nullable: false,
   })
   NUM_SEDE: string;
-
-  @ApiProperty({
-    type: () => Number,
-    nullable: true,
-  })
-  X_CIVICO_NUMERO?: number | null;
-
-  @ApiProperty({
-    type: () => String,
-    nullable: true,
-  })
-  X_FRAZIONE?: string | null;
 
   @ApiProperty({
     type: () => Array<ArticoliCostiCfComm>,

@@ -5,8 +5,7 @@ import { CfCommController } from './cf-comm.controller';
 import { CfCommService } from './cf-comm.service';
 import { RelationalCfCommPersistenceModule } from './infrastructure/persistence/relational/relational-persistence.module';
 
-const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig)
-  .isDocumentDatabase
+const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig).isDocumentDatabase
   ? RelationalCfCommPersistenceModule
   : RelationalCfCommPersistenceModule;
 

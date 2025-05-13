@@ -8,8 +8,7 @@ import { ScheduleTasksController } from './schedule-tasks.controller';
 import { ScheduleTasksService } from './schedule-tasks.service';
 import { HypServReq2Module } from '../hyp-serv-req2/hyp-serv-eq2.module';
 
-const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig)
-  .isDocumentDatabase
+const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig).isDocumentDatabase
   ? RelationalScheduleTasksPersistenceModule
   : RelationalScheduleTasksPersistenceModule;
 

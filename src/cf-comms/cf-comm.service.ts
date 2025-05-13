@@ -22,7 +22,7 @@ export class CfCommService {
     return this.cfCommRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
-      NODE_SEDE: createCfCommDto.NODE_SEDE,
+      NOTE_SEDE: createCfCommDto.NOTE_SEDE,
 
       RIFERIMENTO_SEDE: createCfCommDto.RIFERIMENTO_SEDE,
 
@@ -94,7 +94,7 @@ export class CfCommService {
     return this.cfCommRepository.update(id, {
       // Do not remove comment below.
       // <updating-property-payload />
-      NODE_SEDE: updateCfCommDto.NODE_SEDE,
+      NOTE_SEDE: updateCfCommDto.NOTE_SEDE,
 
       RIFERIMENTO_SEDE: updateCfCommDto.RIFERIMENTO_SEDE,
 

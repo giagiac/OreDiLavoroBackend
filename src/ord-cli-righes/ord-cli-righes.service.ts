@@ -28,11 +28,7 @@ export class OrdCliRighesService {
     // });
   }
 
-  findAllWithPagination({
-    paginationOptions,
-  }: {
-    paginationOptions: IPaginationOptions;
-  }) {
+  findAllWithPagination({ paginationOptions }: { paginationOptions: IPaginationOptions }) {
     return this.ordCliRigheRepository.findAllWithPagination({
       paginationOptions: {
         page: paginationOptions.page,

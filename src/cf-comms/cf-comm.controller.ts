@@ -1,24 +1,7 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  Post,
-  Query,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import {
-  ApiBearerAuth,
-  ApiCreatedResponse,
-  ApiOkResponse,
-  ApiParam,
-  ApiTags,
-} from '@nestjs/swagger';
-import {
-  InfinityPaginationResponse,
-  InfinityPaginationResponseDto,
-} from '../utils/dto/infinity-pagination-response.dto';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiParam, ApiTags } from '@nestjs/swagger';
+import { InfinityPaginationResponse, InfinityPaginationResponseDto } from '../utils/dto/infinity-pagination-response.dto';
 import { infinityPaginationQueryBuilder } from '../utils/infinity-pagination';
 import { CfCommService } from './cf-comm.service';
 import { CfComm } from './domain/cf-comm';
@@ -47,9 +30,7 @@ export class CfCommController {
   @ApiOkResponse({
     type: InfinityPaginationResponse(CfComm),
   })
-  async findAll(
-    @Query() query: FindAllCfCommDto,
-  ): Promise<InfinityPaginationResponseDto<CfComm>> {
+  async findAll(@Query() query: FindAllCfCommDto): Promise<InfinityPaginationResponseDto<CfComm>> {
     const page = query?.page ?? 1;
     let limit = query?.limit ?? 10;
     if (limit > 200) {
@@ -59,16 +40,14 @@ export class CfCommController {
     const filters = query.filters;
     const sort = query.sort;
 
-    const { data: cf, count } = await this.cfCommsService.findAllWithPagination(
-      {
-        paginationOptions: {
-          page,
-          limit,
-        },
-        filterOptions: filters,
-        sortOptions: sort,
+    const { data: cf, count } = await this.cfCommsService.findAllWithPagination({
+      paginationOptions: {
+        page,
+        limit,
       },
-    );
+      filterOptions: filters,
+      sortOptions: sort,
+    });
 
     return infinityPaginationQueryBuilder(cf, count);
   }

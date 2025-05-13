@@ -22,7 +22,6 @@ export class EpsNestjsOrpEffCicliEsecSeedService {
       const currentDate = new Date();
       await this.repository.save(
         this.repository.create({
-          SYNCED: 0,
           TEMPO_MINUTI_OP: 0,
           TEMPO_MINUTI_MACC: 0,
           NOTE: 'Una mia nota...',
@@ -42,7 +41,6 @@ export class EpsNestjsOrpEffCicliEsecSeedService {
       );
       await this.repository.save(
         this.repository.create({
-          SYNCED: 0,
           TEMPO_MINUTI_OP: 0,
           TEMPO_MINUTI_MACC: 0,
           NOTE: 'Una mia nota...',

@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { User } from '../users/domain/user';
+import { UserEntity } from '../users/infrastructure/persistence/relational/entities/user.entity';
 import { UsersService } from '../users/users.service';
 import { FilterDto, SortDto } from '../utils/dto/filter-column';
 import { IPaginationOptions } from '../utils/types/pagination-options';
@@ -8,7 +8,6 @@ import { CreateEpsNestjsOrpEffCicliEsecDto } from './dto/create-eps-nestjs-orp-e
 import { EpsNestjsOrpEffCicliEsecDto } from './dto/esp-nestjs-orp-eff-cicli-esec.dto';
 import { UpdateEpsNestjsOrpEffCicliEsecDto } from './dto/update-esp-nestjs-orp-eff-cicli-esec.dto';
 import { EpsNestjsOrpEffCicliEsecRepository } from './infrastructure/persistence/eps-nestjs-orp-eff-cicli-esec.repository';
-import { UserEntity } from '../users/infrastructure/persistence/relational/entities/user.entity';
 
 @Injectable()
 export class EpsNestjsOrpEffCicliEsecsService {
@@ -19,10 +18,7 @@ export class EpsNestjsOrpEffCicliEsecsService {
     // private sessionService: SessionService,
   ) {}
 
-  async create(
-    createEpsNestjsOrpEffCicliEsecDto: CreateEpsNestjsOrpEffCicliEsecDto,
-    user: UserEntity,
-  ) {
+  async create(createEpsNestjsOrpEffCicliEsecDto: CreateEpsNestjsOrpEffCicliEsecDto, user: UserEntity) {
     // Do not remove comment below.
     // <creating-property />
 
@@ -32,7 +28,7 @@ export class EpsNestjsOrpEffCicliEsecsService {
       throw new HttpException(
         {
           errors: {
-            message: 'Codice Operatore non definito',
+            message: 'Codice Operatore HG in tabella user non definito',
           },
         },
         HttpStatus.UNPROCESSABLE_ENTITY,
@@ -42,8 +38,9 @@ export class EpsNestjsOrpEffCicliEsecsService {
     return this.epsNestjsOrpEffCicliEsecRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
-      APP_REQ3_HYPSERV_COD_CHIAVE:
-        createEpsNestjsOrpEffCicliEsecDto.APP_REQ3_HYPSERV_COD_CHIAVE,
+      ERROR_SYNC: createEpsNestjsOrpEffCicliEsecDto.ERROR_SYNC,
+
+      APP_REQ3_HYPSERV_COD_CHIAVE: createEpsNestjsOrpEffCicliEsecDto.APP_REQ3_HYPSERV_COD_CHIAVE,
 
       HYPSERV_REQ2_COD_CHIAVE: createEpsNestjsOrpEffCicliEsecDto.HYPSERV_REQ2_COD_CHIAVE,
 
@@ -52,8 +49,6 @@ export class EpsNestjsOrpEffCicliEsecsService {
       TIPO_TRASFERTA: createEpsNestjsOrpEffCicliEsecDto.TIPO_TRASFERTA,
 
       NUM_RIGA: createEpsNestjsOrpEffCicliEsecDto.NUM_RIGA,
-
-      SYNCED: createEpsNestjsOrpEffCicliEsecDto.SYNCED,
 
       TEMPO_MINUTI_OP: createEpsNestjsOrpEffCicliEsecDto.TEMPO_MINUTI_OP,
 
@@ -65,11 +60,9 @@ export class EpsNestjsOrpEffCicliEsecsService {
 
       DATA_INIZIO: createEpsNestjsOrpEffCicliEsecDto.DATA_INIZIO,
 
-      TEMPO_OPERATORE:
-        createEpsNestjsOrpEffCicliEsecDto.TEMPO_OPERATORE?.toString(),
+      TEMPO_OPERATORE: createEpsNestjsOrpEffCicliEsecDto.TEMPO_OPERATORE?.toString(),
 
-      TEMPO_MACCHINA:
-        createEpsNestjsOrpEffCicliEsecDto.TEMPO_MACCHINA?.toString(),
+      TEMPO_MACCHINA: createEpsNestjsOrpEffCicliEsecDto.TEMPO_MACCHINA?.toString(),
 
       COD_OP: currentUser?.COD_OP,
 
@@ -98,12 +91,8 @@ export class EpsNestjsOrpEffCicliEsecsService {
   }) {
     const currentUser = await this.usersService.findById(user.id);
 
-    const DATA_INIZIO = filterOptions?.find(
-      (f) => f.columnName === 'DATA_INIZIO',
-    );
-    const DATA_FINE = filterOptions?.find(
-      (f) => f.columnName === 'DATA_INIZIO',
-    );
+    const DATA_INIZIO = filterOptions?.find((f) => f.columnName === 'DATA_INIZIO');
+    const DATA_FINE = filterOptions?.find((f) => f.columnName === 'DATA_INIZIO');
 
     const targetDateInizio = new Date();
     const targetDateFine = new Date();
@@ -162,8 +151,9 @@ export class EpsNestjsOrpEffCicliEsecsService {
     return this.epsNestjsOrpEffCicliEsecRepository.update(id, {
       // Do not remove comment below.
       // <updating-property-payload />
-      APP_REQ3_HYPSERV_COD_CHIAVE:
-        updateEpsNestjsOrpEffCicliEsecDto.APP_REQ3_HYPSERV_COD_CHIAVE,
+      ERROR_SYNC: updateEpsNestjsOrpEffCicliEsecDto.ERROR_SYNC,
+
+      APP_REQ3_HYPSERV_COD_CHIAVE: updateEpsNestjsOrpEffCicliEsecDto.APP_REQ3_HYPSERV_COD_CHIAVE,
 
       HYPSERV_REQ2_COD_CHIAVE: updateEpsNestjsOrpEffCicliEsecDto.HYPSERV_REQ2_COD_CHIAVE,
 
@@ -172,8 +162,6 @@ export class EpsNestjsOrpEffCicliEsecsService {
       TIPO_TRASFERTA: updateEpsNestjsOrpEffCicliEsecDto.TIPO_TRASFERTA,
 
       NUM_RIGA: updateEpsNestjsOrpEffCicliEsecDto.NUM_RIGA,
-
-      SYNCED: updateEpsNestjsOrpEffCicliEsecDto.SYNCED,
 
       TEMPO_MINUTI_OP: updateEpsNestjsOrpEffCicliEsecDto.TEMPO_MINUTI_OP,
 
@@ -185,11 +173,9 @@ export class EpsNestjsOrpEffCicliEsecsService {
 
       DATA_INIZIO: updateEpsNestjsOrpEffCicliEsecDto.DATA_INIZIO,
 
-      TEMPO_OPERATORE:
-        updateEpsNestjsOrpEffCicliEsecDto.TEMPO_OPERATORE?.toString(),
+      TEMPO_OPERATORE: updateEpsNestjsOrpEffCicliEsecDto.TEMPO_OPERATORE?.toString(),
 
-      TEMPO_MACCHINA:
-        updateEpsNestjsOrpEffCicliEsecDto.TEMPO_MACCHINA?.toString(),
+      TEMPO_MACCHINA: updateEpsNestjsOrpEffCicliEsecDto.TEMPO_MACCHINA?.toString(),
 
       COD_OP: updateEpsNestjsOrpEffCicliEsecDto.COD_OP,
 
@@ -206,17 +192,18 @@ export class EpsNestjsOrpEffCicliEsecsService {
   }
 
   async remove(id: EpsNestjsOrpEffCicliEsec['id']) {
+    // TODO: il check VA EFFETTUATO per COD_CHIAVE sia del componente che dell'esecuzione
     const result = await this.epsNestjsOrpEffCicliEsecRepository.findById(id);
-    if (result && result.SYNCED != null && result.SYNCED > 0) {
-      throw new HttpException(
-      {
-        errors: {
-        message: 'Record già processato',
-        },
-      },
-      HttpStatus.UNPROCESSABLE_ENTITY,
-      );
-    }
+    // if (result && result.SYNCED != null && result.SYNCED > 0) {
+    //   throw new HttpException(
+    //     {
+    //       errors: {
+    //         message: 'Record già processato',
+    //       },
+    //     },
+    //     HttpStatus.UNPROCESSABLE_ENTITY,
+    //   );
+    // }
     return this.epsNestjsOrpEffCicliEsecRepository.remove(id);
   }
 }

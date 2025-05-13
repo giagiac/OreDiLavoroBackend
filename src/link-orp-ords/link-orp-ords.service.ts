@@ -30,9 +30,7 @@ export class LinkOrpOrdsService {
     let ordCliRighe: OrdCliRighe | null | undefined = undefined;
 
     if (createLinkOrpOrdDto.ordCliRighe) {
-      const ordCliRigheObject = await this.ordCliRigheService.findById(
-        createLinkOrpOrdDto.ordCliRighe.id,
-      );
+      const ordCliRigheObject = await this.ordCliRigheService.findById(createLinkOrpOrdDto.ordCliRighe.id);
       if (!ordCliRigheObject) {
         throw new UnprocessableEntityException({
           status: HttpStatus.UNPROCESSABLE_ENTITY,
@@ -73,11 +71,7 @@ export class LinkOrpOrdsService {
     });
   }
 
-  findAllWithPagination({
-    paginationOptions,
-  }: {
-    paginationOptions: IPaginationOptions;
-  }) {
+  findAllWithPagination({ paginationOptions }: { paginationOptions: IPaginationOptions }) {
     return this.linkOrpOrdRepository.findAllWithPagination({
       paginationOptions: {
         page: paginationOptions.page,
@@ -104,9 +98,7 @@ export class LinkOrpOrdsService {
     let ordCliRighe: OrdCliRighe | null | undefined = undefined;
 
     if (updateLinkOrpOrdDto.ordCliRighe) {
-      const ordCliRigheObject = await this.ordCliRigheService.findById(
-        updateLinkOrpOrdDto.ordCliRighe.id,
-      );
+      const ordCliRigheObject = await this.ordCliRigheService.findById(updateLinkOrpOrdDto.ordCliRighe.id);
       if (!ordCliRigheObject) {
         throw new UnprocessableEntityException({
           status: HttpStatus.UNPROCESSABLE_ENTITY,

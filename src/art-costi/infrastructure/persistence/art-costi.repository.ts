@@ -4,9 +4,7 @@ import { IPaginationOptions } from '../../../utils/types/pagination-options';
 import { ArtCosti } from '../../domain/art-costi';
 
 export abstract class artCostiRepository {
-  abstract create(
-    data: Omit<ArtCosti, 'id' | 'createdAt' | 'updatedAt'>,
-  ): Promise<ArtCosti>;
+  abstract create(data: Omit<ArtCosti, 'id' | 'createdAt' | 'updatedAt'>): Promise<ArtCosti>;
 
   abstract findAllWithPagination({
     paginationOptions,
@@ -16,16 +14,11 @@ export abstract class artCostiRepository {
     COD_ART: string;
   }): Promise<ArtCosti[]>;
 
-  abstract findById(
-    id: ArtCosti['COD_ART_TIPO_COST'],
-  ): Promise<NullableType<ArtCosti>>;
+  abstract findById(id: ArtCosti['COD_ART_TIPO_COST']): Promise<NullableType<ArtCosti>>;
 
   abstract findByIds(ids: ArtCosti['COD_ART_TIPO_COST'][]): Promise<ArtCosti[]>;
 
-  abstract update(
-    id: ArtCosti['COD_ART_TIPO_COST'],
-    payload: DeepPartial<ArtCosti>,
-  ): Promise<ArtCosti | null>;
+  abstract update(id: ArtCosti['COD_ART_TIPO_COST'], payload: DeepPartial<ArtCosti>): Promise<ArtCosti | null>;
 
   abstract remove(id: ArtCosti['COD_ART_TIPO_COST']): Promise<void>;
 }

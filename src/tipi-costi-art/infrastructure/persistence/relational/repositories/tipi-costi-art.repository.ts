@@ -9,9 +9,7 @@ import { tipiCostiArtEntity } from '../entities/tipi-costi-art.entity';
 import { tipiCostiArtMapper } from '../mappers/tipi-costi-art.mapper';
 
 @Injectable()
-export class tipiCostiArtRelationalRepository
-  implements tipiCostiArtRepository
-{
+export class tipiCostiArtRelationalRepository implements tipiCostiArtRepository {
   constructor(
     @InjectRepository(tipiCostiArtEntity)
     private readonly tipiCostiArtRepository: Repository<tipiCostiArtEntity>,
@@ -19,17 +17,11 @@ export class tipiCostiArtRelationalRepository
 
   async create(data: tipiCostiArt): Promise<tipiCostiArt> {
     const persistenceModel = tipiCostiArtMapper.toPersistence(data);
-    const newEntity = await this.tipiCostiArtRepository.save(
-      this.tipiCostiArtRepository.create(persistenceModel),
-    );
+    const newEntity = await this.tipiCostiArtRepository.save(this.tipiCostiArtRepository.create(persistenceModel));
     return tipiCostiArtMapper.toDomain(newEntity);
   }
 
-  async findAllWithPagination({
-    paginationOptions,
-  }: {
-    paginationOptions: IPaginationOptions;
-  }): Promise<tipiCostiArt[]> {
+  async findAllWithPagination({ paginationOptions }: { paginationOptions: IPaginationOptions }): Promise<tipiCostiArt[]> {
     const entities = await this.tipiCostiArtRepository.find({
       skip: (paginationOptions.page - 1) * paginationOptions.limit,
       take: paginationOptions.limit,
@@ -38,9 +30,7 @@ export class tipiCostiArtRelationalRepository
     return entities.map((entity) => tipiCostiArtMapper.toDomain(entity));
   }
 
-  async findById(
-    id: tipiCostiArt['COD_TIPO_COST'],
-  ): Promise<NullableType<tipiCostiArt>> {
+  async findById(id: tipiCostiArt['COD_TIPO_COST']): Promise<NullableType<tipiCostiArt>> {
     const entity = await this.tipiCostiArtRepository.findOne({
       where: { COD_TIPO_COST: id },
     });
@@ -48,9 +38,7 @@ export class tipiCostiArtRelationalRepository
     return entity ? tipiCostiArtMapper.toDomain(entity) : null;
   }
 
-  async findByIds(
-    ids: tipiCostiArt['COD_TIPO_COST'][],
-  ): Promise<tipiCostiArt[]> {
+  async findByIds(ids: tipiCostiArt['COD_TIPO_COST'][]): Promise<tipiCostiArt[]> {
     const entities = await this.tipiCostiArtRepository.find({
       where: { COD_TIPO_COST: In(ids) },
     });
@@ -58,10 +46,7 @@ export class tipiCostiArtRelationalRepository
     return entities.map((entity) => tipiCostiArtMapper.toDomain(entity));
   }
 
-  async update(
-    id: tipiCostiArt['COD_TIPO_COST'],
-    payload: Partial<tipiCostiArt>,
-  ): Promise<tipiCostiArt> {
+  async update(id: tipiCostiArt['COD_TIPO_COST'], payload: Partial<tipiCostiArt>): Promise<tipiCostiArt> {
     const entity = await this.tipiCostiArtRepository.findOne({
       where: { COD_TIPO_COST: id },
     });

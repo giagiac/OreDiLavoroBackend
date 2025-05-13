@@ -8,13 +8,7 @@ import { OperatoriRepository } from '../../operatori.repository';
 import { OperatoriMapper } from '../mappers/operatori.mapper';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
 import { OperatoriDto } from '../../../../dto/operatori.dto';
-import {
-  applicaSort,
-  applicaWhereFullLike,
-  applicaWhereLike,
-  FilterDto,
-  SortDto,
-} from '../../../../../utils/dto/filter-column';
+import { applicaSort, applicaWhereFullLike, applicaWhereLike, FilterDto, SortDto } from '../../../../../utils/dto/filter-column';
 
 @Injectable()
 export class OperatoriRelationalRepository implements OperatoriRepository {
@@ -25,9 +19,7 @@ export class OperatoriRelationalRepository implements OperatoriRepository {
 
   async create(data: Operatori): Promise<Operatori> {
     const persistenceModel = OperatoriMapper.toPersistence(data);
-    const newEntity = await this.operatoriRepository.save(
-      this.operatoriRepository.create(persistenceModel),
-    );
+    const newEntity = await this.operatoriRepository.save(this.operatoriRepository.create(persistenceModel));
     return OperatoriMapper.toDomain(newEntity);
   }
 
@@ -66,9 +58,7 @@ export class OperatoriRelationalRepository implements OperatoriRepository {
     const entitiesAndCount = await entitiesSql.getManyAndCount();
 
     return {
-      operatori: entitiesAndCount[0].map((entity) =>
-        OperatoriMapper.toDomain(entity),
-      ),
+      operatori: entitiesAndCount[0].map((entity) => OperatoriMapper.toDomain(entity)),
       count: entitiesAndCount[1],
     };
   }
@@ -86,16 +76,13 @@ export class OperatoriRelationalRepository implements OperatoriRepository {
   }): Promise<{ operatori: Operatori[]; count: number }> {
     // --- Logica per determinare la data da usare ---
     const today = new Date(); // Data odierna di default
-    let targetDateInizio = today; // Inizializza la data target con oggi
-    let targetDateFine = today;
+    const targetDateInizio = today; // Inizializza la data target con oggi
+    const targetDateFine = today;
 
     const entitiesSql = this.operatoriRepository
       .createQueryBuilder('operatori')
       .leftJoinAndSelect('operatori.user', 'user')
-      .innerJoin(
-        'operatori.epsNestjsOrpEffCicliEsec',
-        'epsNestjsOrpEffCicliEsec',
-      )
+      .innerJoin('operatori.epsNestjsOrpEffCicliEsec', 'epsNestjsOrpEffCicliEsec')
       .andWhere(
         '(TRUNC(epsNestjsOrpEffCicliEsec.DATA_INIZIO) <= TRUNC(:tFine) AND TRUNC(epsNestjsOrpEffCicliEsec.DATA_FINE) >= TRUNC(:tInizio))',
         {
@@ -117,16 +104,12 @@ export class OperatoriRelationalRepository implements OperatoriRepository {
     const entitiesAndCount = await entitiesSql.getManyAndCount();
 
     return {
-      operatori: entitiesAndCount[0].map((entity) =>
-        OperatoriMapper.toDomain(entity),
-      ),
+      operatori: entitiesAndCount[0].map((entity) => OperatoriMapper.toDomain(entity)),
       count: entitiesAndCount[1],
     };
   }
 
-  async findById(
-    COD_OP: Operatori['COD_OP'],
-  ): Promise<NullableType<Operatori>> {
+  async findById(COD_OP: Operatori['COD_OP']): Promise<NullableType<Operatori>> {
     const entity = await this.operatoriRepository.findOne({
       where: { COD_OP },
     });
@@ -142,10 +125,7 @@ export class OperatoriRelationalRepository implements OperatoriRepository {
     return entities.map((entity) => OperatoriMapper.toDomain(entity));
   }
 
-  async update(
-    COD_OP: Operatori['COD_OP'],
-    payload: Partial<Operatori>,
-  ): Promise<Operatori> {
+  async update(COD_OP: Operatori['COD_OP'], payload: Partial<Operatori>): Promise<Operatori> {
     const entity = await this.operatoriRepository.findOne({
       where: { COD_OP },
     });

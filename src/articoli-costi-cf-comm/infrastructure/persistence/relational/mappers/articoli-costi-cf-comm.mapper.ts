@@ -25,9 +25,7 @@ export class ArticoliCostiCfCommMapper {
     return domainEntity;
   }
 
-  static toPersistence(
-    domainEntity: ArticoliCostiCfComm,
-  ): ArticoliCostiCfCommEntity {
+  static toPersistence(domainEntity: ArticoliCostiCfComm): ArticoliCostiCfCommEntity {
     const persistenceEntity = new ArticoliCostiCfCommEntity();
     persistenceEntity.TIPO_TRASFERTA = domainEntity.TIPO_TRASFERTA;
     persistenceEntity.COD_ART = domainEntity.COD_ART;

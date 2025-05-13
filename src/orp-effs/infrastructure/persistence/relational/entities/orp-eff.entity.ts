@@ -1,8 +1,7 @@
 import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
-import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
 import { OrpEffCicliEntity } from '../../../../../orp-eff-ciclis/infrastructure/persistence/relational/entities/orp-eff-cicli.entity';
+import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
 import { X1TrasCodiciEntity } from '../../../../../x1-tras-codicis/infrastructure/persistence/relational/entities/x1-tras-codici.entity';
-import { OrdCliTrasEntity } from '../../../../../ord-cli-tras/infrastructure/persistence/relational/entities/ord-cli-tras.entity';
 
 @Entity({
   name: 'ORP_EFF',

@@ -1,5 +1,6 @@
 import { CfMapper } from '../../../../../cfs/infrastructure/persistence/relational/mappers/cf.mapper';
 import { OrdCliTrasMapper } from '../../../../../ord-cli-tras/infrastructure/persistence/relational/mappers/ord-cli-tras.mapper';
+import { OrdCliMapper } from '../../../../../ord-clis/infrastructure/persistence/relational/mappers/ord-cli.mapper';
 import { OrdCliRighe } from '../../../../domain/ord-cli-righe';
 
 import { OrdCliRigheEntity } from '../entities/ord-cli-righe.entity';
@@ -25,8 +26,8 @@ export class OrdCliRigheMapper {
       domainEntity.cf = CfMapper.toDomain(raw.cf);
     }
 
-    if (raw.ordCliTras) {
-      domainEntity.ordCliTras = OrdCliTrasMapper.toDomain(raw.ordCliTras);
+    if (raw.ordCli) {
+      domainEntity.ordCli = OrdCliMapper.toDomain(raw.ordCli);
     }
 
     return domainEntity;

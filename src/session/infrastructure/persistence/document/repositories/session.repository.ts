@@ -27,10 +27,7 @@ export class SessionDocumentRepository implements SessionRepository {
     return SessionMapper.toDomain(sessionObject);
   }
 
-  async update(
-    id: Session['id'],
-    payload: Partial<Session>,
-  ): Promise<Session | null> {
+  async update(id: Session['id'], payload: Partial<Session>): Promise<Session | null> {
     const clonedPayload = { ...payload };
     delete clonedPayload.id;
     delete clonedPayload.createdAt;
@@ -64,13 +61,7 @@ export class SessionDocumentRepository implements SessionRepository {
     await this.sessionModel.deleteMany({ user: userId.toString() });
   }
 
-  async deleteByUserIdWithExclude({
-    userId,
-    excludeSessionId,
-  }: {
-    userId: User['id'];
-    excludeSessionId: Session['id'];
-  }): Promise<void> {
+  async deleteByUserIdWithExclude({ userId, excludeSessionId }: { userId: User['id']; excludeSessionId: Session['id'] }): Promise<void> {
     const transformedCriteria = {
       user: userId.toString(),
       _id: { $not: { $eq: excludeSessionId.toString() } },

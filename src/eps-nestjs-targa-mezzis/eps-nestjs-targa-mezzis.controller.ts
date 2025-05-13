@@ -1,28 +1,7 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Param,
-  Patch,
-  Post,
-  Query,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import {
-  ApiBearerAuth,
-  ApiCreatedResponse,
-  ApiOkResponse,
-  ApiParam,
-  ApiTags,
-} from '@nestjs/swagger';
-import {
-  InfinityPaginationResponse,
-  InfinityPaginationResponseDto,
-} from '../utils/dto/infinity-pagination-response.dto';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiParam, ApiTags } from '@nestjs/swagger';
+import { InfinityPaginationResponse, InfinityPaginationResponseDto } from '../utils/dto/infinity-pagination-response.dto';
 import { infinityPaginationQueryBuilder } from '../utils/infinity-pagination';
 import { EpsNestjsTargaMezzi } from './domain/eps-nestjs-targa-mezzi';
 import { CreateEpsNestjsTargaMezziDto } from './dto/create-eps-nestjs-targa-mezzi.dto';
@@ -38,27 +17,21 @@ import { EpsNestjsTargaMezzisService } from './eps-nestjs-targa-mezzis.service';
   version: '1',
 })
 export class EpsNestjsTargaMezzisController {
-  constructor(
-    private readonly epsNestjsTargaMezzisService: EpsNestjsTargaMezzisService,
-  ) {}
+  constructor(private readonly epsNestjsTargaMezzisService: EpsNestjsTargaMezzisService) {}
 
   @Post()
   @ApiCreatedResponse({
     type: EpsNestjsTargaMezzi,
   })
   create(@Body() createEpsNestjsTargaMezziDto: CreateEpsNestjsTargaMezziDto) {
-    return this.epsNestjsTargaMezzisService.create(
-      createEpsNestjsTargaMezziDto,
-    );
+    return this.epsNestjsTargaMezzisService.create(createEpsNestjsTargaMezziDto);
   }
 
   @Get()
   @ApiOkResponse({
     type: InfinityPaginationResponse(EpsNestjsTargaMezzi),
   })
-  async findAll(
-    @Query() query: FindAllEpsNestjsTargaMezziDto,
-  ): Promise<InfinityPaginationResponseDto<EpsNestjsTargaMezzi>> {
+  async findAll(@Query() query: FindAllEpsNestjsTargaMezziDto): Promise<InfinityPaginationResponseDto<EpsNestjsTargaMezzi>> {
     const page = query?.page ?? 1;
     let limit = query?.limit ?? 10;
     if (limit > 50) {
@@ -67,22 +40,17 @@ export class EpsNestjsTargaMezzisController {
 
     const filters = query.filters;
     const sort = query.sort;
-    const join =
-      query.othersFilters != null &&
-      query.othersFilters.findIndex(
-        (it) => it.key == 'join' && it.value == 'true',
-      ) > -1;
+    const join = query.othersFilters != null && query.othersFilters.findIndex((it) => it.key == 'join' && it.value == 'true') > -1;
 
-    const { epsNestjsTargaMezzi, count } =
-      await this.epsNestjsTargaMezzisService.findAllWithPagination({
-        paginationOptions: {
-          page,
-          limit,
-        },
-        filterOptions: filters,
-        sortOptions: sort,
-        join,
-      });
+    const { epsNestjsTargaMezzi, count } = await this.epsNestjsTargaMezzisService.findAllWithPagination({
+      paginationOptions: {
+        page,
+        limit,
+      },
+      filterOptions: filters,
+      sortOptions: sort,
+      join,
+    });
 
     return infinityPaginationQueryBuilder(epsNestjsTargaMezzi, count);
   }
@@ -109,14 +77,8 @@ export class EpsNestjsTargaMezzisController {
   @ApiOkResponse({
     type: EpsNestjsTargaMezzi,
   })
-  update(
-    @Param('id') id: string,
-    @Body() updateEpsNestjsTargaMezziDto: UpdateEpsNestjsTargaMezziDto,
-  ) {
-    return this.epsNestjsTargaMezzisService.update(
-      id,
-      updateEpsNestjsTargaMezziDto,
-    );
+  update(@Param('id') id: string, @Body() updateEpsNestjsTargaMezziDto: UpdateEpsNestjsTargaMezziDto) {
+    return this.epsNestjsTargaMezzisService.update(id, updateEpsNestjsTargaMezziDto);
   }
 
   @Delete(':id')

@@ -9,9 +9,7 @@ import { ArticoliCostiCfEntity } from '../entities/articoli-costi-cf.entity';
 import { ArticoliCostiCfMapper } from '../mappers/articoli-costi-cf.mapper';
 
 @Injectable()
-export class ArticoliCostiCfRelationalRepository
-  implements ArticoliCostiCfRepository
-{
+export class ArticoliCostiCfRelationalRepository implements ArticoliCostiCfRepository {
   constructor(
     @InjectRepository(ArticoliCostiCfEntity)
     private readonly articoliCostiCfRepository: Repository<ArticoliCostiCfEntity>,
@@ -25,11 +23,7 @@ export class ArticoliCostiCfRelationalRepository
   //   return ArticoliCostiCfMapper.toDomain(newEntity);
   // }
 
-  async findAllWithPagination({
-    paginationOptions,
-  }: {
-    paginationOptions: IPaginationOptions;
-  }): Promise<ArticoliCostiCf[]> {
+  async findAllWithPagination({ paginationOptions }: { paginationOptions: IPaginationOptions }): Promise<ArticoliCostiCf[]> {
     const entities = await this.articoliCostiCfRepository.find({
       skip: (paginationOptions.page - 1) * paginationOptions.limit,
       take: paginationOptions.limit,
@@ -38,9 +32,7 @@ export class ArticoliCostiCfRelationalRepository
     return entities.map((entity) => ArticoliCostiCfMapper.toDomain(entity));
   }
 
-  async findById(
-    id: ArticoliCostiCf['id'],
-  ): Promise<NullableType<ArticoliCostiCf>> {
+  async findById(id: ArticoliCostiCf['id']): Promise<NullableType<ArticoliCostiCf>> {
     const entity = await this.articoliCostiCfRepository.findOne({
       where: { id },
     });
@@ -58,10 +50,12 @@ export class ArticoliCostiCfRelationalRepository
 
   async update(payload: ArticoliCostiCf): Promise<ArticoliCostiCf | null> {
     await this.articoliCostiCfRepository.manager.transaction(async () => {
-      const entity: ArticoliCostiCfEntity | null =
-        await this.articoliCostiCfRepository.findOne({
-          where: { COD_CF: payload.COD_CF, TIPO_TRASFERTA: payload.TIPO_TRASFERTA },
-        });
+      const entity: ArticoliCostiCfEntity | null = await this.articoliCostiCfRepository.findOne({
+        where: {
+          COD_CF: payload.COD_CF,
+          TIPO_TRASFERTA: payload.TIPO_TRASFERTA,
+        },
+      });
 
       if (entity) {
         payload = {
@@ -72,24 +66,21 @@ export class ArticoliCostiCfRelationalRepository
 
       const persistenceModel = ArticoliCostiCfMapper.toPersistence(payload);
 
-      const newEntity = await this.articoliCostiCfRepository.save(
-        this.articoliCostiCfRepository.create(persistenceModel),
-      );
+      const newEntity = await this.articoliCostiCfRepository.save(this.articoliCostiCfRepository.create(persistenceModel));
 
       return newEntity;
     });
 
     //return ArticoliCostiCfMapper.toDomain(result);
-    const entity: ArticoliCostiCfEntity | null =
-      await this.articoliCostiCfRepository
-        .createQueryBuilder('articoliCostiCf')
-        .leftJoinAndSelect('articoliCostiCf.artAna', 'artAna') // Assumi che la relazione sia "artAna"
-        .leftJoinAndSelect('artAna.artCosti', 'artCosti')
-        .where('articoliCostiCf.COD_CF = :COD_CF', { COD_CF: payload.COD_CF })
-        .andWhere('articoliCostiCf.TIPO_TRASFERTA = :TIPO_TRASFERTA', {
-          TIPO_TRASFERTA: payload.TIPO_TRASFERTA,
-        })
-        .getOne();
+    const entity: ArticoliCostiCfEntity | null = await this.articoliCostiCfRepository
+      .createQueryBuilder('articoliCostiCf')
+      .leftJoinAndSelect('articoliCostiCf.artAna', 'artAna') // Assumi che la relazione sia "artAna"
+      .leftJoinAndSelect('artAna.artCosti', 'artCosti')
+      .where('articoliCostiCf.COD_CF = :COD_CF', { COD_CF: payload.COD_CF })
+      .andWhere('articoliCostiCf.TIPO_TRASFERTA = :TIPO_TRASFERTA', {
+        TIPO_TRASFERTA: payload.TIPO_TRASFERTA,
+      })
+      .getOne();
 
     if (entity) {
       return ArticoliCostiCfMapper.toDomain(entity);

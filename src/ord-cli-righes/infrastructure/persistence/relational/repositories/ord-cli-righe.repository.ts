@@ -17,17 +17,11 @@ export class OrdCliRigheRelationalRepository implements OrdCliRigheRepository {
 
   async create(data: OrdCliRighe): Promise<OrdCliRighe> {
     const persistenceModel = OrdCliRigheMapper.toPersistence(data);
-    const newEntity = await this.ordCliRigheRepository.save(
-      this.ordCliRigheRepository.create(persistenceModel),
-    );
+    const newEntity = await this.ordCliRigheRepository.save(this.ordCliRigheRepository.create(persistenceModel));
     return OrdCliRigheMapper.toDomain(newEntity);
   }
 
-  async findAllWithPagination({
-    paginationOptions,
-  }: {
-    paginationOptions: IPaginationOptions;
-  }): Promise<OrdCliRighe[]> {
+  async findAllWithPagination({ paginationOptions }: { paginationOptions: IPaginationOptions }): Promise<OrdCliRighe[]> {
     const entities = await this.ordCliRigheRepository.find({
       skip: (paginationOptions.page - 1) * paginationOptions.limit,
       take: paginationOptions.limit,
@@ -36,9 +30,7 @@ export class OrdCliRigheRelationalRepository implements OrdCliRigheRepository {
     return entities.map((entity) => OrdCliRigheMapper.toDomain(entity));
   }
 
-  async findById(
-    DOC_RIGA_ID: OrdCliRighe['DOC_RIGA_ID'],
-  ): Promise<NullableType<OrdCliRighe>> {
+  async findById(DOC_RIGA_ID: OrdCliRighe['DOC_RIGA_ID']): Promise<NullableType<OrdCliRighe>> {
     const entity = await this.ordCliRigheRepository.findOne({
       where: { DOC_RIGA_ID },
     });
@@ -54,10 +46,7 @@ export class OrdCliRigheRelationalRepository implements OrdCliRigheRepository {
     return entities.map((entity) => OrdCliRigheMapper.toDomain(entity));
   }
 
-  async update(
-    DOC_RIGA_ID: OrdCliRighe['DOC_RIGA_ID'],
-    payload: Partial<OrdCliRighe>,
-  ): Promise<OrdCliRighe> {
+  async update(DOC_RIGA_ID: OrdCliRighe['DOC_RIGA_ID'], payload: Partial<OrdCliRighe>): Promise<OrdCliRighe> {
     const entity = await this.ordCliRigheRepository.findOne({
       where: { DOC_RIGA_ID },
     });

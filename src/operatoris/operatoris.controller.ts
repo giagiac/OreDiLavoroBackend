@@ -1,34 +1,12 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  UseGuards,
-  Query,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
 import { OperatorisService } from './operatoris.service';
 import { CreateOperatoriDto } from './dto/create-operatori.dto';
 import { UpdateOperatoriDto } from './dto/update-operatori.dto';
-import {
-  ApiBearerAuth,
-  ApiCreatedResponse,
-  ApiOkResponse,
-  ApiParam,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiParam, ApiTags } from '@nestjs/swagger';
 import { Operatori } from './domain/operatori';
 import { AuthGuard } from '@nestjs/passport';
-import {
-  InfinityPaginationResponse,
-  InfinityPaginationResponseDto,
-} from '../utils/dto/infinity-pagination-response.dto';
-import {
-  infinityPagination,
-  infinityPaginationQueryBuilder,
-} from '../utils/infinity-pagination';
+import { InfinityPaginationResponse, InfinityPaginationResponseDto } from '../utils/dto/infinity-pagination-response.dto';
+import { infinityPagination, infinityPaginationQueryBuilder } from '../utils/infinity-pagination';
 import { FindAllOperatorisDto } from './dto/find-all-operatoris.dto';
 
 @ApiTags('Operatoris')
@@ -53,9 +31,7 @@ export class OperatorisController {
   @ApiOkResponse({
     type: InfinityPaginationResponse(Operatori),
   })
-  async findAll(
-    @Query() query: FindAllOperatorisDto,
-  ): Promise<InfinityPaginationResponseDto<Operatori>> {
+  async findAll(@Query() query: FindAllOperatorisDto): Promise<InfinityPaginationResponseDto<Operatori>> {
     const page = query?.page ?? 1;
     let limit = query?.limit ?? 10;
     if (limit > 50) {
@@ -64,22 +40,17 @@ export class OperatorisController {
 
     const filters = query.filters;
     const sort = query.sort;
-    const join =
-      query.othersFilters != null &&
-      query.othersFilters.findIndex(
-        (it) => it.key == 'join' && it.value == 'true',
-      ) > -1;
+    const join = query.othersFilters != null && query.othersFilters.findIndex((it) => it.key == 'join' && it.value == 'true') > -1;
 
-    const { operatori, count } =
-      await this.operatorisService.findAllWithPagination({
-        paginationOptions: {
-          page,
-          limit,
-        },
-        filterOptions: filters,
-        sortOptions: sort,
-        join,
-      });
+    const { operatori, count } = await this.operatorisService.findAllWithPagination({
+      paginationOptions: {
+        page,
+        limit,
+      },
+      filterOptions: filters,
+      sortOptions: sort,
+      join,
+    });
 
     return infinityPaginationQueryBuilder(operatori, count);
   }
@@ -88,9 +59,7 @@ export class OperatorisController {
   @ApiOkResponse({
     type: InfinityPaginationResponse(Operatori),
   })
-  async findAllEsecuzioni(
-    @Query() query: FindAllOperatorisDto,
-  ): Promise<InfinityPaginationResponseDto<Operatori>> {
+  async findAllEsecuzioni(@Query() query: FindAllOperatorisDto): Promise<InfinityPaginationResponseDto<Operatori>> {
     const page = query?.page ?? 1;
     let limit = query?.limit ?? 10;
     if (limit > 50) {
@@ -99,22 +68,17 @@ export class OperatorisController {
 
     const filters = query.filters;
     const sort = query.sort;
-    const join =
-      query.othersFilters != null &&
-      query.othersFilters.findIndex(
-        (it) => it.key == 'join' && it.value == 'true',
-      ) > -1;
+    const join = query.othersFilters != null && query.othersFilters.findIndex((it) => it.key == 'join' && it.value == 'true') > -1;
 
-    const { operatori, count } =
-      await this.operatorisService.findAllEsecuzioniWithPagination({
-        paginationOptions: {
-          page,
-          limit,
-        },
-        filterOptions: filters,
-        sortOptions: sort,
-        join,
-      });
+    const { operatori, count } = await this.operatorisService.findAllEsecuzioniWithPagination({
+      paginationOptions: {
+        page,
+        limit,
+      },
+      filterOptions: filters,
+      sortOptions: sort,
+      join,
+    });
 
     return infinityPaginationQueryBuilder(operatori, count);
   }
@@ -141,10 +105,7 @@ export class OperatorisController {
   @ApiOkResponse({
     type: Operatori,
   })
-  update(
-    @Param('COD_OP') COD_OP: string,
-    @Body() updateOperatoriDto: UpdateOperatoriDto,
-  ) {
+  update(@Param('COD_OP') COD_OP: string, @Body() updateOperatoriDto: UpdateOperatoriDto) {
     return this.operatorisService.update(COD_OP, updateOperatoriDto);
   }
 

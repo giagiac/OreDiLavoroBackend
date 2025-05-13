@@ -3,11 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import Decimal from 'decimal.js';
 import { In, Repository } from 'typeorm';
 import { User } from '../../../../../users/domain/user';
-import {
-  applicaSort,
-  FilterDto,
-  SortDto,
-} from '../../../../../utils/dto/filter-column';
+import { applicaSort, FilterDto, SortDto } from '../../../../../utils/dto/filter-column';
 import { NullableType } from '../../../../../utils/types/nullable.type';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
 import { EpsNestjsOrpEffCicliEsec } from '../../../../domain/eps-nestjs-orp-eff-cicli-esec';
@@ -17,21 +13,15 @@ import { EpsNestjsOrpEffCicliEsecEntity } from '../entities/eps-nestjs-orp-eff-c
 import { EpsNestjsOrpEffCicliEsecMapper } from '../mappers/eps-nestjs-orp-eff-cicli-esec.mapper';
 
 @Injectable()
-export class EpsNestjsOrpEffCicliEsecRelationalRepository
-  implements EpsNestjsOrpEffCicliEsecRepository
-{
+export class EpsNestjsOrpEffCicliEsecRelationalRepository implements EpsNestjsOrpEffCicliEsecRepository {
   constructor(
     @InjectRepository(EpsNestjsOrpEffCicliEsecEntity)
     private readonly epsNestjsOrpEffCicliEsecRepository: Repository<EpsNestjsOrpEffCicliEsecEntity>,
   ) {}
 
-  async create(
-    data: EpsNestjsOrpEffCicliEsec,
-  ): Promise<EpsNestjsOrpEffCicliEsec> {
+  async create(data: EpsNestjsOrpEffCicliEsec): Promise<EpsNestjsOrpEffCicliEsec> {
     const persistenceModel = EpsNestjsOrpEffCicliEsecMapper.toPersistence(data);
-    const newEntity = await this.epsNestjsOrpEffCicliEsecRepository.save(
-      this.epsNestjsOrpEffCicliEsecRepository.create(persistenceModel),
-    );
+    const newEntity = await this.epsNestjsOrpEffCicliEsecRepository.save(this.epsNestjsOrpEffCicliEsecRepository.create(persistenceModel));
     return EpsNestjsOrpEffCicliEsecMapper.toDomain(newEntity);
   }
 
@@ -60,12 +50,8 @@ export class EpsNestjsOrpEffCicliEsecRelationalRepository
 
     // Cerca il filtro per la data specifica in filterOptions
     // Assumiamo che il campo nel filtro si chiami 'dataRiferimento'
-    const dateFilterInizio = filterOptions?.find(
-      (filter) => filter.columnName === 'DATA_INIZIO',
-    );
-    const dateFilterFine = filterOptions?.find(
-      (filter) => filter.columnName === 'DATA_FINE',
-    );
+    const dateFilterInizio = filterOptions?.find((filter) => filter.columnName === 'DATA_INIZIO');
+    const dateFilterFine = filterOptions?.find((filter) => filter.columnName === 'DATA_FINE');
 
     if (dateFilterInizio?.value) {
       // Se il filtro esiste e ha un valore, prova a usarlo come data
@@ -74,9 +60,7 @@ export class EpsNestjsOrpEffCicliEsecRelationalRepository
       if (!isNaN(parsedDate.getTime())) {
         targetDateInizio = parsedDate; // Usa la data dal filtro
       } else {
-        console.warn(
-          `Valore data non valido ricevuto dal filtro: ${dateFilterInizio.value}. Utilizzo data odierna.`,
-        );
+        console.warn(`Valore data non valido ricevuto dal filtro: ${dateFilterInizio.value}. Utilizzo data odierna.`);
         // Opzionale: potresti voler lanciare un errore o gestire diversamente
       }
     }
@@ -87,9 +71,7 @@ export class EpsNestjsOrpEffCicliEsecRelationalRepository
       if (!isNaN(parsedDate.getTime())) {
         targetDateFine = parsedDate; // Usa la data dal filtro
       } else {
-        console.warn(
-          `Valore data non valido ricevuto dal filtro: ${dateFilterFine.value}. Utilizzo data odierna.`,
-        );
+        console.warn(`Valore data non valido ricevuto dal filtro: ${dateFilterFine.value}. Utilizzo data odierna.`);
         // Opzionale: potresti voler lanciare un errore o gestire diversamente
       }
     }
@@ -98,6 +80,7 @@ export class EpsNestjsOrpEffCicliEsecRelationalRepository
       .createQueryBuilder('epsNestjsOrpEffCicliEsec')
       .innerJoinAndSelect('epsNestjsOrpEffCicliEsec.operatori', 'operatori')
       .leftJoinAndSelect('epsNestjsOrpEffCicliEsec.orpEffCicli', 'orpEffCicli')
+      .leftJoinAndSelect('epsNestjsOrpEffCicliEsec.epsNestjsOrpEffCicliEsecChild', 'epsNestjsOrpEffCicliEsecChild')
       // per ora non serve mi baso su HYPSERV_REQ2_COD_CHIAVE e APP_REQ3_HYPSERV_COD_CHIAVE
       // .leftJoinAndSelect('epsNestjsOrpEffCicliEsec.hypServReq2', 'hypServReq2')
       // .leftJoinAndSelect(
@@ -107,8 +90,9 @@ export class EpsNestjsOrpEffCicliEsecRelationalRepository
       .leftJoinAndSelect('orpEffCicli.orpEff', 'orpEff')
       .leftJoinAndSelect('orpEffCicli.linkOrpOrd', 'linkOrpOrd')
       .leftJoinAndSelect('linkOrpOrd.ordCliRighe', 'ordCliRighe')
-      .leftJoinAndSelect('ordCliRighe.ordCliTras', 'ordCliTras')
       .leftJoinAndSelect('ordCliRighe.cf', 'cf')
+      .leftJoinAndSelect('ordCliRighe.ordCli', 'ordCli')
+      .leftJoinAndSelect('ordCli.cfComm', 'cfComm')
       .leftJoinAndSelect('orpEff.x1TrasCodici', 'x1TrasCodici')
       .select()
       .addSelect(
@@ -146,9 +130,7 @@ export class EpsNestjsOrpEffCicliEsecRelationalRepository
       new Decimal(0), // Initialize the accumulator with Decimal(0)
     );
 
-    const list = entitiesAndCount[0].map((entity) =>
-      EpsNestjsOrpEffCicliEsecMapper.toDomain(entity),
-    );
+    const list = entitiesAndCount[0].map((entity) => EpsNestjsOrpEffCicliEsecMapper.toDomain(entity));
 
     return {
       data: {
@@ -160,9 +142,7 @@ export class EpsNestjsOrpEffCicliEsecRelationalRepository
     };
   }
 
-  async findById(
-    id: EpsNestjsOrpEffCicliEsec['id'],
-  ): Promise<NullableType<EpsNestjsOrpEffCicliEsec>> {
+  async findById(id: EpsNestjsOrpEffCicliEsec['id']): Promise<NullableType<EpsNestjsOrpEffCicliEsec>> {
     const entity = await this.epsNestjsOrpEffCicliEsecRepository.findOne({
       where: { id },
     });
@@ -170,22 +150,15 @@ export class EpsNestjsOrpEffCicliEsecRelationalRepository
     return entity ? EpsNestjsOrpEffCicliEsecMapper.toDomain(entity) : null;
   }
 
-  async findByIds(
-    ids: EpsNestjsOrpEffCicliEsec['id'][],
-  ): Promise<EpsNestjsOrpEffCicliEsec[]> {
+  async findByIds(ids: EpsNestjsOrpEffCicliEsec['id'][]): Promise<EpsNestjsOrpEffCicliEsec[]> {
     const entities = await this.epsNestjsOrpEffCicliEsecRepository.find({
       where: { id: In(ids) },
     });
 
-    return entities.map((entity) =>
-      EpsNestjsOrpEffCicliEsecMapper.toDomain(entity),
-    );
+    return entities.map((entity) => EpsNestjsOrpEffCicliEsecMapper.toDomain(entity));
   }
 
-  async update(
-    id: EpsNestjsOrpEffCicliEsec['id'],
-    payload: Partial<EpsNestjsOrpEffCicliEsec>,
-  ): Promise<EpsNestjsOrpEffCicliEsec> {
+  async update(id: EpsNestjsOrpEffCicliEsec['id'], payload: Partial<EpsNestjsOrpEffCicliEsec>): Promise<EpsNestjsOrpEffCicliEsec> {
     const entity = await this.epsNestjsOrpEffCicliEsecRepository.findOne({
       where: { id },
     });

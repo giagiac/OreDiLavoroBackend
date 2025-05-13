@@ -1,24 +1,7 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Query,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import {
-  ApiBearerAuth,
-  ApiOkResponse,
-  ApiParam,
-  ApiTags,
-} from '@nestjs/swagger';
-import {
-  InfinityPaginationResponse,
-  InfinityPaginationResponseDto,
-} from '../utils/dto/infinity-pagination-response.dto';
+import { ApiBearerAuth, ApiOkResponse, ApiParam, ApiTags } from '@nestjs/swagger';
+import { InfinityPaginationResponse, InfinityPaginationResponseDto } from '../utils/dto/infinity-pagination-response.dto';
 import { infinityPaginationQueryBuilder } from '../utils/infinity-pagination';
 import { ArtAnaService } from './art-ana.service';
 import { ArtAna } from './domain/art-ana';
@@ -39,9 +22,7 @@ export class art_anaController {
   @ApiOkResponse({
     type: InfinityPaginationResponse(ArtAna),
   })
-  async findAll(
-    @Query() query: FindAllArtAnaDto,
-  ): Promise<InfinityPaginationResponseDto<ArtAna>> {
+  async findAll(@Query() query: FindAllArtAnaDto): Promise<InfinityPaginationResponseDto<ArtAna>> {
     const page = query?.page ?? 1;
     let limit = query?.limit ?? 10;
     if (limit > 200) {

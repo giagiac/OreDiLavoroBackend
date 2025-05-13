@@ -7,9 +7,7 @@ import { EpsNestjsOrpEffCicliEsec } from '../../domain/eps-nestjs-orp-eff-cicli-
 import { EpsNestjsOrpEffCicliEsecDto } from '../../dto/esp-nestjs-orp-eff-cicli-esec.dto';
 
 export abstract class EpsNestjsOrpEffCicliEsecRepository {
-  abstract create(
-    data: Omit<EpsNestjsOrpEffCicliEsec, 'id' | 'createdAt' | 'updatedAt'>,
-  ): Promise<EpsNestjsOrpEffCicliEsec>;
+  abstract create(data: Omit<EpsNestjsOrpEffCicliEsec, 'id' | 'createdAt' | 'updatedAt'>): Promise<EpsNestjsOrpEffCicliEsec>;
 
   abstract findAllWithPagination({
     filterOptions,
@@ -30,13 +28,9 @@ export abstract class EpsNestjsOrpEffCicliEsecRepository {
     count: number;
   }>;
 
-  abstract findById(
-    id: EpsNestjsOrpEffCicliEsec['id'],
-  ): Promise<NullableType<EpsNestjsOrpEffCicliEsec>>;
+  abstract findById(id: EpsNestjsOrpEffCicliEsec['id']): Promise<NullableType<EpsNestjsOrpEffCicliEsec>>;
 
-  abstract findByIds(
-    ids: EpsNestjsOrpEffCicliEsec['id'][],
-  ): Promise<EpsNestjsOrpEffCicliEsec[]>;
+  abstract findByIds(ids: EpsNestjsOrpEffCicliEsec['id'][]): Promise<EpsNestjsOrpEffCicliEsec[]>;
 
   abstract update(
     id: EpsNestjsOrpEffCicliEsec['id'],

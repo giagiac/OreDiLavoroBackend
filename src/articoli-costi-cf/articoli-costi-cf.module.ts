@@ -5,8 +5,7 @@ import { ArticoliCostiCfController } from './articoli-costi-cf.controller';
 import { ArticoliCostiCfService } from './articoli-costi-cf.service';
 import { RelationalArticoliCostiCfPersistenceModule } from './infrastructure/persistence/relational/relational-persistence.module';
 
-const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig)
-  .isDocumentDatabase
+const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig).isDocumentDatabase
   ? RelationalArticoliCostiCfPersistenceModule
   : RelationalArticoliCostiCfPersistenceModule;
 

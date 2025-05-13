@@ -5,9 +5,7 @@ import { IPaginationOptions } from '../../../utils/types/pagination-options';
 import { OrpEffCicliEsec } from '../../domain/orp-eff-cicli-esec';
 
 export abstract class OrpEffCicliEsecRepository {
-  abstract create(
-    data: Omit<OrpEffCicliEsec, 'DOC_RIGA_ESEC_ID' | 'createdAt' | 'updatedAt'>,
-  ): Promise<OrpEffCicliEsec>;
+  abstract create(data: Omit<OrpEffCicliEsec, 'DOC_RIGA_ESEC_ID' | 'createdAt' | 'updatedAt'>): Promise<OrpEffCicliEsec>;
 
   abstract findAllWithPagination({
     filterOptions,
@@ -24,20 +22,14 @@ export abstract class OrpEffCicliEsecRepository {
     count: number;
   }>;
 
-  abstract findById(
-    DOC_RIGA_ESEC_ID: OrpEffCicliEsec['DOC_RIGA_ESEC_ID'],
-  ): Promise<NullableType<OrpEffCicliEsec>>;
+  abstract findById(DOC_RIGA_ESEC_ID: OrpEffCicliEsec['DOC_RIGA_ESEC_ID']): Promise<NullableType<OrpEffCicliEsec>>;
 
-  abstract findByIds(
-    ids: OrpEffCicliEsec['DOC_RIGA_ESEC_ID'][],
-  ): Promise<OrpEffCicliEsec[]>;
+  abstract findByIds(ids: OrpEffCicliEsec['DOC_RIGA_ESEC_ID'][]): Promise<OrpEffCicliEsec[]>;
 
   abstract update(
     DOC_RIGA_ESEC_ID: OrpEffCicliEsec['DOC_RIGA_ESEC_ID'],
     payload: DeepPartial<OrpEffCicliEsec>,
   ): Promise<OrpEffCicliEsec | null>;
 
-  abstract remove(
-    DOC_RIGA_ESEC_ID: OrpEffCicliEsec['DOC_RIGA_ESEC_ID'],
-  ): Promise<void>;
+  abstract remove(DOC_RIGA_ESEC_ID: OrpEffCicliEsec['DOC_RIGA_ESEC_ID']): Promise<void>;
 }

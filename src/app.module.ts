@@ -32,8 +32,7 @@ import { SessionModule } from './session/session.module';
 import { UsersModule } from './users/users.module';
 
 // <database-block>
-const infrastructureDatabaseModule = (databaseConfig() as DatabaseConfig)
-  .isDocumentDatabase
+const infrastructureDatabaseModule = (databaseConfig() as DatabaseConfig).isDocumentDatabase
   ? MongooseModule.forRootAsync({
       useClass: MongooseConfigService,
     })
@@ -90,8 +89,14 @@ import { ScheduleTasksModule } from './schedule-tasks/schedule-tasks.module';
 
 import { EpsNestjsDestinazionisModule } from './eps-nestjs-destinazionis/eps-nestjs-destinazionis.module';
 
+import { OrdClisModule } from './ord-clis/ord-clis.module';
+
+import { EpsNestjsOrpEffCicliEsecChildrenModule } from './eps-nestjs-orp-eff-cicli-esec-children/eps-nestjs-orp-eff-cicli-esec-children.module';
+
 @Module({
   imports: [
+    EpsNestjsOrpEffCicliEsecChildrenModule,
+    OrdClisModule,
     EpsNestjsDestinazionisModule,
     ScheduleTasksModule,
     AppReq3HypServsModule,
@@ -115,17 +120,7 @@ import { EpsNestjsDestinazionisModule } from './eps-nestjs-destinazionis/eps-nes
     ArticoliCostiCfCommModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [
-        databaseConfig,
-        authConfig,
-        appConfig,
-        mailConfig,
-        fileConfig,
-        facebookConfig,
-        googleConfig,
-        twitterConfig,
-        appleConfig,
-      ],
+      load: [databaseConfig, authConfig, appConfig, mailConfig, fileConfig, facebookConfig, googleConfig, twitterConfig, appleConfig],
       envFilePath: ['.env'],
     }),
     infrastructureDatabaseModule,

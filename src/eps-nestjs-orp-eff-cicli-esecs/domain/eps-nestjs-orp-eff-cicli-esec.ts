@@ -1,8 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import Decimal from 'decimal.js';
-import { OrpEffCicli } from '../../orp-eff-ciclis/domain/orp-eff-cicli';
-import { HypServReq2 } from '../../hyp-serv-req2/domain/hyp-serv-req2';
 import { AppReq3HypServ } from '../../app-req3-hyp-servs/domain/app-req3-hyp-serv';
+import { HypServReq2 } from '../../hyp-serv-req2/domain/hyp-serv-req2';
+import { OrpEffCicli } from '../../orp-eff-ciclis/domain/orp-eff-cicli';
+import { EpsNestjsOrpEffCicliEsecChild } from '../../eps-nestjs-orp-eff-cicli-esec-children/domain/eps-nestjs-orp-eff-cicli-esec-child';
 
 export type TipoTrasferta =
   | 'in_sede'
@@ -10,13 +11,20 @@ export type TipoTrasferta =
   | 'in_giornata_dopo_21'
   | 'fuori_sede_andata'
   | 'fuori_sede_ritorno'
-  | 'ancora_in_missione_5'
+  | 'ancora_in_missione_0'
   | 'ancora_in_missione_10'
-  | 'ancora_in_missione_15'
   | 'ancora_in_missione_20'
+  | 'ancora_in_missione_30'
+  | 'ancora_in_missione_40'
   | 'step1_KmAutista';
 
 export class EpsNestjsOrpEffCicliEsec {
+  @ApiProperty({
+    type: () => String,
+    nullable: true,
+  })
+  ERROR_SYNC?: string | null;
+
   @ApiProperty({
     type: () => String,
     nullable: true,
@@ -52,12 +60,6 @@ export class EpsNestjsOrpEffCicliEsec {
     nullable: true,
   })
   NUM_RIGA?: number | null;
-
-  @ApiProperty({
-    type: () => Number,
-    nullable: true,
-  })
-  SYNCED?: number | null;
 
   @ApiProperty({
     type: () => Decimal,
@@ -172,4 +174,10 @@ export class EpsNestjsOrpEffCicliEsec {
     nullable: true,
   })
   appReq3HypServ?: AppReq3HypServ | null;
+
+  @ApiProperty({
+    type: () => EpsNestjsOrpEffCicliEsecChild,
+    nullable: true,
+  })
+  epsNestjsOrpEffCicliEsecChild?: Array<EpsNestjsOrpEffCicliEsecChild | null>;
 }

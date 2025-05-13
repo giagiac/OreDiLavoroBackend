@@ -1,30 +1,11 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  UseGuards,
-  Query,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
 import { EpsNestjsDestinazionisService } from './eps-nestjs-destinazionis.service';
 import { CreateEpsNestjsDestinazioniDto } from './dto/create-eps-nestjs-destinazioni.dto';
 import { UpdateEpsNestjsDestinazioniDto } from './dto/update-eps-nestjs-destinazioni.dto';
-import {
-  ApiBearerAuth,
-  ApiCreatedResponse,
-  ApiOkResponse,
-  ApiParam,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiParam, ApiTags } from '@nestjs/swagger';
 import { EpsNestjsDestinazioni } from './domain/eps-nestjs-destinazioni';
 import { AuthGuard } from '@nestjs/passport';
-import {
-  InfinityPaginationResponse,
-  InfinityPaginationResponseDto,
-} from '../utils/dto/infinity-pagination-response.dto';
+import { InfinityPaginationResponse, InfinityPaginationResponseDto } from '../utils/dto/infinity-pagination-response.dto';
 import { infinityPagination } from '../utils/infinity-pagination';
 import { FindAllEpsNestjsDestinazionisDto } from './dto/find-all-eps-nestjs-destinazionis.dto';
 
@@ -36,29 +17,21 @@ import { FindAllEpsNestjsDestinazionisDto } from './dto/find-all-eps-nestjs-dest
   version: '1',
 })
 export class EpsNestjsDestinazionisController {
-  constructor(
-    private readonly epsNestjsDestinazionisService: EpsNestjsDestinazionisService,
-  ) {}
+  constructor(private readonly epsNestjsDestinazionisService: EpsNestjsDestinazionisService) {}
 
   @Post()
   @ApiCreatedResponse({
     type: EpsNestjsDestinazioni,
   })
-  create(
-    @Body() createEpsNestjsDestinazioniDto: CreateEpsNestjsDestinazioniDto,
-  ) {
-    return this.epsNestjsDestinazionisService.create(
-      createEpsNestjsDestinazioniDto,
-    );
+  create(@Body() createEpsNestjsDestinazioniDto: CreateEpsNestjsDestinazioniDto) {
+    return this.epsNestjsDestinazionisService.create(createEpsNestjsDestinazioniDto);
   }
 
   @Get()
   @ApiOkResponse({
     type: InfinityPaginationResponse(EpsNestjsDestinazioni),
   })
-  async findAll(
-    @Query() query: FindAllEpsNestjsDestinazionisDto,
-  ): Promise<InfinityPaginationResponseDto<EpsNestjsDestinazioni>> {
+  async findAll(@Query() query: FindAllEpsNestjsDestinazionisDto): Promise<InfinityPaginationResponseDto<EpsNestjsDestinazioni>> {
     const page = query?.page ?? 1;
     let limit = query?.limit ?? 10;
     if (limit > 50) {
@@ -98,14 +71,8 @@ export class EpsNestjsDestinazionisController {
   @ApiOkResponse({
     type: EpsNestjsDestinazioni,
   })
-  update(
-    @Param('id') id: string,
-    @Body() updateEpsNestjsDestinazioniDto: UpdateEpsNestjsDestinazioniDto,
-  ) {
-    return this.epsNestjsDestinazionisService.update(
-      id,
-      updateEpsNestjsDestinazioniDto,
-    );
+  update(@Param('id') id: string, @Body() updateEpsNestjsDestinazioniDto: UpdateEpsNestjsDestinazioniDto) {
+    return this.epsNestjsDestinazionisService.update(id, updateEpsNestjsDestinazioniDto);
   }
 
   @Delete(':id')

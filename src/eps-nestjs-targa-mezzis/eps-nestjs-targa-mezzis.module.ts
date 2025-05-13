@@ -5,8 +5,7 @@ import { RelationalEpsNestjsTargaMezziPersistenceModule } from './infrastructure
 import databaseConfig from '../database/config/database.config';
 import { DatabaseConfig } from '../database/config/database-config.type';
 
-const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig)
-  .isDocumentDatabase
+const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig).isDocumentDatabase
   ? RelationalEpsNestjsTargaMezziPersistenceModule
   : RelationalEpsNestjsTargaMezziPersistenceModule;
 

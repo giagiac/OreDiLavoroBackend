@@ -1,12 +1,4 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  OneToOne,
-  PrimaryColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryColumn } from 'typeorm';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
 import { ArticoliCostiCfCommEntity } from '../../../../../articoli-costi-cf-comm/infrastructure/persistence/relational/entities/articoli-costi-cf-comm.entity';
 import { ArtCostiEntity } from '../../../../../art-costi/infrastructure/persistence/relational/entities/art-costi.entity';
@@ -43,10 +35,7 @@ export class ArtAnaEntity extends EntityRelationalHelper {
   })
   articoliCostiCfComm: ArticoliCostiCfCommEntity | null;
 
-  @OneToOne(
-    () => EpsNestjsTargaMezziEntity,
-    (epsNestjsTargaMezzi) => epsNestjsTargaMezzi.artAna,
-  )
+  @OneToOne(() => EpsNestjsTargaMezziEntity, (epsNestjsTargaMezzi) => epsNestjsTargaMezzi.artAna)
   @JoinColumn({
     name: 'COD_ART',
     referencedColumnName: 'COD_ART',

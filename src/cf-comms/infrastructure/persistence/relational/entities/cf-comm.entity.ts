@@ -1,14 +1,8 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  PrimaryColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryColumn } from 'typeorm';
 import { ArticoliCostiCfCommEntity } from '../../../../../articoli-costi-cf-comm/infrastructure/persistence/relational/entities/articoli-costi-cf-comm.entity';
 import { CfEntity } from '../../../../../cfs/infrastructure/persistence/relational/entities/cf.entity';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
+import { OrdCliEntity } from '../../../../../ord-clis/infrastructure/persistence/relational/entities/ord-cli.entity';
 
 @Entity({
   name: 'CF_COMM',
@@ -95,18 +89,6 @@ export class CfCommEntity extends EntityRelationalHelper {
 
   @Column({
     nullable: true,
-    type: Number,
-  })
-  X_CIVICO_NUMERO?: number | null;
-
-  @Column({
-    nullable: true,
-    type: String,
-  })
-  X_FRAZIONE?: string | null;
-
-  @Column({
-    nullable: true,
     type: String,
   })
   X_ZONA?: string | null;
@@ -118,13 +100,22 @@ export class CfCommEntity extends EntityRelationalHelper {
   })
   cf: CfEntity | null;
 
-  @OneToMany(
-    () => ArticoliCostiCfCommEntity,
-    (articoliCostiCfComm) => articoliCostiCfComm.cfComm,
-    { eager: true },
-  )
+  @OneToMany(() => ArticoliCostiCfCommEntity, (articoliCostiCfComm) => articoliCostiCfComm.cfComm, { eager: true })
   @JoinColumn({
     referencedColumnName: 'CF_COMM_ID',
   })
   articoliCostiCfComm?: Array<ArticoliCostiCfCommEntity> | null;
+
+  @OneToOne(() => OrdCliEntity, (ordCli) => ordCli.cfComm)
+  @JoinColumn([
+    {
+      name: 'COD_CF',
+      referencedColumnName: 'COD_CF',
+    },
+    {
+      name: 'NUM_SEDE',
+      referencedColumnName: 'NUM_SEDE',
+    },
+  ])
+  ordCli?: OrdCliEntity | null;
 }

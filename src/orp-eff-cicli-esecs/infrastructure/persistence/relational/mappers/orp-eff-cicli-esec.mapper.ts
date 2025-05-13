@@ -8,16 +8,13 @@ export class OrpEffCicliEsecMapper {
   static toDomain(raw: OrpEffCicliEsecEntity): OrpEffCicliEsec {
     const domainEntity = new OrpEffCicliEsec();
     if (raw.orpEffCicli) {
-      domainEntity.orpEffCicli = raw.orpEffCicli.map((it) =>
-        OrpEffCicliMapper.toDomain(it),
-      );
+      domainEntity.orpEffCicli = raw.orpEffCicli.map((it) => OrpEffCicliMapper.toDomain(it));
     } else if (raw.orpEffCicli === null) {
       domainEntity.orpEffCicli = null;
     }
 
     if (raw.epsNestjsOrpEffCicliEsec) {
-      domainEntity.epsNestjsOrpEffCicliEsec =
-        EpsNestjsOrpEffCicliEsecMapper.toDomain(raw.epsNestjsOrpEffCicliEsec);
+      domainEntity.epsNestjsOrpEffCicliEsec = EpsNestjsOrpEffCicliEsecMapper.toDomain(raw.epsNestjsOrpEffCicliEsec);
     } else if (raw.orpEffCicli === null) {
       domainEntity.epsNestjsOrpEffCicliEsec = null;
     }

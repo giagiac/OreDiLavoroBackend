@@ -27,11 +27,7 @@ export class OrpEffsService {
     // });
   }
 
-  findAllWithPagination({
-    paginationOptions,
-  }: {
-    paginationOptions: IPaginationOptions;
-  }) {
+  findAllWithPagination({ paginationOptions }: { paginationOptions: IPaginationOptions }) {
     return this.orpEffRepository.findAllWithPagination({
       paginationOptions: {
         page: paginationOptions.page,

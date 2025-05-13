@@ -10,9 +10,7 @@ import { OrpEffCicliEsecEntity } from '../entities/orp-eff-cicli-esec.entity';
 import { OrpEffCicliEsecMapper } from '../mappers/orp-eff-cicli-esec.mapper';
 
 @Injectable()
-export class OrpEffCicliEsecRelationalRepository
-  implements OrpEffCicliEsecRepository
-{
+export class OrpEffCicliEsecRelationalRepository implements OrpEffCicliEsecRepository {
   constructor(
     @InjectRepository(OrpEffCicliEsecEntity)
     private readonly orpEffCicliEsecRepository: Repository<OrpEffCicliEsecEntity>,
@@ -20,9 +18,7 @@ export class OrpEffCicliEsecRelationalRepository
 
   async create(data: OrpEffCicliEsec): Promise<OrpEffCicliEsec> {
     const persistenceModel = OrpEffCicliEsecMapper.toPersistence(data);
-    const newEntity = await this.orpEffCicliEsecRepository.save(
-      this.orpEffCicliEsecRepository.create(persistenceModel),
-    );
+    const newEntity = await this.orpEffCicliEsecRepository.save(this.orpEffCicliEsecRepository.create(persistenceModel));
     return OrpEffCicliEsecMapper.toDomain(newEntity);
   }
 
@@ -68,10 +64,7 @@ export class OrpEffCicliEsecRelationalRepository
     const query = this.orpEffCicliEsecRepository
       .createQueryBuilder('orpEffCicliEsec')
       .leftJoinAndSelect('orpEffCicliEsec.orpEffCicli', 'orpEffCicli')
-      .leftJoinAndSelect(
-        'orpEffCicliEsec.epsNestjsOrpEffCicliEsec',
-        'epsNestjsOrpEffCicliEsec',
-      )
+      .leftJoinAndSelect('orpEffCicliEsec.epsNestjsOrpEffCicliEsec', 'epsNestjsOrpEffCicliEsec')
       .leftJoinAndSelect('orpEffCicli.linkOrpOrd', 'linkOrpOrd')
       .leftJoinAndSelect('linkOrpOrd.ordCliRighe', 'ordCliRighe')
       .leftJoinAndSelect('orpEffCicli.orpEff', 'orpEff')
@@ -81,23 +74,17 @@ export class OrpEffCicliEsecRelationalRepository
         `TO_CHAR("ordCliRighe".DATA_DOC, 'YY') || "x1TrasCodici".CODICE2 || "orpEff".NUM_DOC || '-' || "orpEffCicli".NUM_RIGA`,
         'CODICE_BREVE',
       ) // Using raw SQL for concatenation and formatted date
-      .where(
-        'TRUNC(SYSDATE) BETWEEN TRUNC(orpEffCicliEsec.DATA_INIZIO) AND TRUNC(orpEffCicliEsec.DATA_FINE)',
-      );
+      .where('TRUNC(SYSDATE) BETWEEN TRUNC(orpEffCicliEsec.DATA_INIZIO) AND TRUNC(orpEffCicliEsec.DATA_FINE)');
 
     const entitiesAndCount = await query.getManyAndCount();
 
     return {
-      orpEffCicliEsec: entitiesAndCount[0].map((entity) =>
-        OrpEffCicliEsecMapper.toDomain(entity),
-      ),
+      orpEffCicliEsec: entitiesAndCount[0].map((entity) => OrpEffCicliEsecMapper.toDomain(entity)),
       count: entitiesAndCount[1],
     };
   }
 
-  async findById(
-    DOC_RIGA_ESEC_ID: OrpEffCicliEsec['DOC_RIGA_ESEC_ID'],
-  ): Promise<NullableType<OrpEffCicliEsec>> {
+  async findById(DOC_RIGA_ESEC_ID: OrpEffCicliEsec['DOC_RIGA_ESEC_ID']): Promise<NullableType<OrpEffCicliEsec>> {
     const entity = await this.orpEffCicliEsecRepository.findOne({
       where: { DOC_RIGA_ESEC_ID },
     });
@@ -105,9 +92,7 @@ export class OrpEffCicliEsecRelationalRepository
     return entity ? OrpEffCicliEsecMapper.toDomain(entity) : null;
   }
 
-  async findByIds(
-    ids: OrpEffCicliEsec['DOC_RIGA_ESEC_ID'][],
-  ): Promise<OrpEffCicliEsec[]> {
+  async findByIds(ids: OrpEffCicliEsec['DOC_RIGA_ESEC_ID'][]): Promise<OrpEffCicliEsec[]> {
     const entities = await this.orpEffCicliEsecRepository.find({
       where: { DOC_RIGA_ESEC_ID: In(ids) },
     });
@@ -115,10 +100,7 @@ export class OrpEffCicliEsecRelationalRepository
     return entities.map((entity) => OrpEffCicliEsecMapper.toDomain(entity));
   }
 
-  async update(
-    DOC_RIGA_ESEC_ID: OrpEffCicliEsec['DOC_RIGA_ESEC_ID'],
-    payload: Partial<OrpEffCicliEsec>,
-  ): Promise<OrpEffCicliEsec> {
+  async update(DOC_RIGA_ESEC_ID: OrpEffCicliEsec['DOC_RIGA_ESEC_ID'], payload: Partial<OrpEffCicliEsec>): Promise<OrpEffCicliEsec> {
     const entity = await this.orpEffCicliEsecRepository.findOne({
       where: { DOC_RIGA_ESEC_ID },
     });
@@ -139,9 +121,7 @@ export class OrpEffCicliEsecRelationalRepository
     return OrpEffCicliEsecMapper.toDomain(updatedEntity);
   }
 
-  async remove(
-    DOC_RIGA_ESEC_ID: OrpEffCicliEsec['DOC_RIGA_ESEC_ID'],
-  ): Promise<void> {
+  async remove(DOC_RIGA_ESEC_ID: OrpEffCicliEsec['DOC_RIGA_ESEC_ID']): Promise<void> {
     await this.orpEffCicliEsecRepository.delete(DOC_RIGA_ESEC_ID);
   }
 }

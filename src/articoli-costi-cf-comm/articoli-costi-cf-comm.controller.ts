@@ -1,27 +1,7 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Param,
-  Patch,
-  Query,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import {
-  ApiBearerAuth,
-  ApiCreatedResponse,
-  ApiOkResponse,
-  ApiParam,
-  ApiTags,
-} from '@nestjs/swagger';
-import {
-  InfinityPaginationResponse,
-  InfinityPaginationResponseDto,
-} from '../utils/dto/infinity-pagination-response.dto';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiParam, ApiTags } from '@nestjs/swagger';
+import { InfinityPaginationResponse, InfinityPaginationResponseDto } from '../utils/dto/infinity-pagination-response.dto';
 import { infinityPagination } from '../utils/infinity-pagination';
 import { ArticoliCostiCfCommService } from './articoli-costi-cf-comm.service';
 import { ArticoliCostiCfComm } from './domain/articoli-costi-cf-comm';
@@ -36,17 +16,13 @@ import { UpdateArticoliCostiCfCommDto } from './dto/update-articoli-costi-cf-com
   version: '1',
 })
 export class ArticoliCostiCfCommController {
-  constructor(
-    private readonly articoliCostiCfCommService: ArticoliCostiCfCommService,
-  ) {}
+  constructor(private readonly articoliCostiCfCommService: ArticoliCostiCfCommService) {}
 
   @Get()
   @ApiOkResponse({
     type: InfinityPaginationResponse(ArticoliCostiCfComm),
   })
-  async findAll(
-    @Query() query: FindAllArticoliCostiCfCommDto,
-  ): Promise<InfinityPaginationResponseDto<ArticoliCostiCfComm>> {
+  async findAll(@Query() query: FindAllArticoliCostiCfCommDto): Promise<InfinityPaginationResponseDto<ArticoliCostiCfComm>> {
     const page = query?.page ?? 1;
     let limit = query?.limit ?? 10;
     if (limit > 50) {
@@ -74,14 +50,8 @@ export class ArticoliCostiCfCommController {
     type: ArticoliCostiCfComm,
   })
   @HttpCode(HttpStatus.CREATED)
-  update(
-    @Param('CF_COMM_ID') CF_COMM_ID: string,
-    @Body() updateArticoliCostiCfCommDto: UpdateArticoliCostiCfCommDto,
-  ) {
-    return this.articoliCostiCfCommService.update(
-      CF_COMM_ID,
-      updateArticoliCostiCfCommDto,
-    );
+  update(@Param('CF_COMM_ID') CF_COMM_ID: string, @Body() updateArticoliCostiCfCommDto: UpdateArticoliCostiCfCommDto) {
+    return this.articoliCostiCfCommService.update(CF_COMM_ID, updateArticoliCostiCfCommDto);
   }
 
   @Delete(':CF_COMM_ID')

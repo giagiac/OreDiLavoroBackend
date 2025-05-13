@@ -14,9 +14,7 @@ export class OperatoriMapper {
     domainEntity.COD_PALMARE = raw.COD_PALMARE;
 
     if (raw.epsNestjsOrpEffCicliEsec != null) {
-      domainEntity.epsNestjsOrpEffCicliEsec = raw.epsNestjsOrpEffCicliEsec.map(
-        (it) => EpsNestjsOrpEffCicliEsecMapper.toDomain(it),
-      );
+      domainEntity.epsNestjsOrpEffCicliEsec = raw.epsNestjsOrpEffCicliEsec.map((it) => EpsNestjsOrpEffCicliEsecMapper.toDomain(it));
     }
 
     return domainEntity;

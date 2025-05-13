@@ -7,9 +7,7 @@ import { ArtAnaDto } from '../../dto/art-ana.dto';
 import { SortArtAnaDto } from '../../dto/find-all-art-ana.dto';
 
 export abstract class ArtAnaRepository {
-  abstract create(
-    data: Omit<ArtAna, 'id' | 'createdAt' | 'updatedAt'>,
-  ): Promise<ArtAna>;
+  abstract create(data: Omit<ArtAna, 'id' | 'createdAt' | 'updatedAt'>): Promise<ArtAna>;
 
   abstract findAllWithPagination({
     filterOptions,
@@ -25,10 +23,7 @@ export abstract class ArtAnaRepository {
 
   abstract findByIds(ids: ArtAna['COD_ART'][]): Promise<ArtAna[]>;
 
-  abstract update(
-    id: ArtAna['COD_ART'],
-    payload: DeepPartial<ArtAna>,
-  ): Promise<ArtAna | null>;
+  abstract update(id: ArtAna['COD_ART'], payload: DeepPartial<ArtAna>): Promise<ArtAna | null>;
 
   abstract remove(id: ArtAna['COD_ART']): Promise<void>;
 }

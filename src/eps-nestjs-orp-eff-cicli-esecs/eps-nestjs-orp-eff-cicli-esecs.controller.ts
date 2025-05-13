@@ -14,19 +14,11 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import {
-  ApiBearerAuth,
-  ApiCreatedResponse,
-  ApiOkResponse,
-  ApiParam,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiParam, ApiTags } from '@nestjs/swagger';
 import { UserEntity } from '../users/infrastructure/persistence/relational/entities/user.entity';
+import { UsersService } from '../users/users.service';
 import { User } from '../utils/decorators';
-import {
-  InfinityPaginationResponse,
-  InfinityPaginationResponseDto,
-} from '../utils/dto/infinity-pagination-response.dto';
+import { InfinityPaginationResponse, InfinityPaginationResponseDto } from '../utils/dto/infinity-pagination-response.dto';
 import { infinityPaginationQueryBuilder } from '../utils/infinity-pagination';
 import { TempoOperatoreToSessantesimiTransformer } from '../utils/transformers/tempo-in-human-readable';
 import { EpsNestjsOrpEffCicliEsec } from './domain/eps-nestjs-orp-eff-cicli-esec';
@@ -34,11 +26,6 @@ import { CreateEpsNestjsOrpEffCicliEsecDto } from './dto/create-eps-nestjs-orp-e
 import { FindAllEpsNestjsOrpEffCicliEsecsDto } from './dto/find-all-esp-nestjs-orp-eff-cicli-esecs.dto';
 import { UpdateEpsNestjsOrpEffCicliEsecDto } from './dto/update-esp-nestjs-orp-eff-cicli-esec.dto';
 import { EpsNestjsOrpEffCicliEsecsService } from './eps-nestjs-orp-eff-cicli-esecs.service';
-import { th } from 'date-fns/locale';
-import { SaveOptions, RemoveOptions } from 'typeorm';
-import { OperatoriEntity } from '../operatoris/infrastructure/persistence/relational/entities/operatori.entity';
-import { UsersService } from '../users/users.service';
-import { UserMapper } from '../users/infrastructure/persistence/document/mappers/user.mapper';
 
 @ApiTags('Epsnestjsorpeffcicliesecs')
 @ApiBearerAuth()
@@ -62,39 +49,31 @@ export class EpsNestjsOrpEffCicliEsecsController {
     createEspNestjsOrpEffCicliEsecDto: CreateEpsNestjsOrpEffCicliEsecDto,
     @User() user: UserEntity,
   ) {
-    const { data: epsNestjsOrpEffCicliEsecs, count } =
-      await this.epsNestjsOrpEffCicliEsecsService.findAllWithPagination({
-        paginationOptions: {
-          page: 1,
-          limit: 1,
-        },
-        filterOptions: [],
-        sortOptions: [],
-        user,
-      });
+    const { data: epsNestjsOrpEffCicliEsecs, count } = await this.epsNestjsOrpEffCicliEsecsService.findAllWithPagination({
+      paginationOptions: {
+        page: 1,
+        limit: 1,
+      },
+      filterOptions: [],
+      sortOptions: [],
+      user,
+    });
 
-    const totaleTempoOperatore =
-      createEspNestjsOrpEffCicliEsecDto.TEMPO_OPERATORE?.add(
-        epsNestjsOrpEffCicliEsecs.totaleTempoOperatore,
-      );
+    const totaleTempoOperatore = createEspNestjsOrpEffCicliEsecDto.TEMPO_OPERATORE?.add(epsNestjsOrpEffCicliEsecs.totaleTempoOperatore);
 
     if (totaleTempoOperatore && totaleTempoOperatore.toNumber() > 20) {
       // throw new Error('Il tempo totale operatore non può superare 20:00');
       throw new HttpException(
         {
           errors: {
-            message:
-              'Il tempo totale non può superare 20 ore nella giornata lavorativa',
+            message: 'Il tempo totale non può superare 20 ore nella giornata lavorativa',
           },
         },
         HttpStatus.UNPROCESSABLE_ENTITY,
       );
     }
 
-    return this.epsNestjsOrpEffCicliEsecsService.create(
-      createEspNestjsOrpEffCicliEsecDto,
-      user,
-    );
+    return this.epsNestjsOrpEffCicliEsecsService.create(createEspNestjsOrpEffCicliEsecDto, user);
   }
 
   transformer = new TempoOperatoreToSessantesimiTransformer();
@@ -122,30 +101,22 @@ export class EpsNestjsOrpEffCicliEsecsController {
     const filters = query.filters;
     const sort = query.sort;
 
-    const { data: epsNestjsOrpEffCicliEsecs, count } =
-      await this.epsNestjsOrpEffCicliEsecsService.findAllWithPagination({
-        paginationOptions: {
-          page,
-          limit,
-        },
-        filterOptions: filters,
-        sortOptions: sort,
-        user,
-      });
+    const { data: epsNestjsOrpEffCicliEsecs, count } = await this.epsNestjsOrpEffCicliEsecsService.findAllWithPagination({
+      paginationOptions: {
+        page,
+        limit,
+      },
+      filterOptions: filters,
+      sortOptions: sort,
+      user,
+    });
 
-    const paginationResult = infinityPaginationQueryBuilder(
-      epsNestjsOrpEffCicliEsecs.list,
-      count,
-    );
+    const paginationResult = infinityPaginationQueryBuilder(epsNestjsOrpEffCicliEsecs.list, count);
 
     return {
       ...paginationResult,
-      totale: this.transformer.convertiOreInFormatoHHMM(
-        epsNestjsOrpEffCicliEsecs.totaleTempoOperatore,
-      ),
-      targetDateInizio: this.transformer.convertiInGiorno(
-        epsNestjsOrpEffCicliEsecs.targetDateInizio,
-      ),
+      totale: this.transformer.convertiOreInFormatoHHMM(epsNestjsOrpEffCicliEsecs.totaleTempoOperatore),
+      targetDateInizio: this.transformer.convertiInGiorno(epsNestjsOrpEffCicliEsecs.targetDateInizio),
     };
   }
 
@@ -171,46 +142,37 @@ export class EpsNestjsOrpEffCicliEsecsController {
     const filters = query.filters;
     const sort = query.sort;
 
-    const COD_OP = filters?.find((it)=>it.columnName == 'COD_OP')?.value
+    const COD_OP = filters?.find((it) => it.columnName == 'COD_OP')?.value;
 
-    const user = await this.userService.findByCodOp(COD_OP)
+    const user = await this.userService.findByCodOp(COD_OP);
 
-    if(!user){
+    if (!user) {
       throw new HttpException(
         {
           errors: {
-            message:
-              'Utente non trovato',
+            message: 'Utente non trovato',
           },
         },
         HttpStatus.UNPROCESSABLE_ENTITY,
       );
     }
 
-    const { data: epsNestjsOrpEffCicliEsecs, count } =
-      await this.epsNestjsOrpEffCicliEsecsService.findAllWithPagination({
-        paginationOptions: {
-          page,
-          limit,
-        },
-        filterOptions: filters,
-        sortOptions: sort,
-        user,
-      });
+    const { data: epsNestjsOrpEffCicliEsecs, count } = await this.epsNestjsOrpEffCicliEsecsService.findAllWithPagination({
+      paginationOptions: {
+        page,
+        limit,
+      },
+      filterOptions: filters,
+      sortOptions: sort,
+      user,
+    });
 
-    const paginationResult = infinityPaginationQueryBuilder(
-      epsNestjsOrpEffCicliEsecs.list,
-      count,
-    );
+    const paginationResult = infinityPaginationQueryBuilder(epsNestjsOrpEffCicliEsecs.list, count);
 
     return {
       ...paginationResult,
-      totale: this.transformer.convertiOreInFormatoHHMM(
-        epsNestjsOrpEffCicliEsecs.totaleTempoOperatore,
-      ),
-      targetDateInizio: this.transformer.convertiInGiorno(
-        epsNestjsOrpEffCicliEsecs.targetDateInizio,
-      ),
+      totale: this.transformer.convertiOreInFormatoHHMM(epsNestjsOrpEffCicliEsecs.totaleTempoOperatore),
+      targetDateInizio: this.transformer.convertiInGiorno(epsNestjsOrpEffCicliEsecs.targetDateInizio),
     };
   }
 
@@ -241,10 +203,7 @@ export class EpsNestjsOrpEffCicliEsecsController {
     @Body()
     updateEspNestjsOrpEffCicliEsecDto: UpdateEpsNestjsOrpEffCicliEsecDto,
   ) {
-    return this.epsNestjsOrpEffCicliEsecsService.update(
-      id,
-      updateEspNestjsOrpEffCicliEsecDto,
-    );
+    return this.epsNestjsOrpEffCicliEsecsService.update(id, updateEspNestjsOrpEffCicliEsecDto);
   }
 
   @Delete(':id')

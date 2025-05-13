@@ -12,8 +12,7 @@ import { FilesS3PresignedModule } from './infrastructure/uploader/s3-presigned/f
 import { FilesS3Module } from './infrastructure/uploader/s3/files.module';
 
 // <database-block>
-const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig)
-  .isDocumentDatabase
+const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig).isDocumentDatabase
   ? DocumentFilePersistenceModule
   : RelationalFilePersistenceModule;
 // </database-block>

@@ -15,12 +15,12 @@ export class EpsNestjsOrpEffCicliEsecDto {
   @ApiProperty()
   @IsString()
   @IsOptional()
-  DATA_INIZIO
+  DATA_INIZIO;
 
   @ApiProperty()
   @IsString()
   @IsOptional()
-  DATA_FINE
+  DATA_FINE;
 }
 
 export class JoinDto {

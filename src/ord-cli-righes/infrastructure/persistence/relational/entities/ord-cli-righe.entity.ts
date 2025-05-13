@@ -2,7 +2,7 @@ import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
 import { LinkOrpOrdEntity } from '../../../../../link-orp-ords/infrastructure/persistence/relational/entities/link-orp-ord.entity';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
 import { CfEntity } from '../../../../../cfs/infrastructure/persistence/relational/entities/cf.entity';
-import { OrdCliTrasEntity } from '../../../../../ord-cli-tras/infrastructure/persistence/relational/entities/ord-cli-tras.entity';
+import { OrdCliEntity } from '../../../../../ord-clis/infrastructure/persistence/relational/entities/ord-cli.entity';
 
 @Entity({
   name: 'ORD_CLI_RIGHE',
@@ -66,10 +66,10 @@ export class OrdCliRigheEntity extends EntityRelationalHelper {
   })
   cf?: CfEntity | null;
 
-  @OneToOne(() => OrdCliTrasEntity, (ordCliTras) => ordCliTras.ordCliRighe)
+  @OneToOne(() => OrdCliEntity, (ordCli) => ordCli.ordCliRighe)
   @JoinColumn({
     name: 'DOC_ID',
     referencedColumnName: 'DOC_ID',
   })
-  ordCliTras?: OrdCliTrasEntity | null;
+  ordCli?: OrdCliEntity | null;
 }

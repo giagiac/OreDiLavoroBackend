@@ -9,9 +9,7 @@ import { EpsNestjsDestinazioniMapper } from '../mappers/eps-nestjs-destinazioni.
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
 
 @Injectable()
-export class EpsNestjsDestinazioniRelationalRepository
-  implements EpsNestjsDestinazioniRepository
-{
+export class EpsNestjsDestinazioniRelationalRepository implements EpsNestjsDestinazioniRepository {
   constructor(
     @InjectRepository(EpsNestjsDestinazioniEntity)
     private readonly epsNestjsDestinazioniRepository: Repository<EpsNestjsDestinazioniEntity>,
@@ -19,30 +17,20 @@ export class EpsNestjsDestinazioniRelationalRepository
 
   async create(data: EpsNestjsDestinazioni): Promise<EpsNestjsDestinazioni> {
     const persistenceModel = EpsNestjsDestinazioniMapper.toPersistence(data);
-    const newEntity = await this.epsNestjsDestinazioniRepository.save(
-      this.epsNestjsDestinazioniRepository.create(persistenceModel),
-    );
+    const newEntity = await this.epsNestjsDestinazioniRepository.save(this.epsNestjsDestinazioniRepository.create(persistenceModel));
     return EpsNestjsDestinazioniMapper.toDomain(newEntity);
   }
 
-  async findAllWithPagination({
-    paginationOptions,
-  }: {
-    paginationOptions: IPaginationOptions;
-  }): Promise<EpsNestjsDestinazioni[]> {
+  async findAllWithPagination({ paginationOptions }: { paginationOptions: IPaginationOptions }): Promise<EpsNestjsDestinazioni[]> {
     const entities = await this.epsNestjsDestinazioniRepository.find({
       skip: (paginationOptions.page - 1) * paginationOptions.limit,
       take: paginationOptions.limit,
     });
 
-    return entities.map((entity) =>
-      EpsNestjsDestinazioniMapper.toDomain(entity),
-    );
+    return entities.map((entity) => EpsNestjsDestinazioniMapper.toDomain(entity));
   }
 
-  async findById(
-    id: EpsNestjsDestinazioni['id'],
-  ): Promise<NullableType<EpsNestjsDestinazioni>> {
+  async findById(id: EpsNestjsDestinazioni['id']): Promise<NullableType<EpsNestjsDestinazioni>> {
     const entity = await this.epsNestjsDestinazioniRepository.findOne({
       where: { id },
     });
@@ -50,22 +38,15 @@ export class EpsNestjsDestinazioniRelationalRepository
     return entity ? EpsNestjsDestinazioniMapper.toDomain(entity) : null;
   }
 
-  async findByIds(
-    ids: EpsNestjsDestinazioni['id'][],
-  ): Promise<EpsNestjsDestinazioni[]> {
+  async findByIds(ids: EpsNestjsDestinazioni['id'][]): Promise<EpsNestjsDestinazioni[]> {
     const entities = await this.epsNestjsDestinazioniRepository.find({
       where: { id: In(ids) },
     });
 
-    return entities.map((entity) =>
-      EpsNestjsDestinazioniMapper.toDomain(entity),
-    );
+    return entities.map((entity) => EpsNestjsDestinazioniMapper.toDomain(entity));
   }
 
-  async update(
-    id: EpsNestjsDestinazioni['id'],
-    payload: Partial<EpsNestjsDestinazioni>,
-  ): Promise<EpsNestjsDestinazioni> {
+  async update(id: EpsNestjsDestinazioni['id'], payload: Partial<EpsNestjsDestinazioni>): Promise<EpsNestjsDestinazioni> {
     const entity = await this.epsNestjsDestinazioniRepository.findOne({
       where: { id },
     });

@@ -1,30 +1,11 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  UseGuards,
-  Query,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
 import { OrdCliTrasService } from './ord-cli-tras.service';
 import { CreateOrdCliTrasDto } from './dto/create-ord-cli-tras.dto';
 import { UpdateOrdCliTrasDto } from './dto/update-ord-cli-tras.dto';
-import {
-  ApiBearerAuth,
-  ApiCreatedResponse,
-  ApiOkResponse,
-  ApiParam,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiParam, ApiTags } from '@nestjs/swagger';
 import { OrdCliTras } from './domain/ord-cli-tras';
 import { AuthGuard } from '@nestjs/passport';
-import {
-  InfinityPaginationResponse,
-  InfinityPaginationResponseDto,
-} from '../utils/dto/infinity-pagination-response.dto';
+import { InfinityPaginationResponse, InfinityPaginationResponseDto } from '../utils/dto/infinity-pagination-response.dto';
 import { infinityPagination } from '../utils/infinity-pagination';
 import { FindAllOrdCliTrasDto } from './dto/find-all-ord-cli-tras.dto';
 
@@ -50,9 +31,7 @@ export class OrdCliTrasController {
   @ApiOkResponse({
     type: InfinityPaginationResponse(OrdCliTras),
   })
-  async findAll(
-    @Query() query: FindAllOrdCliTrasDto,
-  ): Promise<InfinityPaginationResponseDto<OrdCliTras>> {
+  async findAll(@Query() query: FindAllOrdCliTrasDto): Promise<InfinityPaginationResponseDto<OrdCliTras>> {
     const page = query?.page ?? 1;
     let limit = query?.limit ?? 10;
     if (limit > 50) {
@@ -92,10 +71,7 @@ export class OrdCliTrasController {
   @ApiOkResponse({
     type: OrdCliTras,
   })
-  update(
-    @Param('DOC_ID') DOC_ID: string,
-    @Body() updateOrdCliTrasDto: UpdateOrdCliTrasDto,
-  ) {
+  update(@Param('DOC_ID') DOC_ID: string, @Body() updateOrdCliTrasDto: UpdateOrdCliTrasDto) {
     return this.ordCliTrasService.update(DOC_ID, updateOrdCliTrasDto);
   }
 

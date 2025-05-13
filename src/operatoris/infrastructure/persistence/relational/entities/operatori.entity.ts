@@ -1,12 +1,4 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  OneToOne,
-  PrimaryColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryColumn } from 'typeorm';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
 import { UserEntity } from '../../../../../users/infrastructure/persistence/relational/entities/user.entity';
 import { EpsNestjsOrpEffCicliEsecEntity } from '../../../../../eps-nestjs-orp-eff-cicli-esecs/infrastructure/persistence/relational/entities/eps-nestjs-orp-eff-cicli-esec.entity';
@@ -41,10 +33,7 @@ export class OperatoriEntity extends EntityRelationalHelper {
   user?: UserEntity | null;
 
   // riferimento inverso a eps-nestjs-orp-eff-cicli-esec
-  @OneToMany(
-    () => EpsNestjsOrpEffCicliEsecEntity,
-    (epsNestjsOrpEffCicliEsec) => epsNestjsOrpEffCicliEsec.operatori,
-  )
+  @OneToMany(() => EpsNestjsOrpEffCicliEsecEntity, (epsNestjsOrpEffCicliEsec) => epsNestjsOrpEffCicliEsec.operatori)
   @JoinColumn({
     name: 'COD_OP',
     referencedColumnName: 'COD_OP',

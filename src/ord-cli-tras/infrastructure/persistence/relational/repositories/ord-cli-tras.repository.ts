@@ -17,17 +17,11 @@ export class OrdCliTrasRelationalRepository implements OrdCliTrasRepository {
 
   async create(data: OrdCliTras): Promise<OrdCliTras> {
     const persistenceModel = OrdCliTrasMapper.toPersistence(data);
-    const newEntity = await this.ordCliTrasRepository.save(
-      this.ordCliTrasRepository.create(persistenceModel),
-    );
+    const newEntity = await this.ordCliTrasRepository.save(this.ordCliTrasRepository.create(persistenceModel));
     return OrdCliTrasMapper.toDomain(newEntity);
   }
 
-  async findAllWithPagination({
-    paginationOptions,
-  }: {
-    paginationOptions: IPaginationOptions;
-  }): Promise<OrdCliTras[]> {
+  async findAllWithPagination({ paginationOptions }: { paginationOptions: IPaginationOptions }): Promise<OrdCliTras[]> {
     const entities = await this.ordCliTrasRepository.find({
       skip: (paginationOptions.page - 1) * paginationOptions.limit,
       take: paginationOptions.limit,
@@ -36,9 +30,7 @@ export class OrdCliTrasRelationalRepository implements OrdCliTrasRepository {
     return entities.map((entity) => OrdCliTrasMapper.toDomain(entity));
   }
 
-  async findById(
-    DOC_ID: OrdCliTras['DOC_ID'],
-  ): Promise<NullableType<OrdCliTras>> {
+  async findById(DOC_ID: OrdCliTras['DOC_ID']): Promise<NullableType<OrdCliTras>> {
     const entity = await this.ordCliTrasRepository.findOne({
       where: { DOC_ID },
     });
@@ -54,10 +46,7 @@ export class OrdCliTrasRelationalRepository implements OrdCliTrasRepository {
     return entities.map((entity) => OrdCliTrasMapper.toDomain(entity));
   }
 
-  async update(
-    DOC_ID: OrdCliTras['DOC_ID'],
-    payload: Partial<OrdCliTras>,
-  ): Promise<OrdCliTras> {
+  async update(DOC_ID: OrdCliTras['DOC_ID'], payload: Partial<OrdCliTras>): Promise<OrdCliTras> {
     const entity = await this.ordCliTrasRepository.findOne({
       where: { DOC_ID },
     });

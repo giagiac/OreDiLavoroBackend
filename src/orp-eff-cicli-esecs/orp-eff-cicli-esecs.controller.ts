@@ -1,26 +1,7 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
-  Query,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import {
-  ApiBearerAuth,
-  ApiCreatedResponse,
-  ApiOkResponse,
-  ApiParam,
-  ApiTags,
-} from '@nestjs/swagger';
-import {
-  InfinityPaginationResponse,
-  InfinityPaginationResponseDto,
-} from '../utils/dto/infinity-pagination-response.dto';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiParam, ApiTags } from '@nestjs/swagger';
+import { InfinityPaginationResponse, InfinityPaginationResponseDto } from '../utils/dto/infinity-pagination-response.dto';
 import { infinityPaginationQueryBuilder } from '../utils/infinity-pagination';
 import { OrpEffCicliEsec } from './domain/orp-eff-cicli-esec';
 import { CreateOrpEffCicliEsecDto } from './dto/create-orp-eff-cicli-esec.dto';
@@ -36,9 +17,7 @@ import { OrpEffCicliEsecsService } from './orp-eff-cicli-esecs.service';
   version: '1',
 })
 export class OrpEffCicliEsecsController {
-  constructor(
-    private readonly orpEffCicliEsecsService: OrpEffCicliEsecsService,
-  ) {}
+  constructor(private readonly orpEffCicliEsecsService: OrpEffCicliEsecsService) {}
 
   @Post()
   @ApiCreatedResponse({
@@ -52,9 +31,7 @@ export class OrpEffCicliEsecsController {
   @ApiOkResponse({
     type: InfinityPaginationResponse(OrpEffCicliEsec),
   })
-  async findAll(
-    @Query() query: FindAllOrpEffCicliEsecsDto,
-  ): Promise<InfinityPaginationResponseDto<OrpEffCicliEsec>> {
+  async findAll(@Query() query: FindAllOrpEffCicliEsecsDto): Promise<InfinityPaginationResponseDto<OrpEffCicliEsec>> {
     const page = query?.page ?? 1;
     let limit = query?.limit ?? 10;
     if (limit > 50) {
@@ -63,22 +40,17 @@ export class OrpEffCicliEsecsController {
 
     const filters = query.filters;
     const sort = query.sort;
-    const join =
-      query.othersFilters != null &&
-      query.othersFilters.findIndex(
-        (it) => it.key == 'join' && it.value == 'true',
-      ) > -1;
+    const join = query.othersFilters != null && query.othersFilters.findIndex((it) => it.key == 'join' && it.value == 'true') > -1;
 
-    const { orpEffCicliEsec, count } =
-      await this.orpEffCicliEsecsService.findAllWithPagination({
-        paginationOptions: {
-          page,
-          limit,
-        },
-        filterOptions: filters,
-        sortOptions: sort,
-        join,
-      });
+    const { orpEffCicliEsec, count } = await this.orpEffCicliEsecsService.findAllWithPagination({
+      paginationOptions: {
+        page,
+        limit,
+      },
+      filterOptions: filters,
+      sortOptions: sort,
+      join,
+    });
 
     return infinityPaginationQueryBuilder(orpEffCicliEsec, count);
   }
@@ -105,10 +77,7 @@ export class OrpEffCicliEsecsController {
   @ApiOkResponse({
     type: OrpEffCicliEsec,
   })
-  update(
-    @Param('id') id: string,
-    @Body() updateOrpEffCicliEsecDto: UpdateOrpEffCicliEsecDto,
-  ) {
+  update(@Param('id') id: string, @Body() updateOrpEffCicliEsecDto: UpdateOrpEffCicliEsecDto) {
     return this.orpEffCicliEsecsService.update(id, updateOrpEffCicliEsecDto);
   }
 

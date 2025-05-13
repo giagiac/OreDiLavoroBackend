@@ -4,10 +4,7 @@ import { IsArray, IsNumber, IsOptional, ValidateNested } from 'class-validator';
 import { FilterDto, SortDto } from '../../utils/dto/filter-column';
 import { OthersFiltersDto } from '../../utils/dto/others-filters';
 import { EpsNestjsOrpEffCicliEsec } from '../domain/eps-nestjs-orp-eff-cicli-esec';
-import {
-  EpsNestjsOrpEffCicliEsecDto,
-  JoinDto,
-} from './esp-nestjs-orp-eff-cicli-esec.dto';
+import { EpsNestjsOrpEffCicliEsecDto, JoinDto } from './esp-nestjs-orp-eff-cicli-esec.dto';
 
 export class FindAllEpsNestjsOrpEffCicliEsecsDto {
   @ApiPropertyOptional()
@@ -24,25 +21,14 @@ export class FindAllEpsNestjsOrpEffCicliEsecsDto {
 
   @IsArray()
   @IsOptional()
-  @Transform(({ value }) =>
-    value
-      ? plainToInstance(Array<OthersFiltersDto<JoinDto>>, JSON.parse(value))
-      : undefined,
-  )
+  @Transform(({ value }) => (value ? plainToInstance(Array<OthersFiltersDto<JoinDto>>, JSON.parse(value)) : undefined))
   @ValidateNested({ each: true })
   @Type(() => OthersFiltersDto)
   othersFilters?: OthersFiltersDto<JoinDto>[] | null;
 
   @IsArray()
   @IsOptional()
-  @Transform(({ value }) =>
-    value
-      ? plainToInstance(
-          Array<FilterDto<EpsNestjsOrpEffCicliEsecDto>>,
-          JSON.parse(value),
-        )
-      : undefined,
-  )
+  @Transform(({ value }) => (value ? plainToInstance(Array<FilterDto<EpsNestjsOrpEffCicliEsecDto>>, JSON.parse(value)) : undefined))
   @ValidateNested({ each: true })
   @Type(() => FilterDto)
   filters?: FilterDto<EpsNestjsOrpEffCicliEsecDto>[] | null;
@@ -50,12 +36,7 @@ export class FindAllEpsNestjsOrpEffCicliEsecsDto {
   @IsArray()
   @IsOptional()
   @Transform(({ value }) => {
-    return value
-      ? plainToInstance(
-          Array<SortDto<EpsNestjsOrpEffCicliEsecDto>>,
-          JSON.parse(value),
-        )
-      : undefined;
+    return value ? plainToInstance(Array<SortDto<EpsNestjsOrpEffCicliEsecDto>>, JSON.parse(value)) : undefined;
   })
   @ValidateNested({ each: true })
   @Type(() => SortDto)

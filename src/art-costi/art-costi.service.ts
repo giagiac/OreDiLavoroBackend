@@ -11,13 +11,7 @@ export class artCostisService {
     private readonly artCostiRepository: artCostiRepository,
   ) {}
 
-  findAllWithPagination({
-    paginationOptions,
-    COD_ART,
-  }: {
-    paginationOptions: IPaginationOptions;
-    COD_ART: string;
-  }) {
+  findAllWithPagination({ paginationOptions, COD_ART }: { paginationOptions: IPaginationOptions; COD_ART: string }) {
     return this.artCostiRepository.findAllWithPagination({
       paginationOptions: {
         page: paginationOptions.page,

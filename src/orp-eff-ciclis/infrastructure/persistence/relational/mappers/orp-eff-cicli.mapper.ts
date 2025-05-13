@@ -20,9 +20,7 @@ export class OrpEffCicliMapper {
 
     domainEntity.AZIENDA_ID = raw.AZIENDA_ID;
 
-    domainEntity.linkOrpOrd = raw.linkOrpOrd?.map((it) =>
-      LinkOrpOrdMapper.toDomain(it),
-    );
+    domainEntity.linkOrpOrd = raw.linkOrpOrd?.map((it) => LinkOrpOrdMapper.toDomain(it));
 
     domainEntity.orpEffCicliEsec = raw.orpEffCicliEsec;
 

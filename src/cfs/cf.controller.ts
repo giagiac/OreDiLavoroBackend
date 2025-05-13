@@ -1,15 +1,7 @@
 import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import {
-  ApiBearerAuth,
-  ApiCreatedResponse,
-  ApiOkResponse,
-  ApiTags,
-} from '@nestjs/swagger';
-import {
-  InfinityPaginationResponse,
-  InfinityPaginationResponseDto,
-} from '../utils/dto/infinity-pagination-response.dto';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { InfinityPaginationResponse, InfinityPaginationResponseDto } from '../utils/dto/infinity-pagination-response.dto';
 import { infinityPaginationQueryBuilder } from '../utils/infinity-pagination';
 import { CfService } from './cf.service';
 import { Cf } from './domain/cf';
@@ -38,9 +30,7 @@ export class CfController {
   @ApiOkResponse({
     type: InfinityPaginationResponse(Cf),
   })
-  async findAll(
-    @Query() query: FindAllCfDto,
-  ): Promise<InfinityPaginationResponseDto<Cf>> {
+  async findAll(@Query() query: FindAllCfDto): Promise<InfinityPaginationResponseDto<Cf>> {
     const page = query?.page ?? 1;
     let limit = query?.limit ?? 10;
     if (limit > 50) {
@@ -49,11 +39,7 @@ export class CfController {
 
     const filters = query.filters;
     const sort = query.sort;
-    const join =
-      query.othersFilters != null &&
-      query.othersFilters.findIndex(
-        (it) => it.key == 'join' && it.value == 'true',
-      ) > -1;
+    const join = query.othersFilters != null && query.othersFilters.findIndex((it) => it.key == 'join' && it.value == 'true') > -1;
 
     const { cf, count } = await this.cfsService.findAllWithPagination({
       paginationOptions: {

@@ -1,9 +1,4 @@
-import {
-  CreateDateColumn,
-  Entity,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
 
 @Entity({
@@ -79,12 +74,26 @@ export const separator = '\r\n';
 // ------------------------------
 
 export enum TIPO_ERRORI_SYNC {
-  MANCANZA_DATI_SET_MINIMO = 2, // DOC_RIGA_ID - COD_OP - DATA_INIZIO - DATA_FINE - TEMPO_OPERATORE
-  MANCANZA_LINK_ORP_ORD = 3, // NO ORDINE COLLEGATO
-  MANCANZA_ORD_CLI_RIGHE_COD_CF = 4, // NO ORDINE COLLEGATO
-  MANCANZA_ORD_CLI_RIGHE_CF_COMM_ID = 5, // NO ORDINE COLLEGATO
-  MANCANZA_COD_ART_COMP = 6,
-  MANCANZA_COD_ART_COSTI_CF_DEFAULT = 7,
-  MANCANZA_ORD_CLI = 8,
-  MANCANZA_RUOLO_TIPO_AUTISTA = 9,
+  DATI_SET_MINIMO = 'Dati set minimo non definito (DOC_RIGA_ID - COD_OP - DATA_INIZIO - DATA_FINE - TEMPO_OPERATORE)',
+  LINK_ORP_ORD = 'Nessun ordine collegato (linkOrpOrd)', // NO ORDINE COLLEGATO
+  ORD_CLI_RIGHE_DOC_RIGA_ID = 'Nessun ordine cliente righe doc riga id collegato', // NO ORDINE COLLEGATO
+  ORD_CLI_RIGHE_COD_OP = 'Nessun ordine cliente righe codice operatore collegato', // NO ORDINE COLLEGATO
+  ORD_CLI_RIGHE_DATA_INIZIO = 'Nessun ordine cliente righe data inizio collegato', // NO ORDINE COLLEGATO
+  ORD_CLI_RIGHE_DATA_FINE = 'Nessun ordine cliente righe data fine collegato', // NO ORDINE COLLEGATO
+  ORD_CLI_RIGHE_TEMPO_OPERATORE = 'Nessun ordine cliente righe tempo operatore collegato', // NO ORDINE COLLEGATO
+  ORD_CLI_RIGHE_COD_CF = 'Nessun ordine collegato', // NO ORDINE COLLEGATO
+  ORD_CLI_RIGHE_CF_COMM_ID = 'Nessun ordine cliente righe codice fiscale commessa ID collegato', // NO ORDINE COLLEGATO
+  COD_ART_TARGA_MEZZO = 'Nessun codice articolo targa mezzo collegato',
+  COD_ART_COMP = 'Nessun codice articolo componente collegato',
+  COD_ART_COSTI_CF_DEFAULT = 'Nessun codice articolo costi codice fiscale default collegato',
+  RUOLO_TIPO_AUTISTA = 'Nessun ruolo tipo autista collegato',
+
+  LINK_ORP_EFF = 'Nessun link orp effettivo collegato',
+
+  ORD_CLI = 'Nessun ordine cliente collegato',
+  ORD_CLI_CF = 'Nessun ordine cliente codice fiscale collegato',
+  ORD_CLI_CF_COMM = 'Nessun ordine cliente codice fiscale commessa collegato',
+  ORD_CLI_RIGHE = 'Nessun ordine cliente righe collegato',
+
+  DESTINAZIONE_INCOMPLETA = 'Destinazione indirizzo o comune incompleta',
 }

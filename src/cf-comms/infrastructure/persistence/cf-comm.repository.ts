@@ -7,9 +7,7 @@ import { CfCommDto } from '../../dto/cf-comm.dto';
 import { SortCfCommDto } from '../../dto/find-all-cf-comm.dto';
 
 export abstract class CfCommRepository {
-  abstract create(
-    data: Omit<CfComm, 'id' | 'createdAt' | 'updatedAt'>,
-  ): Promise<CfComm>;
+  abstract create(data: Omit<CfComm, 'id' | 'createdAt' | 'updatedAt'>): Promise<CfComm>;
 
   abstract findById(id: CfComm['COD_CF']): Promise<NullableType<CfComm>>;
 
@@ -27,10 +25,7 @@ export abstract class CfCommRepository {
     paginationOptions: IPaginationOptions;
   }): Promise<{ data: Array<CfComm>; count: number }>;
 
-  abstract update(
-    id: CfComm['COD_CF'],
-    payload: DeepPartial<CfComm>,
-  ): Promise<CfComm | null>;
+  abstract update(id: CfComm['COD_CF'], payload: DeepPartial<CfComm>): Promise<CfComm | null>;
 
   abstract remove(id: CfComm['COD_CF']): Promise<void>;
 }

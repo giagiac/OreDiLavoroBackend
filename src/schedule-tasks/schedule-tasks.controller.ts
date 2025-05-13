@@ -1,30 +1,11 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  UseGuards,
-  Query,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
 import { ScheduleTasksService } from './schedule-tasks.service';
 import { CreateScheduleTasksDto } from './dto/create-schedule-tasks.dto';
 import { UpdateScheduleTasksDto } from './dto/update-schedule-tasks.dto';
-import {
-  ApiBearerAuth,
-  ApiCreatedResponse,
-  ApiOkResponse,
-  ApiParam,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiParam, ApiTags } from '@nestjs/swagger';
 import { ScheduleTasks } from './domain/schedule-tasks';
 import { AuthGuard } from '@nestjs/passport';
-import {
-  InfinityPaginationResponse,
-  InfinityPaginationResponseDto,
-} from '../utils/dto/infinity-pagination-response.dto';
+import { InfinityPaginationResponse, InfinityPaginationResponseDto } from '../utils/dto/infinity-pagination-response.dto';
 import { infinityPagination } from '../utils/infinity-pagination';
 import { FindAllScheduleTasksDto } from './dto/find-all-schedule-tasks.dto';
 import { RolesGuard } from '../roles/roles.guard';
@@ -54,9 +35,7 @@ export class ScheduleTasksController {
   @ApiOkResponse({
     type: InfinityPaginationResponse(ScheduleTasks),
   })
-  async findAll(
-    @Query() query: FindAllScheduleTasksDto,
-  ): Promise<InfinityPaginationResponseDto<ScheduleTasks>> {
+  async findAll(@Query() query: FindAllScheduleTasksDto): Promise<InfinityPaginationResponseDto<ScheduleTasks>> {
     const page = query?.page ?? 1;
     let limit = query?.limit ?? 10;
     if (limit > 50) {
@@ -115,10 +94,7 @@ export class ScheduleTasksController {
   @ApiOkResponse({
     type: ScheduleTasks,
   })
-  update(
-    @Param('id') id: string,
-    @Body() updateScheduleTasksDto: UpdateScheduleTasksDto,
-  ) {
+  update(@Param('id') id: string, @Body() updateScheduleTasksDto: UpdateScheduleTasksDto) {
     return this.scheduleTasksService.update(id, updateScheduleTasksDto);
   }
 

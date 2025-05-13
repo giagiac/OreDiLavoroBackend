@@ -1,24 +1,7 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Query,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import {
-  ApiBearerAuth,
-  ApiOkResponse,
-  ApiParam,
-  ApiTags,
-} from '@nestjs/swagger';
-import {
-  InfinityPaginationResponse,
-  InfinityPaginationResponseDto,
-} from '../utils/dto/infinity-pagination-response.dto';
+import { ApiBearerAuth, ApiOkResponse, ApiParam, ApiTags } from '@nestjs/swagger';
+import { InfinityPaginationResponse, InfinityPaginationResponseDto } from '../utils/dto/infinity-pagination-response.dto';
 import { infinityPagination } from '../utils/infinity-pagination';
 import { artCostisService } from './art-costi.service';
 import { ArtCosti } from './domain/art-costi';
@@ -39,9 +22,7 @@ export class artCostisController {
   @ApiOkResponse({
     type: InfinityPaginationResponse(ArtCosti),
   })
-  async findAll(
-    @Query() query: FindAllartCostiDto,
-  ): Promise<InfinityPaginationResponseDto<ArtCosti>> {
+  async findAll(@Query() query: FindAllartCostiDto): Promise<InfinityPaginationResponseDto<ArtCosti>> {
     const COD_ART = query.COD_ART;
     const page = query?.page ?? 1;
     let limit = query?.limit ?? 10;
@@ -83,10 +64,7 @@ export class artCostisController {
   @ApiOkResponse({
     type: ArtCosti,
   })
-  update(
-    @Param('id') id: string,
-    @Body() updateartCostiDto: UpdateartCostiDto,
-  ) {
+  update(@Param('id') id: string, @Body() updateartCostiDto: UpdateartCostiDto) {
     return this.artCostisService.update(id, updateartCostiDto);
   }
 

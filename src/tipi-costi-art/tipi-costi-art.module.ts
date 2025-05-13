@@ -5,8 +5,7 @@ import { RelationaltipiCostiArtPersistenceModule } from './infrastructure/persis
 import { tipiCostiArtsController } from './tipi-costi-art.controller';
 import { tipiCostiArtsService } from './tipi-costi-art.service';
 
-const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig)
-  .isDocumentDatabase
+const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig).isDocumentDatabase
   ? RelationaltipiCostiArtPersistenceModule
   : RelationaltipiCostiArtPersistenceModule;
 

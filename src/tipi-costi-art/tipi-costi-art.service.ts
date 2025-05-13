@@ -11,11 +11,7 @@ export class tipiCostiArtsService {
     private readonly tipiCostiArtRepository: tipiCostiArtRepository,
   ) {}
 
-  findAllWithPagination({
-    paginationOptions,
-  }: {
-    paginationOptions: IPaginationOptions;
-  }) {
+  findAllWithPagination({ paginationOptions }: { paginationOptions: IPaginationOptions }) {
     return this.tipiCostiArtRepository.findAllWithPagination({
       paginationOptions: {
         page: paginationOptions.page,

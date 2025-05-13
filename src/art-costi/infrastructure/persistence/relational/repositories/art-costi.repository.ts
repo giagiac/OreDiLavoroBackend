@@ -17,9 +17,7 @@ export class artCostiRelationalRepository implements artCostiRepository {
 
   async create(data: ArtCosti): Promise<ArtCosti> {
     const persistenceModel = artCostiMapper.toPersistence(data);
-    const newEntity = await this.artCostiRepository.save(
-      this.artCostiRepository.create(persistenceModel),
-    );
+    const newEntity = await this.artCostiRepository.save(this.artCostiRepository.create(persistenceModel));
     return artCostiMapper.toDomain(newEntity);
   }
 
@@ -41,9 +39,7 @@ export class artCostiRelationalRepository implements artCostiRepository {
     return entities.map((entity) => artCostiMapper.toDomain(entity));
   }
 
-  async findById(
-    COD_ART_TIPO_COST: ArtCosti['COD_ART_TIPO_COST'],
-  ): Promise<NullableType<ArtCosti>> {
+  async findById(COD_ART_TIPO_COST: ArtCosti['COD_ART_TIPO_COST']): Promise<NullableType<ArtCosti>> {
     const entity = await this.artCostiRepository.findOne({
       where: { COD_ART_TIPO_COST },
     });
@@ -59,10 +55,7 @@ export class artCostiRelationalRepository implements artCostiRepository {
     return entities.map((entity) => artCostiMapper.toDomain(entity));
   }
 
-  async update(
-    COD_ART_TIPO_COST: ArtCosti['COD_ART_TIPO_COST'],
-    payload: Partial<ArtCosti>,
-  ): Promise<ArtCosti> {
+  async update(COD_ART_TIPO_COST: ArtCosti['COD_ART_TIPO_COST'], payload: Partial<ArtCosti>): Promise<ArtCosti> {
     const entity = await this.artCostiRepository.findOne({
       where: { COD_ART_TIPO_COST },
     });

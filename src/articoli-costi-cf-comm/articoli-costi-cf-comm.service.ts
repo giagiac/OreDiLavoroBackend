@@ -11,11 +11,7 @@ export class ArticoliCostiCfCommService {
     private readonly articoliCostiCfCommRepository: ArticoliCostiCfCommRepository,
   ) {}
 
-  findAllWithPagination({
-    paginationOptions,
-  }: {
-    paginationOptions: IPaginationOptions;
-  }) {
+  findAllWithPagination({ paginationOptions }: { paginationOptions: IPaginationOptions }) {
     return this.articoliCostiCfCommRepository.findAllWithPagination({
       paginationOptions: {
         page: paginationOptions.page,
@@ -24,17 +20,11 @@ export class ArticoliCostiCfCommService {
     });
   }
 
-  async update(
-    CF_COMM_ID: ArticoliCostiCfComm['CF_COMM_ID'],
-    updateArticoliCostiDto: UpdateArticoliCostiCfCommDto,
-  ) {
+  async update(CF_COMM_ID: ArticoliCostiCfComm['CF_COMM_ID'], updateArticoliCostiDto: UpdateArticoliCostiCfCommDto) {
     // Do not remove comment below.
     // <updating-property />
 
-    return this.articoliCostiCfCommRepository.update(
-      CF_COMM_ID,
-      updateArticoliCostiDto,
-    );
+    return this.articoliCostiCfCommRepository.update(CF_COMM_ID, updateArticoliCostiDto);
   }
 
   remove(CF_COMM_ID: ArticoliCostiCfComm['CF_COMM_ID']) {

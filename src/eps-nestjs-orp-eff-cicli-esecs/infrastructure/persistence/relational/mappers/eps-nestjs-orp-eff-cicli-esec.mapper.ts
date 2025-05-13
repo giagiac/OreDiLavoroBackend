@@ -1,18 +1,19 @@
 import { EpsNestjsOrpEffCicliEsec } from '../../../../domain/eps-nestjs-orp-eff-cicli-esec';
 
-import { OrpEffCicliMapper } from '../../../../../orp-eff-ciclis/infrastructure/persistence/relational/mappers/orp-eff-cicli.mapper';
-import { EpsNestjsOrpEffCicliEsecEntity } from '../entities/eps-nestjs-orp-eff-cicli-esec.entity';
-import { TempoOperatoreToSessantesimiTransformer } from '../../../../../utils/transformers/tempo-in-human-readable';
-import { HypServReq2Mapper } from '../../../../../hyp-serv-req2/infrastructure/persistence/relational/mappers/hyp-serv-req2.mapper';
 import { AppReq3HypServMapper } from '../../../../../app-req3-hyp-servs/infrastructure/persistence/relational/mappers/app-req3-hyp-serv.mapper';
+import { EpsNestjsOrpEffCicliEsecChildMapper } from '../../../../../eps-nestjs-orp-eff-cicli-esec-children/infrastructure/persistence/relational/mappers/eps-nestjs-orp-eff-cicli-esec-child.mapper';
+import { HypServReq2Mapper } from '../../../../../hyp-serv-req2/infrastructure/persistence/relational/mappers/hyp-serv-req2.mapper';
+import { OrpEffCicliMapper } from '../../../../../orp-eff-ciclis/infrastructure/persistence/relational/mappers/orp-eff-cicli.mapper';
+import { TempoOperatoreToSessantesimiTransformer } from '../../../../../utils/transformers/tempo-in-human-readable';
+import { EpsNestjsOrpEffCicliEsecEntity } from '../entities/eps-nestjs-orp-eff-cicli-esec.entity';
 
 const transformer = new TempoOperatoreToSessantesimiTransformer();
 
 export class EpsNestjsOrpEffCicliEsecMapper {
-  static toDomain(
-    raw: EpsNestjsOrpEffCicliEsecEntity,
-  ): EpsNestjsOrpEffCicliEsec {
+  static toDomain(raw: EpsNestjsOrpEffCicliEsecEntity): EpsNestjsOrpEffCicliEsec {
     const domainEntity = new EpsNestjsOrpEffCicliEsec();
+    domainEntity.ERROR_SYNC = raw.ERROR_SYNC;
+
     domainEntity.APP_REQ3_HYPSERV_COD_CHIAVE = raw.APP_REQ3_HYPSERV_COD_CHIAVE;
 
     domainEntity.HYPSERV_REQ2_COD_CHIAVE = raw.HYPSERV_REQ2_COD_CHIAVE;
@@ -26,8 +27,6 @@ export class EpsNestjsOrpEffCicliEsecMapper {
     domainEntity.id = raw.id;
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
-
-    domainEntity.SYNCED = raw.SYNCED;
 
     domainEntity.TEMPO_MINUTI_OP = raw.TEMPO_MINUTI_OP;
 
@@ -55,11 +54,14 @@ export class EpsNestjsOrpEffCicliEsecMapper {
 
     domainEntity.AZIENDA_ID = raw.AZIENDA_ID;
 
-    domainEntity.TEMPO_OPERATORE_SESSANTESIMI =
-      transformer.convertiOreInFormatoHHMM(Number(raw.TEMPO_OPERATORE));
+    domainEntity.TEMPO_OPERATORE_SESSANTESIMI = transformer.convertiOreInFormatoHHMM(Number(raw.TEMPO_OPERATORE));
 
     if (raw.orpEffCicli) {
       domainEntity.orpEffCicli = OrpEffCicliMapper.toDomain(raw.orpEffCicli);
+    }
+
+    if (raw.epsNestjsOrpEffCicliEsecChild) {
+      domainEntity.epsNestjsOrpEffCicliEsecChild = raw.epsNestjsOrpEffCicliEsecChild.map((it) => EpsNestjsOrpEffCicliEsecChildMapper.toDomain(it));
     }
 
     if (raw.hypServReq2) {
@@ -67,17 +69,13 @@ export class EpsNestjsOrpEffCicliEsecMapper {
     }
 
     if (raw.appReq3HypServ) {
-      domainEntity.appReq3HypServ = AppReq3HypServMapper.toDomain(
-        raw.appReq3HypServ,
-      );
+      domainEntity.appReq3HypServ = AppReq3HypServMapper.toDomain(raw.appReq3HypServ);
     }
 
     return domainEntity;
   }
 
-  static toPersistence(
-    domainEntity: EpsNestjsOrpEffCicliEsec,
-  ): EpsNestjsOrpEffCicliEsecEntity {
+  static toPersistence(domainEntity: EpsNestjsOrpEffCicliEsec): EpsNestjsOrpEffCicliEsecEntity {
     // Imposta DATA_INIZIO al momento attuale
     const DATA_ATTUALE = new Date();
 
@@ -92,11 +90,11 @@ export class EpsNestjsOrpEffCicliEsecMapper {
     // const DATA_FINE = new Date(DATA_INIZIO.getTime());
 
     const persistenceEntity = new EpsNestjsOrpEffCicliEsecEntity();
-    persistenceEntity.APP_REQ3_HYPSERV_COD_CHIAVE =
-      domainEntity.APP_REQ3_HYPSERV_COD_CHIAVE;
+    persistenceEntity.ERROR_SYNC = domainEntity.ERROR_SYNC;
 
-    persistenceEntity.HYPSERV_REQ2_COD_CHIAVE =
-      domainEntity.HYPSERV_REQ2_COD_CHIAVE;
+    persistenceEntity.APP_REQ3_HYPSERV_COD_CHIAVE = domainEntity.APP_REQ3_HYPSERV_COD_CHIAVE;
+
+    persistenceEntity.HYPSERV_REQ2_COD_CHIAVE = domainEntity.HYPSERV_REQ2_COD_CHIAVE;
 
     persistenceEntity.KM = domainEntity.KM;
 
@@ -109,8 +107,6 @@ export class EpsNestjsOrpEffCicliEsecMapper {
     }
     persistenceEntity.createdAt = domainEntity.createdAt;
     persistenceEntity.updatedAt = domainEntity.updatedAt;
-
-    persistenceEntity.SYNCED = domainEntity.SYNCED;
 
     persistenceEntity.TEMPO_MINUTI_OP = domainEntity.TEMPO_MINUTI_OP;
 

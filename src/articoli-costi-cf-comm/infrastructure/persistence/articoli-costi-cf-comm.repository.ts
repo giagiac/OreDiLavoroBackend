@@ -7,11 +7,7 @@ export abstract class ArticoliCostiCfCommRepository {
   //   data: Omit<ArticoliCosti, 'id' | 'createdAt' | 'updatedAt'>,
   // ): Promise<ArticoliCosti>;
 
-  abstract findAllWithPagination({
-    paginationOptions,
-  }: {
-    paginationOptions: IPaginationOptions;
-  }): Promise<ArticoliCostiCfComm[]>;
+  abstract findAllWithPagination({ paginationOptions }: { paginationOptions: IPaginationOptions }): Promise<ArticoliCostiCfComm[]>;
 
   // abstract findById(
   //   id: ArticoliCosti['id'],

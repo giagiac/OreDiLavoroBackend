@@ -17,17 +17,11 @@ export class LinkOrpOrdRelationalRepository implements LinkOrpOrdRepository {
 
   async create(data: LinkOrpOrd): Promise<LinkOrpOrd> {
     const persistenceModel = LinkOrpOrdMapper.toPersistence(data);
-    const newEntity = await this.linkOrpOrdRepository.save(
-      this.linkOrpOrdRepository.create(persistenceModel),
-    );
+    const newEntity = await this.linkOrpOrdRepository.save(this.linkOrpOrdRepository.create(persistenceModel));
     return LinkOrpOrdMapper.toDomain(newEntity);
   }
 
-  async findAllWithPagination({
-    paginationOptions,
-  }: {
-    paginationOptions: IPaginationOptions;
-  }): Promise<LinkOrpOrd[]> {
+  async findAllWithPagination({ paginationOptions }: { paginationOptions: IPaginationOptions }): Promise<LinkOrpOrd[]> {
     const entities = await this.linkOrpOrdRepository.find({
       skip: (paginationOptions.page - 1) * paginationOptions.limit,
       take: paginationOptions.limit,
@@ -36,9 +30,7 @@ export class LinkOrpOrdRelationalRepository implements LinkOrpOrdRepository {
     return entities.map((entity) => LinkOrpOrdMapper.toDomain(entity));
   }
 
-  async findById(
-    ORP_EFF_DOC_ID: LinkOrpOrd['ORP_EFF_DOC_ID'],
-  ): Promise<NullableType<LinkOrpOrd>> {
+  async findById(ORP_EFF_DOC_ID: LinkOrpOrd['ORP_EFF_DOC_ID']): Promise<NullableType<LinkOrpOrd>> {
     const entity = await this.linkOrpOrdRepository.findOne({
       where: { ORP_EFF_DOC_ID },
     });
@@ -54,10 +46,7 @@ export class LinkOrpOrdRelationalRepository implements LinkOrpOrdRepository {
     return entities.map((entity) => LinkOrpOrdMapper.toDomain(entity));
   }
 
-  async update(
-    ORP_EFF_DOC_ID: LinkOrpOrd['ORP_EFF_DOC_ID'],
-    payload: Partial<LinkOrpOrd>,
-  ): Promise<LinkOrpOrd> {
+  async update(ORP_EFF_DOC_ID: LinkOrpOrd['ORP_EFF_DOC_ID'], payload: Partial<LinkOrpOrd>): Promise<LinkOrpOrd> {
     const entity = await this.linkOrpOrdRepository.findOne({
       where: { ORP_EFF_DOC_ID },
     });

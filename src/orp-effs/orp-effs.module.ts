@@ -5,8 +5,7 @@ import { RelationalOrpEffPersistenceModule } from './infrastructure/persistence/
 import { OrpEffsController } from './orp-effs.controller';
 import { OrpEffsService } from './orp-effs.service';
 
-const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig)
-  .isDocumentDatabase
+const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig).isDocumentDatabase
   ? RelationalOrpEffPersistenceModule
   : RelationalOrpEffPersistenceModule;
 

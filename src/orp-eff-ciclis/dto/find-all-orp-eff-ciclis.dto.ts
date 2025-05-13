@@ -21,22 +21,14 @@ export class FindAllOrpEffCiclisDto {
 
   @IsArray()
   @IsOptional()
-  @Transform(({ value }) =>
-    value
-      ? plainToInstance(Array<OthersFiltersDto<JoinDto>>, JSON.parse(value))
-      : undefined,
-  )
+  @Transform(({ value }) => (value ? plainToInstance(Array<OthersFiltersDto<JoinDto>>, JSON.parse(value)) : undefined))
   @ValidateNested({ each: true })
   @Type(() => OthersFiltersDto)
   othersFilters?: OthersFiltersDto<JoinDto>[] | null;
 
   @IsArray()
   @IsOptional()
-  @Transform(({ value }) =>
-    value
-      ? plainToInstance(Array<FilterDto<OrpEffCicliDto>>, JSON.parse(value))
-      : undefined,
-  )
+  @Transform(({ value }) => (value ? plainToInstance(Array<FilterDto<OrpEffCicliDto>>, JSON.parse(value)) : undefined))
   @ValidateNested({ each: true })
   @Type(() => FilterDto)
   filters?: FilterDto<OrpEffCicliDto>[] | null;
@@ -44,9 +36,7 @@ export class FindAllOrpEffCiclisDto {
   @IsArray()
   @IsOptional()
   @Transform(({ value }) => {
-    return value
-      ? plainToInstance(Array<SortDto<OrpEffCicliDto>>, JSON.parse(value))
-      : undefined;
+    return value ? plainToInstance(Array<SortDto<OrpEffCicliDto>>, JSON.parse(value)) : undefined;
   })
   @ValidateNested({ each: true })
   @Type(() => SortDto)

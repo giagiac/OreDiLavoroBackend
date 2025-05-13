@@ -6,7 +6,7 @@ import { CfCommEntity } from '../entities/cf-comm.entity';
 export class CfCommMapper {
   static toDomain(raw: CfCommEntity): CfComm {
     const domainEntity = new CfComm();
-    domainEntity.NODE_SEDE = raw.NOTE_SEDE;
+    domainEntity.NOTE_SEDE = raw.NOTE_SEDE;
 
     domainEntity.RIFERIMENTO_SEDE = raw.RIFERIMENTO_SEDE;
 
@@ -34,16 +34,10 @@ export class CfCommMapper {
 
     domainEntity.COD_CF = raw.CF_COMM_ID;
 
-    domainEntity.X_CIVICO_NUMERO = raw.X_CIVICO_NUMERO;
-
-    domainEntity.X_FRAZIONE = raw.X_FRAZIONE;
-
     domainEntity.X_ZONA = raw.X_ZONA;
 
     if (raw.articoliCostiCfComm) {
-      domainEntity.articoliCostiCfComm = raw.articoliCostiCfComm.map((it) =>
-        ArticoliCostiCfCommMapper.toDomain(it),
-      );
+      domainEntity.articoliCostiCfComm = raw.articoliCostiCfComm.map((it) => ArticoliCostiCfCommMapper.toDomain(it));
     }
 
     return domainEntity;
@@ -51,7 +45,7 @@ export class CfCommMapper {
 
   static toPersistence(domainEntity: CfComm): CfCommEntity {
     const persistenceEntity = new CfCommEntity();
-    persistenceEntity.NOTE_SEDE = domainEntity.NODE_SEDE;
+    persistenceEntity.NOTE_SEDE = domainEntity.NOTE_SEDE;
 
     persistenceEntity.RIFERIMENTO_SEDE = domainEntity.RIFERIMENTO_SEDE;
 
@@ -76,10 +70,6 @@ export class CfCommMapper {
     persistenceEntity.DES_SEDE = domainEntity.DES_SEDE;
 
     persistenceEntity.NUM_SEDE = domainEntity.NUM_SEDE;
-
-    persistenceEntity.X_CIVICO_NUMERO = domainEntity.X_CIVICO_NUMERO;
-
-    persistenceEntity.X_FRAZIONE = domainEntity.X_FRAZIONE;
 
     persistenceEntity.X_ZONA = domainEntity.X_ZONA;
 

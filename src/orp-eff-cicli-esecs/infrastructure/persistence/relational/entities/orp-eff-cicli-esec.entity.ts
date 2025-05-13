@@ -1,13 +1,6 @@
 import { OrpEffCicliEntity } from '../../../../../orp-eff-ciclis/infrastructure/persistence/relational/entities/orp-eff-cicli.entity';
 
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  OneToMany,
-  OneToOne,
-  PrimaryColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryColumn } from 'typeorm';
 import { EpsNestjsOrpEffCicliEsecEntity } from '../../../../../eps-nestjs-orp-eff-cicli-esecs/infrastructure/persistence/relational/entities/eps-nestjs-orp-eff-cicli-esec.entity';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
 
@@ -71,19 +64,12 @@ export class OrpEffCicliEsecEntity extends EntityRelationalHelper {
 
   CODICE_BREVE: string;
 
-  @OneToMany(
-    () => OrpEffCicliEntity,
-    (orpEffCicliEntity) => orpEffCicliEntity.orpEffCicliEsec,
-    {
-      eager: true,
-    },
-  )
+  @OneToMany(() => OrpEffCicliEntity, (orpEffCicliEntity) => orpEffCicliEntity.orpEffCicliEsec, {
+    eager: true,
+  })
   orpEffCicli?: OrpEffCicliEntity[] | null;
 
-  @OneToOne(
-    () => EpsNestjsOrpEffCicliEsecEntity,
-    (epsNestjsOrpEffCicliEsec) => epsNestjsOrpEffCicliEsec.orpEffCicliEsec,
-  )
+  @OneToOne(() => EpsNestjsOrpEffCicliEsecEntity, (epsNestjsOrpEffCicliEsec) => epsNestjsOrpEffCicliEsec.orpEffCicliEsec)
   @JoinColumn({
     name: 'DOC_RIGA_ESEC_ID',
     referencedColumnName: 'DOC_RIGA_ESEC_ID',

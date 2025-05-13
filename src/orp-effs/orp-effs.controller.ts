@@ -1,30 +1,11 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  UseGuards,
-  Query,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
 import { OrpEffsService } from './orp-effs.service';
 import { CreateOrpEffDto } from './dto/create-orp-eff.dto';
 import { UpdateOrpEffDto } from './dto/update-orp-eff.dto';
-import {
-  ApiBearerAuth,
-  ApiCreatedResponse,
-  ApiOkResponse,
-  ApiParam,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiParam, ApiTags } from '@nestjs/swagger';
 import { OrpEff } from './domain/orp-eff';
 import { AuthGuard } from '@nestjs/passport';
-import {
-  InfinityPaginationResponse,
-  InfinityPaginationResponseDto,
-} from '../utils/dto/infinity-pagination-response.dto';
+import { InfinityPaginationResponse, InfinityPaginationResponseDto } from '../utils/dto/infinity-pagination-response.dto';
 import { infinityPagination } from '../utils/infinity-pagination';
 import { FindAllOrpEffsDto } from './dto/find-all-orp-effs.dto';
 
@@ -50,9 +31,7 @@ export class OrpEffsController {
   @ApiOkResponse({
     type: InfinityPaginationResponse(OrpEff),
   })
-  async findAll(
-    @Query() query: FindAllOrpEffsDto,
-  ): Promise<InfinityPaginationResponseDto<OrpEff>> {
+  async findAll(@Query() query: FindAllOrpEffsDto): Promise<InfinityPaginationResponseDto<OrpEff>> {
     const page = query?.page ?? 1;
     let limit = query?.limit ?? 10;
     if (limit > 50) {
@@ -92,10 +71,7 @@ export class OrpEffsController {
   @ApiOkResponse({
     type: OrpEff,
   })
-  update(
-    @Param('DOC_ID') DOC_ID: string,
-    @Body() updateOrpEffDto: UpdateOrpEffDto,
-  ) {
+  update(@Param('DOC_ID') DOC_ID: string, @Body() updateOrpEffDto: UpdateOrpEffDto) {
     return this.orpEffsService.update(DOC_ID, updateOrpEffDto);
   }
 

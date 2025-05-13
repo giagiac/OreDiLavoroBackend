@@ -4,6 +4,4 @@
 import { PartialType } from '@nestjs/swagger';
 import { CreateOrpEffCicliEsecDto } from './create-orp-eff-cicli-esec.dto';
 
-export class UpdateOrpEffCicliEsecDto extends PartialType(
-  CreateOrpEffCicliEsecDto,
-) {}
+export class UpdateOrpEffCicliEsecDto extends PartialType(CreateOrpEffCicliEsecDto) {}

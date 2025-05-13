@@ -1,22 +1,9 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { ArtAnaEntity } from '../../../../../art-ana/infrastructure/persistence/relational/entities/art-ana.entity';
 import { CfEntity } from '../../../../../cfs/infrastructure/persistence/relational/entities/cf.entity';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
 
-export type TipoTrasferta =
-  | 'in_giornata'
-  | 'in_giornata_dopo_21'
-  | 'fuori_sede_andata'
-  | 'fuori_sede_ritorno';
+export type TipoTrasferta = 'in_giornata' | 'in_giornata_dopo_21' | 'fuori_sede_andata' | 'fuori_sede_ritorno';
 
 @Entity({
   name: 'EPS_NESTJS_ARTICOLI_COSTI_CF',

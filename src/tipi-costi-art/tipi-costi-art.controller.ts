@@ -1,24 +1,7 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Query,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import {
-  ApiBearerAuth,
-  ApiOkResponse,
-  ApiParam,
-  ApiTags,
-} from '@nestjs/swagger';
-import {
-  InfinityPaginationResponse,
-  InfinityPaginationResponseDto,
-} from '../utils/dto/infinity-pagination-response.dto';
+import { ApiBearerAuth, ApiOkResponse, ApiParam, ApiTags } from '@nestjs/swagger';
+import { InfinityPaginationResponse, InfinityPaginationResponseDto } from '../utils/dto/infinity-pagination-response.dto';
 import { infinityPagination } from '../utils/infinity-pagination';
 import { tipiCostiArt } from './domain/tipi-costi-art';
 import { FindAlltipiCostiArtDto } from './dto/find-all-tipi-costi-art.dto';
@@ -39,9 +22,7 @@ export class tipiCostiArtsController {
   @ApiOkResponse({
     type: InfinityPaginationResponse(tipiCostiArt),
   })
-  async findAll(
-    @Query() query: FindAlltipiCostiArtDto,
-  ): Promise<InfinityPaginationResponseDto<tipiCostiArt>> {
+  async findAll(@Query() query: FindAlltipiCostiArtDto): Promise<InfinityPaginationResponseDto<tipiCostiArt>> {
     const page = query?.page ?? 1;
     let limit = query?.limit ?? 10;
     if (limit > 50) {
@@ -81,10 +62,7 @@ export class tipiCostiArtsController {
   @ApiOkResponse({
     type: tipiCostiArt,
   })
-  update(
-    @Param('id') id: string,
-    @Body() updatetipiCostiArtDto: UpdatetipiCostiArtDto,
-  ) {
+  update(@Param('id') id: string, @Body() updatetipiCostiArtDto: UpdatetipiCostiArtDto) {
     return this.tipiCostiArtsService.update(id, updatetipiCostiArtDto);
   }
 

@@ -29,17 +29,13 @@ export class SessionRelationalRepository implements SessionRepository {
 
   async create(data: Session): Promise<Session> {
     const persistenceModel = SessionMapper.toPersistence(data);
-    const entity = await this.sessionRepository.save(
-      this.sessionRepository.create(persistenceModel),
-    );
+    const entity = await this.sessionRepository.save(this.sessionRepository.create(persistenceModel));
     return SessionMapper.toDomain(entity);
   }
 
   async update(
     id: Session['id'],
-    payload: Partial<
-      Omit<Session, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>
-    >,
+    payload: Partial<Omit<Session, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>>,
   ): Promise<Session | null> {
     const entity = await this.sessionRepository.findOne({
       where: { id: Number(id) },
@@ -75,10 +71,7 @@ export class SessionRelationalRepository implements SessionRepository {
     });
   }
 
-  async deleteByUserIdWithExclude(conditions: {
-    userId: User['id'];
-    excludeSessionId: Session['id'];
-  }): Promise<void> {
+  async deleteByUserIdWithExclude(conditions: { userId: User['id']; excludeSessionId: Session['id'] }): Promise<void> {
     await this.sessionRepository.softDelete({
       user: {
         id: Number(conditions.userId),

@@ -1,12 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
-import {
-  applicaSort,
-  applicaWhereLike,
-  FilterDto,
-  SortDto,
-} from '../../../../../utils/dto/filter-column';
+import { applicaSort, applicaWhereLike, FilterDto, SortDto } from '../../../../../utils/dto/filter-column';
 import { NullableType } from '../../../../../utils/types/nullable.type';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
 import { Cf } from '../../../../domain/cf';
@@ -28,9 +23,7 @@ export class CfRelationalRepository implements CfRepository {
 
   async create(data: Cf): Promise<Cf> {
     const persistenceModel = CfMapper.toPersistence(data);
-    const newEntity = await this.cfRepository.save(
-      this.cfRepository.create(persistenceModel),
-    );
+    const newEntity = await this.cfRepository.save(this.cfRepository.create(persistenceModel));
     return CfMapper.toDomain(newEntity);
   }
 
@@ -80,9 +73,7 @@ export class CfRelationalRepository implements CfRepository {
 
     const entitiesAndCount = await entitiesSql.getManyAndCount();
 
-    let cfEntities: Array<Cf> = entitiesAndCount[0].map((entity) =>
-      CfMapper.toDomain(entity),
-    );
+    let cfEntities: Array<Cf> = entitiesAndCount[0].map((entity) => CfMapper.toDomain(entity));
     let cfCount = entitiesAndCount[1];
 
     if (paginationOptions.page == 1) {

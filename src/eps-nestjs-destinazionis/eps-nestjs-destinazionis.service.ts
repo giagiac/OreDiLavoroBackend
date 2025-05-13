@@ -29,11 +29,7 @@ export class EpsNestjsDestinazionisService {
     });
   }
 
-  findAllWithPagination({
-    paginationOptions,
-  }: {
-    paginationOptions: IPaginationOptions;
-  }) {
+  findAllWithPagination({ paginationOptions }: { paginationOptions: IPaginationOptions }) {
     return this.epsNestjsDestinazioniRepository.findAllWithPagination({
       paginationOptions: {
         page: paginationOptions.page,

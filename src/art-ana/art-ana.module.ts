@@ -5,8 +5,7 @@ import { art_anaController } from './art-ana.controller';
 import { ArtAnaService } from './art-ana.service';
 import { RelationalArtAnaPersistenceModule } from './infrastructure/persistence/relational/relational-persistence.module';
 
-const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig)
-  .isDocumentDatabase
+const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig).isDocumentDatabase
   ? RelationalArtAnaPersistenceModule
   : RelationalArtAnaPersistenceModule;
 

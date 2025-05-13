@@ -7,8 +7,6 @@ export class NumberToDecimalTransformer implements ValueTransformer {
   }
 
   from(value: number | string): number {
-    return value !== null && value !== undefined
-      ? new Decimal(value).toNumber()
-      : value;
+    return value !== null && value !== undefined ? new Decimal(value).toNumber() : value;
   }
 }

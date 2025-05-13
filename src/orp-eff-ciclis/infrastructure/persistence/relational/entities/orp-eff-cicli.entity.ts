@@ -1,12 +1,4 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  OneToOne,
-  PrimaryColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryColumn } from 'typeorm';
 import { EpsNestjsOrpEffCicliEsecEntity } from '../../../../../eps-nestjs-orp-eff-cicli-esecs/infrastructure/persistence/relational/entities/eps-nestjs-orp-eff-cicli-esec.entity';
 import { LinkOrpOrdEntity } from '../../../../../link-orp-ords/infrastructure/persistence/relational/entities/link-orp-ord.entity';
 import { OrpEffCicliEsecEntity } from '../../../../../orp-eff-cicli-esecs/infrastructure/persistence/relational/entities/orp-eff-cicli-esec.entity';
@@ -82,10 +74,7 @@ export class OrpEffCicliEntity extends EntityRelationalHelper {
   // tabella di HG - dati dei cicli DOC_RIGA_ID - l'utente cerca per codice COMMESSA :
   // il codice COMMESSA BREVE, l'ultimo carattere è in numero del ciclo
   // riferimento inverso a eps-nestjs-orp-eff-cicli-esec
-  @OneToMany(
-    () => EpsNestjsOrpEffCicliEsecEntity,
-    (epsNestjsOrpEffCicliEsec) => epsNestjsOrpEffCicliEsec.orpEffCicli,
-  )
+  @OneToMany(() => EpsNestjsOrpEffCicliEsecEntity, (epsNestjsOrpEffCicliEsec) => epsNestjsOrpEffCicliEsec.orpEffCicli)
   @JoinColumn({
     name: 'DOC_RIGA_ID',
     referencedColumnName: 'DOC_RIGA_ID',

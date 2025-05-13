@@ -1,10 +1,4 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  OneToOne,
-  PrimaryColumn
-} from 'typeorm';
+import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
 import { OrdCliRigheEntity } from '../../../../../ord-cli-righes/infrastructure/persistence/relational/entities/ord-cli-righe.entity';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
 
@@ -71,7 +65,7 @@ export class OrdCliTrasEntity extends EntityRelationalHelper {
 
   // -----------------------------------
 
-  @OneToOne(() => OrdCliRigheEntity, (ordCliRighe) => ordCliRighe.ordCliTras)
+  @OneToOne(() => OrdCliRigheEntity, (ordCliRighe) => ordCliRighe.ordCli)
   @JoinColumn({
     name: 'DOC_ID',
     referencedColumnName: 'DOC_ID',

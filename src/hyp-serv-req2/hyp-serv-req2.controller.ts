@@ -1,30 +1,11 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  UseGuards,
-  Query,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
 import { HypServReq2Service } from './hyp-serv-req2.service';
 import { CreateHypServReq2Dto } from './dto/create-hyp-serv-req2.dto';
 import { UpdateHypServReq2Dto } from './dto/update-hyp-serv-req2.dto';
-import {
-  ApiBearerAuth,
-  ApiCreatedResponse,
-  ApiOkResponse,
-  ApiParam,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiParam, ApiTags } from '@nestjs/swagger';
 import { HypServReq2 } from './domain/hyp-serv-req2';
 import { AuthGuard } from '@nestjs/passport';
-import {
-  InfinityPaginationResponse,
-  InfinityPaginationResponseDto,
-} from '../utils/dto/infinity-pagination-response.dto';
+import { InfinityPaginationResponse, InfinityPaginationResponseDto } from '../utils/dto/infinity-pagination-response.dto';
 import { infinityPagination } from '../utils/infinity-pagination';
 import { FindAllHypServReq2Dto } from './dto/find-all-hyp-serv-req2.dto';
 
@@ -50,9 +31,7 @@ export class HypServReq2Controller {
   @ApiOkResponse({
     type: InfinityPaginationResponse(HypServReq2),
   })
-  async findAll(
-    @Query() query: FindAllHypServReq2Dto,
-  ): Promise<InfinityPaginationResponseDto<HypServReq2>> {
+  async findAll(@Query() query: FindAllHypServReq2Dto): Promise<InfinityPaginationResponseDto<HypServReq2>> {
     const page = query?.page ?? 1;
     let limit = query?.limit ?? 10;
     if (limit > 50) {
@@ -92,10 +71,7 @@ export class HypServReq2Controller {
   @ApiOkResponse({
     type: HypServReq2,
   })
-  update(
-    @Param('COD_CHIAVE') COD_CHIAVE: number,
-    @Body() updateHypServReq2Dto: UpdateHypServReq2Dto,
-  ) {
+  update(@Param('COD_CHIAVE') COD_CHIAVE: number, @Body() updateHypServReq2Dto: UpdateHypServReq2Dto) {
     return this.hypServReq2Service.update(COD_CHIAVE, updateHypServReq2Dto);
   }
 

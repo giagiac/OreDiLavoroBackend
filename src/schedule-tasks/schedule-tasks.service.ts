@@ -28,11 +28,7 @@ export class ScheduleTasksService implements OnApplicationBootstrap {
     });
   }
 
-  findAllWithPagination({
-    paginationOptions,
-  }: {
-    paginationOptions: IPaginationOptions;
-  }) {
+  findAllWithPagination({ paginationOptions }: { paginationOptions: IPaginationOptions }) {
     return this.scheduleTasksRepository.findAllWithPagination({
       paginationOptions: {
         page: paginationOptions.page,

@@ -18,9 +18,7 @@ export class EpsNestjsTargaMezziMapper {
     return domainEntity;
   }
 
-  static toPersistence(
-    domainEntity: EpsNestjsTargaMezzi,
-  ): EpsNestjsTargaMezziEntity {
+  static toPersistence(domainEntity: EpsNestjsTargaMezzi): EpsNestjsTargaMezziEntity {
     const persistenceEntity = new EpsNestjsTargaMezziEntity();
     persistenceEntity.COD_ART = domainEntity.COD_ART;
 

@@ -47,8 +47,7 @@ export class UsersDocumentRepository implements UserRepository {
         sortOptions?.reduce(
           (accumulator, sort) => ({
             ...accumulator,
-            [sort.orderBy === 'id' ? '_id' : sort.orderBy]:
-              sort.order.toUpperCase() === 'ASC' ? 1 : -1,
+            [sort.orderBy === 'id' ? '_id' : sort.orderBy]: sort.order.toUpperCase() === 'ASC' ? 1 : -1,
           }),
           {},
         ),
@@ -66,7 +65,7 @@ export class UsersDocumentRepository implements UserRepository {
 
   async findByCodOp(COD_OP: User['COD_OP']): Promise<NullableType<UserEntity>> {
     // TODO: non è corretto!!!
-    const userObject = await this.usersModel.findById(COD_OP) as UserEntity
+    const userObject = (await this.usersModel.findById(COD_OP)) as UserEntity;
     return userObject ? userObject : null;
   }
 

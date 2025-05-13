@@ -5,8 +5,7 @@ import { RelationalOperatoriPersistenceModule } from './infrastructure/persisten
 import databaseConfig from '../database/config/database.config';
 import { DatabaseConfig } from '../database/config/database-config.type';
 
-const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig)
-  .isDocumentDatabase
+const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig).isDocumentDatabase
   ? RelationalOperatoriPersistenceModule
   : RelationalOperatoriPersistenceModule;
 

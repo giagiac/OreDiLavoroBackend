@@ -20,33 +20,21 @@ export class ArtAnanaRelationalRepository implements ArtAnaRepository {
 
   async create(data: ArtAna): Promise<ArtAna> {
     const persistenceModel = ArtAnaMapper.toPersistence(data);
-    const newEntity = await this.artAnaRepository.save(
-      this.artAnaRepository.create(persistenceModel),
-    );
+    const newEntity = await this.artAnaRepository.save(this.artAnaRepository.create(persistenceModel));
     return ArtAnaMapper.toDomain(newEntity);
   }
 
-  applicaWhereLike(
-    columnName: string,
-    queryBuilder: SelectQueryBuilder<ArtAnaEntity>,
-    filtri: Array<FilterDto<ArtAnaDto>> | null,
-  ) {
+  applicaWhereLike(columnName: string, queryBuilder: SelectQueryBuilder<ArtAnaEntity>, filtri: Array<FilterDto<ArtAnaDto>> | null) {
     if (filtri && filtri.length > 0) {
       filtri.forEach((filtro) => {
         if (filtro.columnName && filtro.value) {
-          queryBuilder.andWhere(
-            `LOWER(${columnName}.${filtro.columnName}) like LOWER('${filtro.value}%')`,
-          );
+          queryBuilder.andWhere(`LOWER(${columnName}.${filtro.columnName}) like LOWER('${filtro.value}%')`);
         }
       });
     }
   }
 
-  applicaWhere(
-    columnName: string,
-    queryBuilder: SelectQueryBuilder<ArtAnaEntity>,
-    filtri: Array<FilterDto<ArtAnaDto>> | null,
-  ) {
+  applicaWhere(columnName: string, queryBuilder: SelectQueryBuilder<ArtAnaEntity>, filtri: Array<FilterDto<ArtAnaDto>> | null) {
     if (filtri && filtri.length > 0) {
       filtri.forEach((filtro) => {
         if (filtro.columnName && filtro.value) {
@@ -60,18 +48,11 @@ export class ArtAnanaRelationalRepository implements ArtAnaRepository {
     }
   }
 
-  applicaSort(
-    columnName: string,
-    queryBuilder: SelectQueryBuilder<ArtAnaEntity>,
-    sort: Array<SortArtAnaDto> | null,
-  ) {
+  applicaSort(columnName: string, queryBuilder: SelectQueryBuilder<ArtAnaEntity>, sort: Array<SortArtAnaDto> | null) {
     if (sort && sort.length > 0) {
       sort.forEach((sortItem) => {
         if (sortItem.orderBy && sortItem.order) {
-          queryBuilder.addOrderBy(
-            `LPAD(${columnName}.${sortItem.orderBy},10)`,
-            sortItem.order.toUpperCase() as any,
-          );
+          queryBuilder.addOrderBy(`LPAD(${columnName}.${sortItem.orderBy},10)`, sortItem.order.toUpperCase() as any);
         }
       });
     }
@@ -132,10 +113,7 @@ export class ArtAnanaRelationalRepository implements ArtAnaRepository {
     return entities.map((entity) => ArtAnaMapper.toDomain(entity));
   }
 
-  async update(
-    id: ArtAna['COD_ART'],
-    payload: Partial<ArtAna>,
-  ): Promise<ArtAna> {
+  async update(id: ArtAna['COD_ART'], payload: Partial<ArtAna>): Promise<ArtAna> {
     const entity = await this.artAnaRepository.findOne({
       where: { COD_ART: id },
     });

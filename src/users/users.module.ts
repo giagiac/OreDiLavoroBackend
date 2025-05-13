@@ -10,8 +10,7 @@ import { RelationalUserPersistenceModule } from './infrastructure/persistence/re
 import { UsersService } from './users.service';
 
 // <database-block>
-const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig)
-  .isDocumentDatabase
+const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig).isDocumentDatabase
   ? DocumentUserPersistenceModule
   : RelationalUserPersistenceModule;
 // </database-block>

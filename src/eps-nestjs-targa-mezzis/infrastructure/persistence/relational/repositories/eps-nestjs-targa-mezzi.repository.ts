@@ -7,18 +7,11 @@ import { EpsNestjsTargaMezzi } from '../../../../domain/eps-nestjs-targa-mezzi';
 import { EpsNestjsTargaMezziRepository } from '../../eps-nestjs-targa-mezzi.repository';
 import { EpsNestjsTargaMezziMapper } from '../mappers/eps-nestjs-targa-mezzi.mapper';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
-import {
-  applicaSort,
-  applicaWhereLike,
-  FilterDto,
-  SortDto,
-} from '../../../../../utils/dto/filter-column';
+import { applicaSort, applicaWhereLike, FilterDto, SortDto } from '../../../../../utils/dto/filter-column';
 import { EpsNestjsTargaMezziDto } from '../../../../dto/eps-nestjs-targa-mezzi.dto';
 
 @Injectable()
-export class EpsNestjsTargaMezziRelationalRepository
-  implements EpsNestjsTargaMezziRepository
-{
+export class EpsNestjsTargaMezziRelationalRepository implements EpsNestjsTargaMezziRepository {
   constructor(
     @InjectRepository(EpsNestjsTargaMezziEntity)
     private readonly epsNestjsTargaMezziRepository: Repository<EpsNestjsTargaMezziEntity>,
@@ -26,9 +19,7 @@ export class EpsNestjsTargaMezziRelationalRepository
 
   async create(data: EpsNestjsTargaMezzi): Promise<EpsNestjsTargaMezzi> {
     const persistenceModel = EpsNestjsTargaMezziMapper.toPersistence(data);
-    const newEntity = await this.epsNestjsTargaMezziRepository.save(
-      this.epsNestjsTargaMezziRepository.create(persistenceModel),
-    );
+    const newEntity = await this.epsNestjsTargaMezziRepository.save(this.epsNestjsTargaMezziRepository.create(persistenceModel));
     return EpsNestjsTargaMezziMapper.toDomain(newEntity);
   }
 
@@ -60,16 +51,12 @@ export class EpsNestjsTargaMezziRelationalRepository
     const entitiesAndCount = await entitiesSql.getManyAndCount();
 
     return {
-      epsNestjsTargaMezzi: entitiesAndCount[0].map((entity) =>
-        EpsNestjsTargaMezziMapper.toDomain(entity),
-      ),
+      epsNestjsTargaMezzi: entitiesAndCount[0].map((entity) => EpsNestjsTargaMezziMapper.toDomain(entity)),
       count: entitiesAndCount[1],
     };
   }
 
-  async findById(
-    id: EpsNestjsTargaMezzi['id'],
-  ): Promise<NullableType<EpsNestjsTargaMezzi>> {
+  async findById(id: EpsNestjsTargaMezzi['id']): Promise<NullableType<EpsNestjsTargaMezzi>> {
     const entity = await this.epsNestjsTargaMezziRepository.findOne({
       where: { id },
     });
@@ -77,9 +64,7 @@ export class EpsNestjsTargaMezziRelationalRepository
     return entity ? EpsNestjsTargaMezziMapper.toDomain(entity) : null;
   }
 
-  async findByIds(
-    ids: EpsNestjsTargaMezzi['id'][],
-  ): Promise<EpsNestjsTargaMezzi[]> {
+  async findByIds(ids: EpsNestjsTargaMezzi['id'][]): Promise<EpsNestjsTargaMezzi[]> {
     const entities = await this.epsNestjsTargaMezziRepository.find({
       where: { id: In(ids) },
     });
@@ -87,10 +72,7 @@ export class EpsNestjsTargaMezziRelationalRepository
     return entities.map((entity) => EpsNestjsTargaMezziMapper.toDomain(entity));
   }
 
-  async update(
-    COD_ART: EpsNestjsTargaMezzi['COD_ART'],
-    payload: Partial<EpsNestjsTargaMezzi>,
-  ): Promise<EpsNestjsTargaMezzi> {
+  async update(COD_ART: EpsNestjsTargaMezzi['COD_ART'], payload: Partial<EpsNestjsTargaMezzi>): Promise<EpsNestjsTargaMezzi> {
     const entity = await this.epsNestjsTargaMezziRepository.findOne({
       where: { COD_ART },
     });
@@ -103,9 +85,7 @@ export class EpsNestjsTargaMezziRelationalRepository
         updatedAt: new Date(),
         artAna: null,
       });
-      const newEntity = await this.epsNestjsTargaMezziRepository.save(
-        this.epsNestjsTargaMezziRepository.create(persistenceModel),
-      );
+      const newEntity = await this.epsNestjsTargaMezziRepository.save(this.epsNestjsTargaMezziRepository.create(persistenceModel));
       return EpsNestjsTargaMezziMapper.toDomain(newEntity);
     }
 

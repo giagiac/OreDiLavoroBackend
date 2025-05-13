@@ -7,8 +7,7 @@ import { RelationalEpsNestjsOrpEffCicliEsecPersistenceModule } from './infrastru
 import { SessionModule } from '../session/session.module';
 import { UsersModule } from '../users/users.module';
 
-const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig)
-  .isDocumentDatabase
+const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig).isDocumentDatabase
   ? RelationalEpsNestjsOrpEffCicliEsecPersistenceModule
   : RelationalEpsNestjsOrpEffCicliEsecPersistenceModule;
 

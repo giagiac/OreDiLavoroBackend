@@ -4,6 +4,4 @@
 import { PartialType } from '@nestjs/swagger';
 import { CreateEpsNestjsTargaMezziDto } from './create-eps-nestjs-targa-mezzi.dto';
 
-export class UpdateEpsNestjsTargaMezziDto extends PartialType(
-  CreateEpsNestjsTargaMezziDto,
-) {}
+export class UpdateEpsNestjsTargaMezziDto extends PartialType(CreateEpsNestjsTargaMezziDto) {}

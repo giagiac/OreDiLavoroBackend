@@ -1,8 +1,4 @@
-import {
-  HttpStatus,
-  Module,
-  UnprocessableEntityException,
-} from '@nestjs/common';
+import { HttpStatus, Module, UnprocessableEntityException } from '@nestjs/common';
 import { randomStringGenerator } from '@nestjs/common/utils/random-string-generator.util';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MulterModule } from '@nestjs/platform-express';
@@ -18,8 +14,7 @@ import { DocumentFilePersistenceModule } from '../../persistence/document/docume
 import { RelationalFilePersistenceModule } from '../../persistence/relational/relational-persistence.module';
 
 // <database-block>
-const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig)
-  .isDocumentDatabase
+const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig).isDocumentDatabase
   ? DocumentFilePersistenceModule
   : RelationalFilePersistenceModule;
 // </database-block>
@@ -50,13 +45,7 @@ const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig)
           storage: diskStorage({
             destination: './files',
             filename: (request, file, callback) => {
-              callback(
-                null,
-                `${randomStringGenerator()}.${file.originalname
-                  .split('.')
-                  .pop()
-                  ?.toLowerCase()}`,
-              );
+              callback(null, `${randomStringGenerator()}.${file.originalname.split('.').pop()?.toLowerCase()}`);
             },
           }),
           limits: {

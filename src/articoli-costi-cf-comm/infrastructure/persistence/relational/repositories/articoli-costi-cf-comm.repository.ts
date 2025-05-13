@@ -9,9 +9,7 @@ import { ArticoliCostiCfCommEntity } from '../entities/articoli-costi-cf-comm.en
 import { ArticoliCostiCfCommMapper } from '../mappers/articoli-costi-cf-comm.mapper';
 
 @Injectable()
-export class ArticoliCostiCfCommRelationalRepository
-  implements ArticoliCostiCfCommRepository
-{
+export class ArticoliCostiCfCommRelationalRepository implements ArticoliCostiCfCommRepository {
   constructor(
     @InjectRepository(ArticoliCostiCfCommEntity)
     private readonly articoliCostiCfCommRepository: Repository<ArticoliCostiCfCommEntity>,
@@ -25,11 +23,7 @@ export class ArticoliCostiCfCommRelationalRepository
   //   return ArticoliCostiMapper.toDomain(newEntity);
   // }
 
-  async findAllWithPagination({
-    paginationOptions,
-  }: {
-    paginationOptions: IPaginationOptions;
-  }): Promise<ArticoliCostiCfComm[]> {
+  async findAllWithPagination({ paginationOptions }: { paginationOptions: IPaginationOptions }): Promise<ArticoliCostiCfComm[]> {
     const entities = await this.articoliCostiCfCommRepository.find({
       skip: (paginationOptions.page - 1) * paginationOptions.limit,
       take: paginationOptions.limit,
@@ -38,9 +32,7 @@ export class ArticoliCostiCfCommRelationalRepository
     return entities.map((entity) => ArticoliCostiCfCommMapper.toDomain(entity));
   }
 
-  async findById(
-    id: ArticoliCostiCfComm['id'],
-  ): Promise<NullableType<ArticoliCostiCfComm>> {
+  async findById(id: ArticoliCostiCfComm['id']): Promise<NullableType<ArticoliCostiCfComm>> {
     const entity = await this.articoliCostiCfCommRepository.findOne({
       where: { id },
     });
@@ -48,9 +40,7 @@ export class ArticoliCostiCfCommRelationalRepository
     return entity ? ArticoliCostiCfCommMapper.toDomain(entity) : null;
   }
 
-  async findByIds(
-    ids: ArticoliCostiCfComm['id'][],
-  ): Promise<ArticoliCostiCfComm[]> {
+  async findByIds(ids: ArticoliCostiCfComm['id'][]): Promise<ArticoliCostiCfComm[]> {
     const entities = await this.articoliCostiCfCommRepository.find({
       where: { id: In(ids) },
     });
@@ -58,15 +48,11 @@ export class ArticoliCostiCfCommRelationalRepository
     return entities.map((entity) => ArticoliCostiCfCommMapper.toDomain(entity));
   }
 
-  async update(
-    CF_COMM_ID: ArticoliCostiCfComm['CF_COMM_ID'],
-    payload: ArticoliCostiCfComm,
-  ): Promise<ArticoliCostiCfComm | null> {
+  async update(CF_COMM_ID: ArticoliCostiCfComm['CF_COMM_ID'], payload: ArticoliCostiCfComm): Promise<ArticoliCostiCfComm | null> {
     await this.articoliCostiCfCommRepository.manager.transaction(async () => {
-      const entity: ArticoliCostiCfCommEntity | null =
-        await this.articoliCostiCfCommRepository.findOne({
-          where: { CF_COMM_ID, TIPO_TRASFERTA: payload.TIPO_TRASFERTA },
-        });
+      const entity: ArticoliCostiCfCommEntity | null = await this.articoliCostiCfCommRepository.findOne({
+        where: { CF_COMM_ID, TIPO_TRASFERTA: payload.TIPO_TRASFERTA },
+      });
 
       // const entity: ArticoliCostiCfCommEntity | null =
       //   await this.articoliCostiCfCommRepository
@@ -88,22 +74,19 @@ export class ArticoliCostiCfCommRelationalRepository
 
       const persistenceModel = ArticoliCostiCfCommMapper.toPersistence(payload);
 
-      const newEntity = await this.articoliCostiCfCommRepository.save(
-        this.articoliCostiCfCommRepository.create(persistenceModel),
-      );
+      const newEntity = await this.articoliCostiCfCommRepository.save(this.articoliCostiCfCommRepository.create(persistenceModel));
       return newEntity;
     });
 
-    const entity: ArticoliCostiCfCommEntity | null =
-      await this.articoliCostiCfCommRepository
-        .createQueryBuilder('articoliCostiCfComm')
-        .leftJoinAndSelect('articoliCostiCfComm.artAna', 'artAna') // Assumi che la relazione sia "artAna"
-        .leftJoinAndSelect('artAna.artCosti', 'artCosti')
-        .where('articoliCostiCfComm.CF_COMM_ID = :CF_COMM_ID', { CF_COMM_ID })
-        .andWhere('articoliCostiCfComm.TIPO_TRASFERTA = :TIPO_TRASFERTA', {
-          TIPO_TRASFERTA: payload.TIPO_TRASFERTA,
-        })
-        .getOne();
+    const entity: ArticoliCostiCfCommEntity | null = await this.articoliCostiCfCommRepository
+      .createQueryBuilder('articoliCostiCfComm')
+      .leftJoinAndSelect('articoliCostiCfComm.artAna', 'artAna') // Assumi che la relazione sia "artAna"
+      .leftJoinAndSelect('artAna.artCosti', 'artCosti')
+      .where('articoliCostiCfComm.CF_COMM_ID = :CF_COMM_ID', { CF_COMM_ID })
+      .andWhere('articoliCostiCfComm.TIPO_TRASFERTA = :TIPO_TRASFERTA', {
+        TIPO_TRASFERTA: payload.TIPO_TRASFERTA,
+      })
+      .getOne();
 
     if (entity) {
       return ArticoliCostiCfCommMapper.toDomain(entity);

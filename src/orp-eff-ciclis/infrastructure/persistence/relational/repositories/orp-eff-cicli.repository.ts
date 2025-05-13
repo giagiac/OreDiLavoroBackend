@@ -18,9 +18,7 @@ export class OrpEffCicliRelationalRepository implements OrpEffCicliRepository {
 
   async create(data: OrpEffCicli): Promise<OrpEffCicli> {
     const persistenceModel = OrpEffCicliMapper.toPersistence(data);
-    const newEntity = await this.orpEffCicliRepository.save(
-      this.orpEffCicliRepository.create(persistenceModel),
-    );
+    const newEntity = await this.orpEffCicliRepository.save(this.orpEffCicliRepository.create(persistenceModel));
     return OrpEffCicliMapper.toDomain(newEntity);
   }
 
@@ -35,20 +33,18 @@ export class OrpEffCicliRelationalRepository implements OrpEffCicliRepository {
     paginationOptions: IPaginationOptions;
     join: boolean;
   }): Promise<{ orpEffCicli: Array<OrpEffCicli>; count: number }> {
-    const filterCodiceBreve = filterOptions?.find(
-      (it) => it.columnName === 'CODICE_BREVE',
-    );
+    const filterCodiceBreve = filterOptions?.find((it) => it.columnName === 'CODICE_BREVE');
 
     const query = this.orpEffCicliRepository
       .createQueryBuilder('orpEffCicli')
       .leftJoinAndSelect('orpEffCicli.linkOrpOrd', 'linkOrpOrd')
       .leftJoinAndSelect('linkOrpOrd.ordCliRighe', 'ordCliRighe')
       .leftJoinAndSelect('ordCliRighe.cf', 'cf')
+      .leftJoinAndSelect('ordCliRighe.ordCli', 'ordCli')
+      .leftJoinAndSelect('ordCli.cfComm', 'cfComm')
       .leftJoinAndSelect('orpEffCicli.orpEffCicliEsec', 'orpEffCicliEsec')
-      .leftJoinAndSelect(
-        'orpEffCicli.epsNestjsOrpEffCicliEsec',
-        'epsNestjsOrpEffCicliEsec',
-      )
+      .leftJoinAndSelect('orpEffCicli.epsNestjsOrpEffCicliEsec', 'epsNestjsOrpEffCicliEsec')
+
       .innerJoinAndSelect('orpEffCicli.orpEff', 'orpEff')
       .innerJoinAndSelect('orpEff.x1TrasCodici', 'x1TrasCodici')
       .select()
@@ -64,16 +60,12 @@ export class OrpEffCicliRelationalRepository implements OrpEffCicliRepository {
     const entitiesAndCount = await query.getManyAndCount();
 
     return {
-      orpEffCicli: entitiesAndCount[0].map((entity) =>
-        OrpEffCicliMapper.toDomain(entity),
-      ),
+      orpEffCicli: entitiesAndCount[0].map((entity) => OrpEffCicliMapper.toDomain(entity)),
       count: entitiesAndCount[1],
     };
   }
 
-  async findById(
-    DOC_RIGA_ID: OrpEffCicli['DOC_RIGA_ID'],
-  ): Promise<NullableType<OrpEffCicli>> {
+  async findById(DOC_RIGA_ID: OrpEffCicli['DOC_RIGA_ID']): Promise<NullableType<OrpEffCicli>> {
     const entity = await this.orpEffCicliRepository.findOne({
       where: { DOC_RIGA_ID },
     });
@@ -89,10 +81,7 @@ export class OrpEffCicliRelationalRepository implements OrpEffCicliRepository {
     return entities.map((entity) => OrpEffCicliMapper.toDomain(entity));
   }
 
-  async update(
-    DOC_RIGA_ID: OrpEffCicli['DOC_RIGA_ID'],
-    payload: Partial<OrpEffCicli>,
-  ): Promise<OrpEffCicli> {
+  async update(DOC_RIGA_ID: OrpEffCicli['DOC_RIGA_ID'], payload: Partial<OrpEffCicli>): Promise<OrpEffCicli> {
     const entity = await this.orpEffCicliRepository.findOne({
       where: { DOC_RIGA_ID },
     });

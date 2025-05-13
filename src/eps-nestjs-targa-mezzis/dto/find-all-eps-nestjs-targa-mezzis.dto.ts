@@ -21,25 +21,14 @@ export class FindAllEpsNestjsTargaMezziDto {
 
   @IsArray()
   @IsOptional()
-  @Transform(({ value }) =>
-    value
-      ? plainToInstance(Array<OthersFiltersDto<JoinDto>>, JSON.parse(value))
-      : undefined,
-  )
+  @Transform(({ value }) => (value ? plainToInstance(Array<OthersFiltersDto<JoinDto>>, JSON.parse(value)) : undefined))
   @ValidateNested({ each: true })
   @Type(() => OthersFiltersDto)
   othersFilters?: OthersFiltersDto<JoinDto>[] | null;
 
   @IsArray()
   @IsOptional()
-  @Transform(({ value }) =>
-    value
-      ? plainToInstance(
-          Array<FilterDto<EpsNestjsTargaMezziDto>>,
-          JSON.parse(value),
-        )
-      : undefined,
-  )
+  @Transform(({ value }) => (value ? plainToInstance(Array<FilterDto<EpsNestjsTargaMezziDto>>, JSON.parse(value)) : undefined))
   @ValidateNested({ each: true })
   @Type(() => FilterDto)
   filters?: FilterDto<EpsNestjsTargaMezziDto>[] | null;
@@ -47,12 +36,7 @@ export class FindAllEpsNestjsTargaMezziDto {
   @IsArray()
   @IsOptional()
   @Transform(({ value }) => {
-    return value
-      ? plainToInstance(
-          Array<SortDto<EpsNestjsTargaMezziDto>>,
-          JSON.parse(value),
-        )
-      : undefined;
+    return value ? plainToInstance(Array<SortDto<EpsNestjsTargaMezziDto>>, JSON.parse(value)) : undefined;
   })
   @ValidateNested({ each: true })
   @Type(() => SortDto)

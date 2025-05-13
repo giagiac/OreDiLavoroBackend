@@ -21,9 +21,7 @@ export class LinkOrpOrdMapper {
   static toPersistence(domainEntity: LinkOrpOrd): LinkOrpOrdEntity {
     const persistenceEntity = new LinkOrpOrdEntity();
     if (domainEntity.ordCliRighe) {
-      persistenceEntity.ordCliRighe = OrdCliRigheMapper.toPersistence(
-        domainEntity.ordCliRighe,
-      );
+      persistenceEntity.ordCliRighe = OrdCliRigheMapper.toPersistence(domainEntity.ordCliRighe);
     } else if (domainEntity.ordCliRighe === null) {
       persistenceEntity.ordCliRighe = null;
     }
