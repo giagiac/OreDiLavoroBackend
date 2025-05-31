@@ -5,7 +5,6 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn
@@ -17,9 +16,9 @@ import { EntityRelationalHelper } from '../../../../../utils/relational-entity-h
 
 import { ValueTransformer } from 'typeorm';
 import { AppReq3HypServEntity } from '../../../../../app-req3-hyp-servs/infrastructure/persistence/relational/entities/app-req3-hyp-serv.entity';
+import { EpsNestjsOrpEffCicliEsecChildEntity } from '../../../../../eps-nestjs-orp-eff-cicli-esec-children/infrastructure/persistence/relational/entities/eps-nestjs-orp-eff-cicli-esec-child.entity';
 import { HypServReq2Entity } from '../../../../../hyp-serv-req2/infrastructure/persistence/relational/entities/hyp-serv-req2.entity';
 import { TipoTrasferta } from '../../../../domain/eps-nestjs-orp-eff-cicli-esec';
-import { EpsNestjsOrpEffCicliEsecChildEntity } from '../../../../../eps-nestjs-orp-eff-cicli-esec-children/infrastructure/persistence/relational/entities/eps-nestjs-orp-eff-cicli-esec-child.entity';
 
 export class DecimalToNumberTransformer implements ValueTransformer {
   // Trasforma il valore da salvare nel database (numero -> stringa)
@@ -206,11 +205,6 @@ export class EpsNestjsOrpEffCicliEsecEntity extends EntityRelationalHelper {
   })
   appReq3HypServ?: AppReq3HypServEntity | null;
 
-    // tabella di HG dopo aver passato i dati al servizio - servirà per lo STORICO
-  @OneToMany(() => EpsNestjsOrpEffCicliEsecChildEntity, (epsNestjsOrpEffCicliEsecChild) => epsNestjsOrpEffCicliEsecChild.epsNestjsOrpEffCicliEsec)
-  @JoinColumn({
-    name: 'id',
-    referencedColumnName: 'idfk',
-  })
-  epsNestjsOrpEffCicliEsecChild?: Array<EpsNestjsOrpEffCicliEsecChildEntity> | null;
+  // tabella figlia
+  epsNestjsOrpEffCicliEsecChild?: EpsNestjsOrpEffCicliEsecChildEntity[] | null;
 }

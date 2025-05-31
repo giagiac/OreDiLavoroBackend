@@ -28,7 +28,7 @@ export abstract class EpsNestjsOrpEffCicliEsecRepository {
     count: number;
   }>;
 
-  abstract findById(id: EpsNestjsOrpEffCicliEsec['id']): Promise<NullableType<EpsNestjsOrpEffCicliEsec>>;
+  abstract findById(id: EpsNestjsOrpEffCicliEsec['id'], user: User | null): Promise<NullableType<EpsNestjsOrpEffCicliEsec>>;
 
   abstract findByIds(ids: EpsNestjsOrpEffCicliEsec['id'][]): Promise<EpsNestjsOrpEffCicliEsec[]>;
 

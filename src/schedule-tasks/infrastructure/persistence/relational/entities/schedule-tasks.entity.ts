@@ -75,6 +75,7 @@ export const separator = '\r\n';
 
 export enum TIPO_ERRORI_SYNC {
   DATI_SET_MINIMO = 'Dati set minimo non definito (DOC_RIGA_ID - COD_OP - DATA_INIZIO - DATA_FINE - TEMPO_OPERATORE)',
+  DATI_SET_MINIMO_CHILD = 'Dati set minimo child non definito (DOC_RIGA_ID - COD_OP - DATA_INIZIO - DATA_FINE - TEMPO_OPERATORE)',
   LINK_ORP_ORD = 'Nessun ordine collegato (linkOrpOrd)', // NO ORDINE COLLEGATO
   ORD_CLI_RIGHE_DOC_RIGA_ID = 'Nessun ordine cliente righe doc riga id collegato', // NO ORDINE COLLEGATO
   ORD_CLI_RIGHE_COD_OP = 'Nessun ordine cliente righe codice operatore collegato', // NO ORDINE COLLEGATO
@@ -96,4 +97,5 @@ export enum TIPO_ERRORI_SYNC {
   ORD_CLI_RIGHE = 'Nessun ordine cliente righe collegato',
 
   DESTINAZIONE_INCOMPLETA = 'Destinazione indirizzo o comune incompleta',
+  ORP_EFF_CICLI = "Nessun orp eff cicli collegato",
 }

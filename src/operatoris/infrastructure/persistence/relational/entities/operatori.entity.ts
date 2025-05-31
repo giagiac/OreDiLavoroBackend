@@ -2,6 +2,7 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryColu
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
 import { UserEntity } from '../../../../../users/infrastructure/persistence/relational/entities/user.entity';
 import { EpsNestjsOrpEffCicliEsecEntity } from '../../../../../eps-nestjs-orp-eff-cicli-esecs/infrastructure/persistence/relational/entities/eps-nestjs-orp-eff-cicli-esec.entity';
+import { EpsNestjsOrpEffCicliEsecChildEntity } from '../../../../../eps-nestjs-orp-eff-cicli-esec-children/infrastructure/persistence/relational/entities/eps-nestjs-orp-eff-cicli-esec-child.entity';
 
 @Entity({
   name: 'OPERATORI',
@@ -39,4 +40,12 @@ export class OperatoriEntity extends EntityRelationalHelper {
     referencedColumnName: 'COD_OP',
   })
   epsNestjsOrpEffCicliEsec?: Array<EpsNestjsOrpEffCicliEsecEntity> | null;
+
+  // riferimento inverso a eps-nestjs-orp-eff-cicli-esec- child
+  @OneToMany(() => EpsNestjsOrpEffCicliEsecChildEntity, (epsNestjsOrpEffCicliEsecChild) => epsNestjsOrpEffCicliEsecChild.operatori)
+  @JoinColumn({
+    name: 'COD_OP',
+    referencedColumnName: 'COD_OP',
+  })
+  epsNestjsOrpEffCicliEsecChild?: Array<EpsNestjsOrpEffCicliEsecChildEntity> | null;
 }

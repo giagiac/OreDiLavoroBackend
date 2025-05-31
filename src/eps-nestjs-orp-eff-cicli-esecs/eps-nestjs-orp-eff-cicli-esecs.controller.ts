@@ -49,7 +49,7 @@ export class EpsNestjsOrpEffCicliEsecsController {
     createEspNestjsOrpEffCicliEsecDto: CreateEpsNestjsOrpEffCicliEsecDto,
     @User() user: UserEntity,
   ) {
-    const { data: epsNestjsOrpEffCicliEsecs, count } = await this.epsNestjsOrpEffCicliEsecsService.findAllWithPagination({
+    const { data: epsNestjsOrpEffCicliEsecs } = await this.epsNestjsOrpEffCicliEsecsService.findAllWithPagination({
       paginationOptions: {
         page: 1,
         limit: 1,
@@ -120,6 +120,19 @@ export class EpsNestjsOrpEffCicliEsecsController {
     };
   }
 
+  // @Get(':id')
+  // @ApiParam({
+  //   name: 'id',
+  //   type: String,
+  //   required: true,
+  // })
+  // @ApiOkResponse({
+  //   type: EpsNestjsOrpEffCicliEsec,
+  // })
+  // findById(@Param('id') id: string, @User() user: UserEntity) {
+  //   return this.epsNestjsOrpEffCicliEsecsService.findById(id, user);
+  // }
+
   @Get('operatore')
   @ApiOkResponse({
     type: InfinityPaginationResponse(EpsNestjsOrpEffCicliEsec),
@@ -176,19 +189,6 @@ export class EpsNestjsOrpEffCicliEsecsController {
     };
   }
 
-  // @Get(':id')
-  // @ApiParam({
-  //   name: 'id',
-  //   type: String,
-  //   required: true,
-  // })
-  // @ApiOkResponse({
-  //   type: EpsNestjsOrpEffCicliEsec,
-  // })
-  // findById(@Param('id') id: string) {
-  //   return this.epsNestjsOrpEffCicliEsecsService.findById(id);
-  // }
-
   @Patch(':id')
   @ApiParam({
     name: 'id',
@@ -213,7 +213,7 @@ export class EpsNestjsOrpEffCicliEsecsController {
     required: true,
   })
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Param('id') id: string) {
-    return this.epsNestjsOrpEffCicliEsecsService.remove(id);
+  remove(@Param('id') id: string, @User() user: UserEntity) {
+    return this.epsNestjsOrpEffCicliEsecsService.remove(id, user);
   }
 }

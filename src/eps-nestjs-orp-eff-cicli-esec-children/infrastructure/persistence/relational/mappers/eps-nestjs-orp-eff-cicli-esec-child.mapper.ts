@@ -1,3 +1,6 @@
+import { AppReq3HypServMapper } from '../../../../../app-req3-hyp-servs/infrastructure/persistence/relational/mappers/app-req3-hyp-serv.mapper';
+import { HypServReq2Mapper } from '../../../../../hyp-serv-req2/infrastructure/persistence/relational/mappers/hyp-serv-req2.mapper';
+import { OrpEffCicliMapper } from '../../../../../orp-eff-ciclis/infrastructure/persistence/relational/mappers/orp-eff-cicli.mapper';
 import { TempoOperatoreToSessantesimiTransformer } from '../../../../../utils/transformers/tempo-in-human-readable';
 import { EpsNestjsOrpEffCicliEsecChild } from '../../../../domain/eps-nestjs-orp-eff-cicli-esec-child';
 import { EpsNestjsOrpEffCicliEsecChildEntity } from '../entities/eps-nestjs-orp-eff-cicli-esec-child.entity';
@@ -20,6 +23,7 @@ export class EpsNestjsOrpEffCicliEsecChildMapper {
     domainEntity.NUM_RIGA = raw.NUM_RIGA;
 
     domainEntity.id = raw.id;
+    domainEntity.idfk = raw.idfk;
     domainEntity.createdAt = raw.createdAt;
     domainEntity.updatedAt = raw.updatedAt;
 
@@ -51,6 +55,18 @@ export class EpsNestjsOrpEffCicliEsecChildMapper {
 
     domainEntity.TEMPO_OPERATORE_SESSANTESIMI = transformer.convertiOreInFormatoHHMM(Number(raw.TEMPO_OPERATORE));
 
+    if (raw.orpEffCicli) {
+      domainEntity.orpEffCicli = OrpEffCicliMapper.toDomain(raw.orpEffCicli);
+    }
+
+    if (raw.hypServReq2) {
+      domainEntity.hypServReq2 = HypServReq2Mapper.toDomain(raw.hypServReq2);
+    }
+
+    if (raw.appReq3HypServ) {
+      domainEntity.appReq3HypServ = AppReq3HypServMapper.toDomain(raw.appReq3HypServ);
+    }
+
     return domainEntity;
   }
 
@@ -69,48 +85,34 @@ export class EpsNestjsOrpEffCicliEsecChildMapper {
     // const DATA_FINE = new Date(DATA_INIZIO.getTime());
 
     const persistenceEntity = new EpsNestjsOrpEffCicliEsecChildEntity();
+
     persistenceEntity.ERROR_SYNC = domainEntity.ERROR_SYNC;
-
     persistenceEntity.APP_REQ3_HYPSERV_COD_CHIAVE = domainEntity.APP_REQ3_HYPSERV_COD_CHIAVE;
-
     persistenceEntity.HYPSERV_REQ2_COD_CHIAVE = domainEntity.HYPSERV_REQ2_COD_CHIAVE;
-
     persistenceEntity.KM = domainEntity.KM;
-
     persistenceEntity.TIPO_TRASFERTA = domainEntity.TIPO_TRASFERTA;
-
     persistenceEntity.NUM_RIGA = domainEntity.NUM_RIGA;
 
     if (domainEntity.id) {
       persistenceEntity.id = domainEntity.id;
     }
+    persistenceEntity.idfk = domainEntity.idfk;
+
     persistenceEntity.createdAt = domainEntity.createdAt;
     persistenceEntity.updatedAt = domainEntity.updatedAt;
 
     persistenceEntity.TEMPO_MINUTI_OP = domainEntity.TEMPO_MINUTI_OP;
-
     persistenceEntity.TEMPO_MINUTI_MACC = domainEntity.TEMPO_MINUTI_MACC;
-
     persistenceEntity.NOTE = domainEntity.NOTE;
-
     persistenceEntity.DATA_FINE = DATA_ATTUALE;
-
     persistenceEntity.DATA_INIZIO = DATA_ATTUALE;
-
     persistenceEntity.TEMPO_OPERATORE = domainEntity.TEMPO_OPERATORE;
-
     persistenceEntity.TEMPO_MACCHINA = domainEntity.TEMPO_MACCHINA;
-
     persistenceEntity.COD_OP = domainEntity.COD_OP;
-
     persistenceEntity.COD_ART = domainEntity.COD_ART;
-
     persistenceEntity.DOC_RIGA_ESEC_ID = domainEntity.DOC_RIGA_ESEC_ID;
-
     persistenceEntity.DOC_RIGA_ID = domainEntity.DOC_RIGA_ID;
-
     persistenceEntity.DOC_ID = domainEntity.DOC_ID;
-
     persistenceEntity.AZIENDA_ID = domainEntity.AZIENDA_ID;
 
     return persistenceEntity;

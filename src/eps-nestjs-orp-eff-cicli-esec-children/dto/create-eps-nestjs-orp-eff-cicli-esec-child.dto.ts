@@ -172,5 +172,12 @@ export class CreateEpsNestjsOrpEffCicliEsecChildDto {
   @IsNumber()
   AZIENDA_ID?: number | null;
 
+  @ApiProperty({
+    required: true,
+    type: () => Number,
+  })
+  @IsNumber()
+  idfk: number;
+
   // Don't forget to use the class-validator decorators in the DTO properties.
 }

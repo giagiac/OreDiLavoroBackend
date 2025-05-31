@@ -25,6 +25,7 @@ import {
   TIPO_ERRORI_SYNC,
 } from '../entities/schedule-tasks.entity';
 import { ScheduleTasksMapper } from '../mappers/schedule-tasks.mapper';
+import { OrdCliRigheEntity } from '../../../../../ord-cli-righes/infrastructure/persistence/relational/entities/ord-cli-righe.entity';
 
 const transformer = new TempoOperatoreToSessantesimiTransformer();
 
@@ -156,11 +157,11 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
       await this.processFuoriSedeAndata(manager, id);
       await this.processFuoriSedeRitorno(manager, id);
 
-      await this.processAncoraInMissione0(manager, id);
-      await this.processAncoraInMissione10(manager, id);
-      await this.processAncoraInMissione20(manager, id);
-      await this.processAncoraInMissione30(manager, id);
-      await this.processAncoraInMissione40(manager, id);
+      await this.processAncoraInTrasferta0(manager, id);
+      await this.processAncoraInTrasferta10(manager, id);
+      await this.processAncoraInTrasferta20(manager, id);
+      await this.processAncoraInTrasferta30(manager, id);
+      await this.processAncoraInTrasferta40(manager, id);
       // await this.processStep1KmAutista(manager, id);
 
       return {
@@ -212,6 +213,8 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
       .leftJoinAndSelect('orpEffCicli.orpEff', 'orpEff')
       .leftJoinAndSelect('orpEff.x1TrasCodici', 'x1TrasCodici')
 
+      .leftJoinAndSelect('epsNestjsOrpEffCicliEsec.epsNestjsOrpEffCicliEsecChild', 'epsNestjsOrpEffCicliEsecChild')
+
       .select()
       .andWhere('"epsNestjsOrpEffCicliEsec"."APP_REQ3_HYPSERV_COD_CHIAVE" IS NULL')
       .orderBy('"epsNestjsOrpEffCicliEsec"."DOC_RIGA_ID"', 'ASC')
@@ -223,6 +226,43 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
     if (id) {
       entitiesSql.andWhere('"epsNestjsOrpEffCicliEsec"."id" = :id', { id });
     }
+
+    return entitiesSql;
+  }
+
+  // -------------------------------------------------------------------------------------------------------------------
+  // --------------------------------------------- CHILD ---------------------------------------------------------------
+  // -------------------------------------------------------------------------------------------------------------------
+
+  private getBaseComponentiChildQueryBuilder(manager: EntityManager, tipoTrasferta: TipoTrasferta, id: string | null) {
+    const entitiesSql = manager
+      .getRepository(EpsNestjsOrpEffCicliEsecEntity)
+      .createQueryBuilder('epsNestjsOrpEffCicliEsecChild')
+
+      .innerJoinAndSelect('epsNestjsOrpEffCicliEsecChild.operatori', 'operatori')
+      .innerJoinAndSelect('operatori.user', 'user')
+      .innerJoinAndSelect('user.role', 'role')
+
+      .leftJoinAndSelect('epsNestjsOrpEffCicliEsecChild.hypServReq2', 'hypServReq2')
+      .leftJoinAndSelect('epsNestjsOrpEffCicliEsecChild.appReq3HypServ', 'appReq3HypServ')
+      .leftJoinAndSelect('epsNestjsOrpEffCicliEsecChild.orpEffCicli', 'orpEffCicli')
+
+      .leftJoinAndSelect('orpEffCicli.linkOrpOrd', 'linkOrpOrd')
+      .leftJoinAndSelect('linkOrpOrd.ordCliRighe', 'ordCliRighe')
+      .leftJoinAndSelect('ordCliRighe.ordCli', 'ordCli')
+      .leftJoinAndSelect('ordCli.cfComm', 'cfComm')
+      .leftJoinAndSelect('ordCliRighe.cf', 'cf')
+
+      .leftJoinAndSelect('orpEffCicli.orpEff', 'orpEff')
+      .leftJoinAndSelect('orpEff.x1TrasCodici', 'x1TrasCodici')
+
+      .select()
+      .andWhere('"epsNestjsOrpEffCicliEsecChild"."APP_REQ3_HYPSERV_COD_CHIAVE" IS NULL')
+      .orderBy('"epsNestjsOrpEffCicliEsecChild"."DOC_RIGA_ID"', 'ASC')
+      .orderBy('"epsNestjsOrpEffCicliEsecChild"."COD_ART"', 'ASC')
+      .orderBy('"epsNestjsOrpEffCicliEsecChild"."DATA_INIZIO"', 'ASC');
+
+    entitiesSql.andWhere('"epsNestjsOrpEffCicliEsecChild"."TIPO_TRASFERTA" = :tipoTrasferta', { tipoTrasferta });
 
     return entitiesSql;
   }
@@ -262,8 +302,39 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
           prevId = entity.id;
           // Genero componente COSTO trasferta
           await this.GeneroComponenteCicloCostoOperatoreTrasferta(manager, entity);
-          // 2 volte perché in_giornata è prevista ANDATA e RITORNO
-          await this.GeneroComponenteCicloCostoKmTrasferta(xVolte, manager, entity);
+
+          if (!entity.orpEffCicli || !entity.orpEffCicli.linkOrpOrd || entity.orpEffCicli.linkOrpOrd.length === 0) {
+            await this.SalvoConErroreEsecuzione(TIPO_ERRORI_SYNC.LINK_ORP_EFF, manager, entity.id);
+            return;
+          }
+
+          if (entity.orpEffCicli.linkOrpOrd[0].ordCliRighe == null) {
+            await this.SalvoConErroreEsecuzione(TIPO_ERRORI_SYNC.ORP_EFF_CICLI, manager, entity.id);
+            return;
+          }
+
+          let km: string | void = undefined;
+          if (
+            entity.orpEffCicli &&
+            entity.orpEffCicli.linkOrpOrd &&
+            entity.orpEffCicli.linkOrpOrd.length > 0 &&
+            entity.orpEffCicli.linkOrpOrd[0].ordCliRighe
+          ) {
+            const ordCliRighe = entity.orpEffCicli.linkOrpOrd[0].ordCliRighe;
+            km = await this.CalcoloDistanzaKmOrdineCliente(xVolte, manager, ordCliRighe, entity.id);
+          } else {
+            await this.SalvoConErroreEsecuzione(TIPO_ERRORI_SYNC.LINK_ORP_EFF, manager, entity.id);
+            return;
+          }
+
+          if (km) {
+            if (!entity.orpEffCicli || entity.orpEffCicli.DOC_ID == null) {
+              await this.SalvoConErroreEsecuzione(TIPO_ERRORI_SYNC.LINK_ORP_EFF, manager, entity.id);
+              return;
+            }
+            const DOC_ID = entity.orpEffCicli.DOC_ID;
+            await this.GeneroComponenteKm(km, DOC_ID, manager, entity);
+          }
         } else {
           // Indico i successivi operatori del gruppo di viaggio come processati - con lo stesso id dell'autista
           const update = await manager
@@ -276,6 +347,56 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
             .where('id = :id', { id: entity.id })
             .execute();
         }
+      }
+    }
+  }
+
+  async processKmAutistaTrasferta(xVolte: number, manager: EntityManager, id: string | null): Promise<void> {
+    // Usa il manager per eseguire query all'interno della transazione
+    // const esecuzioni = await this.getBaseEsecuzioniQueryBuilder(manager, "step1_km_autista", id).getMany();
+
+    // for (const entity of esecuzioni) {
+    //   // genero solo l'esecuzione
+    //   await this.GeneroEsecuzioneOperatore(manager, entity);
+    // }
+
+    const componenti = await this.getBaseComponentiQueryBuilder(manager, 'step1_km_autista', id).getMany();
+
+    for (const entity of componenti || []) {
+      if (
+        !entity.orpEffCicli ||
+        !entity.orpEffCicli.linkOrpOrd ||
+        entity.orpEffCicli.linkOrpOrd.length === 0 ||
+        !entity.orpEffCicli.linkOrpOrd[0].ordCliRighe
+      ) {
+        await this.SalvoConErroreEsecuzione(TIPO_ERRORI_SYNC.ORD_CLI_RIGHE, manager, entity.id);
+        return;
+      }
+
+      let KM_MANUALI = entity.KM || 0;
+
+      // PRIMO STEP KM da SEDE a DESTINAZIONE CLIENTE
+      let CLIENTE_1_km = await this.CalcoloDistanzaKmOrdineCliente(1, manager, entity.orpEffCicli.linkOrpOrd[0].ordCliRighe, entity.id);
+
+      const KM_array = [CLIENTE_1_km];
+
+      const componentiChild = await this.getBaseComponentiChildQueryBuilder(manager, 'step1_km_autista', id).getMany();
+
+      // STEP SUCCESSIVI - KM da DESTINAZIONE CLIENTE a DESTINAZIONE CLIENTE
+      for (const child of componentiChild || []) {
+        if (
+          child.DOC_RIGA_ID == null ||
+          child.COD_OP == null ||
+          child.DATA_INIZIO == null ||
+          child.DATA_FINE == null ||
+          child.TIPO_TRASFERTA == null
+        ) {
+          await this.SalvoConErroreEsecuzione(TIPO_ERRORI_SYNC.DATI_SET_MINIMO_CHILD, manager, entity.id);
+          return;
+        }
+        // TODO:
+
+        // let CLIENTE_2_km = await this.CalcoloDistanzaKmOrdineCliente(1, manager, child.orpEffCicli.linkOrpOrd[0].ordCliRighe, entity.id);
       }
     }
   }
@@ -308,9 +429,9 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
     await this.processGenericTrasferta(1, 'fuori_sede_ritorno', manager, id);
   }
 
-  async processAncoraInMissione0(manager: EntityManager, id: string | null): Promise<void> {
+  async processAncoraInTrasferta0(manager: EntityManager, id: string | null): Promise<void> {
     // Usa il manager per eseguire query all'interno della transazione
-    const entitiesSql = await this.getBaseEsecuzioniQueryBuilder(manager, 'ancora_in_missione_0', id);
+    const entitiesSql = await this.getBaseEsecuzioniQueryBuilder(manager, 'ancora_in_trasferta_0', id);
 
     const entities = await entitiesSql.getMany();
 
@@ -320,9 +441,9 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
     }
   }
 
-  async processAncoraInMissione10(manager: EntityManager, id: string | null): Promise<void> {
+  async processAncoraInTrasferta10(manager: EntityManager, id: string | null): Promise<void> {
     // Usa il manager per eseguire query all'interno della transazione
-    const entitiesSql = await this.getBaseEsecuzioniQueryBuilder(manager, 'ancora_in_missione_10', id);
+    const entitiesSql = await this.getBaseEsecuzioniQueryBuilder(manager, 'ancora_in_trasferta_10', id);
 
     const entities = await entitiesSql.getMany();
 
@@ -333,9 +454,9 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
     }
   }
 
-  async processAncoraInMissione20(manager: EntityManager, id: string | null): Promise<void> {
+  async processAncoraInTrasferta20(manager: EntityManager, id: string | null): Promise<void> {
     // Usa il manager per eseguire query all'interno della transazione
-    const entitiesSql = await this.getBaseEsecuzioniQueryBuilder(manager, 'ancora_in_missione_20', id);
+    const entitiesSql = await this.getBaseEsecuzioniQueryBuilder(manager, 'ancora_in_trasferta_20', id);
 
     const entities = await entitiesSql.getMany();
 
@@ -346,9 +467,9 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
     }
   }
 
-  async processAncoraInMissione30(manager: EntityManager, id: string | null): Promise<void> {
+  async processAncoraInTrasferta30(manager: EntityManager, id: string | null): Promise<void> {
     // Usa il manager per eseguire query all'interno della transazione
-    const entitiesSql = await this.getBaseEsecuzioniQueryBuilder(manager, 'ancora_in_missione_30', id);
+    const entitiesSql = await this.getBaseEsecuzioniQueryBuilder(manager, 'ancora_in_trasferta_30', id);
 
     const entities = await entitiesSql.getMany();
 
@@ -359,9 +480,9 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
     }
   }
 
-  async processAncoraInMissione40(manager: EntityManager, id: string | null): Promise<void> {
+  async processAncoraInTrasferta40(manager: EntityManager, id: string | null): Promise<void> {
     // Usa il manager per eseguire query all'interno della transazione
-    const entitiesSql = await this.getBaseEsecuzioniQueryBuilder(manager, 'ancora_in_missione_40', id);
+    const entitiesSql = await this.getBaseEsecuzioniQueryBuilder(manager, 'ancora_in_trasferta_40', id);
 
     const entities = await entitiesSql.getMany();
 
@@ -374,7 +495,7 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
 
   async processStep1KmAutista(manager: EntityManager, id: string | null): Promise<void> {
     // Usa il manager per eseguire query all'interno della transazione
-    const entitiesSql = await this.getBaseEsecuzioniQueryBuilder(manager, 'step1_KmAutista', id);
+    const entitiesSql = await this.getBaseEsecuzioniQueryBuilder(manager, 'step1_km_autista', id);
 
     const entities = await entitiesSql.getMany();
 
@@ -440,8 +561,6 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
   // ------------------------ Genera il componente per il costo operatore trasferta ------------------------------------
   // -------------------------------------------------------------------------------------------------------------------
   async GeneroComponenteCicloCostoOperatoreTrasferta(manager: EntityManager, entity: EpsNestjsOrpEffCicliEsecEntity) {
-    const max = await manager.getRepository(HypServReq2Entity).createQueryBuilder().select('MAX(PROGR) + 1', 'maxProgr').getRawOne();
-
     if (!entity.orpEffCicli || !entity.orpEffCicli.linkOrpOrd || entity.orpEffCicli.linkOrpOrd.length === 0) {
       await this.SalvoConErroreEsecuzione(TIPO_ERRORI_SYNC.LINK_ORP_EFF, manager, entity.id);
       return;
@@ -467,6 +586,8 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
     }
 
     const componente = this.makeComponentiOrpEff(entity.orpEffCicli.DOC_ID, COD_ART, '1');
+
+    const max = await manager.getRepository(HypServReq2Entity).createQueryBuilder().select('MAX(PROGR) + 1', 'maxProgr').getRawOne();
 
     const result = await manager
       .getRepository(AppReq3HypServEntity)
@@ -500,21 +621,17 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
   // -------------------------------------------------------------------------------------------------------------------
   // ----------------------------- Genera il componente per il costo chilometrico --------------------------------------
   // -------------------------------------------------------------------------------------------------------------------
-  async GeneroComponenteCicloCostoKmTrasferta(xVolte: number, manager: EntityManager, entity: EpsNestjsOrpEffCicliEsecEntity) {
-    const max = await manager.getRepository(HypServReq2Entity).createQueryBuilder().select('MAX(PROGR) + 1', 'maxProgr').getRawOne();
-
-    if (!entity.orpEffCicli || !entity.orpEffCicli.linkOrpOrd || entity.orpEffCicli.linkOrpOrd.length === 0) {
-      await this.SalvoConErroreEsecuzione(TIPO_ERRORI_SYNC.LINK_ORP_EFF, manager, entity.id);
-      return;
-    }
-
-    const ordCliRighe = entity.orpEffCicli.linkOrpOrd[0].ordCliRighe;
-
+  async CalcoloDistanzaKmOrdineCliente(
+    xVolte: number,
+    manager: EntityManager,
+    ordCliRighe: OrdCliRigheEntity,
+    id: string,
+  ): Promise<string | void> {
     const cf = ordCliRighe?.cf;
     const cfComm = ordCliRighe?.ordCli?.cfComm;
 
     if (cf == null || cfComm == null) {
-      await this.SalvoConErroreEsecuzione(TIPO_ERRORI_SYNC.ORD_CLI_CF, manager, entity.id);
+      await this.SalvoConErroreEsecuzione(TIPO_ERRORI_SYNC.ORD_CLI_CF, manager, id);
       return;
     }
 
@@ -541,14 +658,8 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
     }
 
     if (INDIRIZZO == '' || COMUNE == '') {
-      await this.SalvoConErroreEsecuzione(TIPO_ERRORI_SYNC.DESTINAZIONE_INCOMPLETA, manager, entity.id);
+      await this.SalvoConErroreEsecuzione(TIPO_ERRORI_SYNC.DESTINAZIONE_INCOMPLETA, manager, id);
       return;
-    }
-
-    const COD_ART = entity.COD_ART; // caso in cui lo prendo dalla targa | att.ne andrà aggiunto uno e soltanto un COMPONENTE per ogni gruppo di lavoro
-
-    if (COD_ART == null) {
-      return await this.SalvoConErroreEsecuzione(TIPO_ERRORI_SYNC.COD_ART_COSTI_CF_DEFAULT, manager, entity.id);
     }
 
     const km = await this.fetchGoogleDistanza(
@@ -563,9 +674,23 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
       INDIRIZZO,
     );
 
-    console.info(`Km da CF_COMM: ${entity.id} -> ${km}`);
+    console.info(`Km da CF_COMM: ${id} -> ${km}`);
 
-    const componente = this.makeComponentiOrpEff(entity.orpEffCicli.DOC_ID, COD_ART, km);
+    return km;
+  }
+
+  async GeneroComponenteKm(km: string, DOC_ID: string, manager: EntityManager, entity: EpsNestjsOrpEffCicliEsecEntity) {
+    // caso in cui lo prendo dalla targa | att.ne andrà aggiunto uno e soltanto un COMPONENTE per ogni gruppo di lavoro
+
+    const COD_ART = entity.COD_ART;
+
+    if (COD_ART == null) {
+      return await this.SalvoConErroreEsecuzione(TIPO_ERRORI_SYNC.COD_ART_COSTI_CF_DEFAULT, manager, entity.id);
+    }
+
+    const componente = this.makeComponentiOrpEff(DOC_ID, COD_ART, km);
+
+    const max = await manager.getRepository(HypServReq2Entity).createQueryBuilder().select('MAX(PROGR) + 1', 'maxProgr').getRawOne();
 
     const result = await manager
       .getRepository(AppReq3HypServEntity)
@@ -601,8 +726,6 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
   // ---------------------------------------------- Genera km liberi ---------------------------------------------------
   // -------------------------------------------------------------------------------------------------------------------
   async GeneroComponenteKmLiberi(km: string, manager: EntityManager, entity: EpsNestjsOrpEffCicliEsecEntity) {
-    const max = await manager.getRepository(HypServReq2Entity).createQueryBuilder().select('MAX(PROGR) + 1', 'maxProgr').getRawOne();
-
     if (!entity.orpEffCicli || !entity.orpEffCicli.linkOrpOrd || entity.orpEffCicli.linkOrpOrd.length === 0) {
       await this.SalvoConErroreEsecuzione(TIPO_ERRORI_SYNC.LINK_ORP_EFF, manager, entity.id);
       return;
@@ -617,6 +740,8 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
     console.info(`Km liberi: ${entity.id} -> ${km}`);
 
     const componente = this.makeComponentiOrpEff(entity.orpEffCicli.DOC_ID, COD_ART, km);
+
+    const max = await manager.getRepository(HypServReq2Entity).createQueryBuilder().select('MAX(PROGR) + 1', 'maxProgr').getRawOne();
 
     const result = await manager
       .getRepository(AppReq3HypServEntity)

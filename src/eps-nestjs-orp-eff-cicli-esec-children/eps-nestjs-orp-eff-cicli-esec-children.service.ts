@@ -63,6 +63,7 @@ export class EpsNestjsOrpEffCicliEsecChildrenService {
       DOC_RIGA_ID: createEpsNestjsOrpEffCicliEsecChildDto.DOC_RIGA_ID,
       DOC_ID: createEpsNestjsOrpEffCicliEsecChildDto.DOC_ID,
       AZIENDA_ID: createEpsNestjsOrpEffCicliEsecChildDto.AZIENDA_ID,
+      idfk: createEpsNestjsOrpEffCicliEsecChildDto.idfk,
     });
   }
 

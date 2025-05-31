@@ -28,7 +28,7 @@ export class EpsNestjsOrpEffCicliEsecChildrenController {
   })
   async create(
     @Body()
-    createEspNestjsOrpEffCicliEsecDto: CreateEpsNestjsOrpEffCicliEsecChildDto,
+    createEspNestjsOrpEffCicliEsecChildDto: CreateEpsNestjsOrpEffCicliEsecChildDto,
     @User() user: UserEntity,
   ) {
     const { data: epsNestjsOrpEffCicliEsecChilds, count } = await this.epsNestjsOrpEffCicliEsecChildrenService.findAllWithPagination({
@@ -41,7 +41,8 @@ export class EpsNestjsOrpEffCicliEsecChildrenController {
       user,
     });
 
-    const totaleTempoOperatore = createEspNestjsOrpEffCicliEsecDto.TEMPO_OPERATORE?.add(
+    // numero appena inserito da aggiungere al resto precedentemente salvato...
+    const totaleTempoOperatore = createEspNestjsOrpEffCicliEsecChildDto.TEMPO_OPERATORE?.add(
       epsNestjsOrpEffCicliEsecChilds.totaleTempoOperatore,
     );
 
@@ -57,7 +58,7 @@ export class EpsNestjsOrpEffCicliEsecChildrenController {
       );
     }
 
-    return this.epsNestjsOrpEffCicliEsecChildrenService.create(createEspNestjsOrpEffCicliEsecDto, user);
+    return this.epsNestjsOrpEffCicliEsecChildrenService.create(createEspNestjsOrpEffCicliEsecChildDto, user);
   }
 
   transformer = new TempoOperatoreToSessantesimiTransformer();

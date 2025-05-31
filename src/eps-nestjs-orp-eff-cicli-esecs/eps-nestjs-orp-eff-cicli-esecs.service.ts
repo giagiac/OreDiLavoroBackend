@@ -8,12 +8,14 @@ import { CreateEpsNestjsOrpEffCicliEsecDto } from './dto/create-eps-nestjs-orp-e
 import { EpsNestjsOrpEffCicliEsecDto } from './dto/esp-nestjs-orp-eff-cicli-esec.dto';
 import { UpdateEpsNestjsOrpEffCicliEsecDto } from './dto/update-esp-nestjs-orp-eff-cicli-esec.dto';
 import { EpsNestjsOrpEffCicliEsecRepository } from './infrastructure/persistence/eps-nestjs-orp-eff-cicli-esec.repository';
+import { EpsNestjsOrpEffCicliEsecChildRepository } from '../eps-nestjs-orp-eff-cicli-esec-children/infrastructure/persistence/eps-nestjs-orp-eff-cicli-esec-child.repository';
 
 @Injectable()
 export class EpsNestjsOrpEffCicliEsecsService {
   constructor(
     // Dependencies here
     private readonly epsNestjsOrpEffCicliEsecRepository: EpsNestjsOrpEffCicliEsecRepository,
+    private readonly epsNestjsOrpEffCicliEsecChildRepository: EpsNestjsOrpEffCicliEsecChildRepository,
     private readonly usersService: UsersService,
     // private sessionService: SessionService,
   ) {}
@@ -92,7 +94,10 @@ export class EpsNestjsOrpEffCicliEsecsService {
     const currentUser = await this.usersService.findById(user.id);
 
     const DATA_INIZIO = filterOptions?.find((f) => f.columnName === 'DATA_INIZIO');
-    const DATA_FINE = filterOptions?.find((f) => f.columnName === 'DATA_INIZIO');
+    const DATA_FINE = filterOptions?.find((f) => f.columnName === 'DATA_INIZIO'); // TODO: Att.ne tanto ho bisogno solo e sempre di quelli della data di oggi - mai span di archi temporali (altrimenti si andrà messo DATA_FINE)
+
+    // Estrai l'id da filterOptions se presente
+    const ID = filterOptions?.find((f) => f.columnName === 'id');
 
     const targetDateInizio = new Date();
     const targetDateFine = new Date();
@@ -121,6 +126,13 @@ export class EpsNestjsOrpEffCicliEsecsService {
       value: targetDateFine.toISOString(),
     });
 
+    if (ID) {
+      filterOptions.push({
+        columnName: 'id',
+        value: ID.value,
+      });
+    }
+
     return this.epsNestjsOrpEffCicliEsecRepository.findAllWithPagination({
       filterOptions,
       sortOptions,
@@ -132,19 +144,17 @@ export class EpsNestjsOrpEffCicliEsecsService {
     });
   }
 
-  findById(id: EpsNestjsOrpEffCicliEsec['id']) {
-    return this.epsNestjsOrpEffCicliEsecRepository.findById(id);
+  async findById(id: EpsNestjsOrpEffCicliEsec['id'], user: UserEntity) {
+    const currentUser = await this.usersService.findById(user.id);
+
+    return this.epsNestjsOrpEffCicliEsecRepository.findById(id, currentUser);
   }
 
   findByIds(ids: EpsNestjsOrpEffCicliEsec['id'][]) {
     return this.epsNestjsOrpEffCicliEsecRepository.findByIds(ids);
   }
 
-  async update(
-    id: EpsNestjsOrpEffCicliEsec['id'],
-
-    updateEpsNestjsOrpEffCicliEsecDto: UpdateEpsNestjsOrpEffCicliEsecDto,
-  ) {
+  async update(id: EpsNestjsOrpEffCicliEsec['id'], updateEpsNestjsOrpEffCicliEsecDto: UpdateEpsNestjsOrpEffCicliEsecDto) {
     // Do not remove comment below.
     // <updating-property />
 
@@ -191,19 +201,31 @@ export class EpsNestjsOrpEffCicliEsecsService {
     });
   }
 
-  async remove(id: EpsNestjsOrpEffCicliEsec['id']) {
+  async remove(id: EpsNestjsOrpEffCicliEsec['id'], user: UserEntity) {
     // TODO: il check VA EFFETTUATO per COD_CHIAVE sia del componente che dell'esecuzione
-    const result = await this.epsNestjsOrpEffCicliEsecRepository.findById(id);
-    // if (result && result.SYNCED != null && result.SYNCED > 0) {
-    //   throw new HttpException(
-    //     {
-    //       errors: {
-    //         message: 'Record già processato',
-    //       },
-    //     },
-    //     HttpStatus.UNPROCESSABLE_ENTITY,
-    //   );
-    // }
+    const currentUser = await this.usersService.findById(user.id);
+    const result = await this.epsNestjsOrpEffCicliEsecRepository.findById(id, currentUser);
+    if (!result) {
+      throw new HttpException(
+        {
+          errors: {
+            message: 'Record non trovato',
+          },
+        },
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
+    }
+    if (result.HYPSERV_REQ2_COD_CHIAVE != null || result.APP_REQ3_HYPSERV_COD_CHIAVE != null) {
+      throw new HttpException(
+        {
+          errors: {
+            message: 'Record già processato',
+          },
+        },
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
+    }
+
     return this.epsNestjsOrpEffCicliEsecRepository.remove(id);
   }
 }

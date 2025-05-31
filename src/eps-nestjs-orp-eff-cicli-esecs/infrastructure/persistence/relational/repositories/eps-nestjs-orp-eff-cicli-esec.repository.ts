@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import Decimal from 'decimal.js';
 import { In, Repository } from 'typeorm';
+import { EpsNestjsOrpEffCicliEsecChildEntity } from '../../../../../eps-nestjs-orp-eff-cicli-esec-children/infrastructure/persistence/relational/entities/eps-nestjs-orp-eff-cicli-esec-child.entity';
 import { User } from '../../../../../users/domain/user';
 import { applicaSort, FilterDto, SortDto } from '../../../../../utils/dto/filter-column';
 import { NullableType } from '../../../../../utils/types/nullable.type';
@@ -17,6 +18,8 @@ export class EpsNestjsOrpEffCicliEsecRelationalRepository implements EpsNestjsOr
   constructor(
     @InjectRepository(EpsNestjsOrpEffCicliEsecEntity)
     private readonly epsNestjsOrpEffCicliEsecRepository: Repository<EpsNestjsOrpEffCicliEsecEntity>,
+    @InjectRepository(EpsNestjsOrpEffCicliEsecChildEntity)
+    private readonly epsNestjsOrpEffCicliEsecChildRepository: Repository<EpsNestjsOrpEffCicliEsecChildEntity>,
   ) {}
 
   async create(data: EpsNestjsOrpEffCicliEsec): Promise<EpsNestjsOrpEffCicliEsec> {
@@ -52,6 +55,7 @@ export class EpsNestjsOrpEffCicliEsecRelationalRepository implements EpsNestjsOr
     // Assumiamo che il campo nel filtro si chiami 'dataRiferimento'
     const dateFilterInizio = filterOptions?.find((filter) => filter.columnName === 'DATA_INIZIO');
     const dateFilterFine = filterOptions?.find((filter) => filter.columnName === 'DATA_FINE');
+    const id = filterOptions?.find((filter) => filter.columnName === 'id'); // chiamata che utili
 
     if (dateFilterInizio?.value) {
       // Se il filtro esiste e ha un valore, prova a usarlo come data
@@ -80,13 +84,6 @@ export class EpsNestjsOrpEffCicliEsecRelationalRepository implements EpsNestjsOr
       .createQueryBuilder('epsNestjsOrpEffCicliEsec')
       .innerJoinAndSelect('epsNestjsOrpEffCicliEsec.operatori', 'operatori')
       .leftJoinAndSelect('epsNestjsOrpEffCicliEsec.orpEffCicli', 'orpEffCicli')
-      .leftJoinAndSelect('epsNestjsOrpEffCicliEsec.epsNestjsOrpEffCicliEsecChild', 'epsNestjsOrpEffCicliEsecChild')
-      // per ora non serve mi baso su HYPSERV_REQ2_COD_CHIAVE e APP_REQ3_HYPSERV_COD_CHIAVE
-      // .leftJoinAndSelect('epsNestjsOrpEffCicliEsec.hypServReq2', 'hypServReq2')
-      // .leftJoinAndSelect(
-      //   'epsNestjsOrpEffCicliEsec.appReq3HypServ',
-      //   'appReq3HypServ',
-      // )
       .leftJoinAndSelect('orpEffCicli.orpEff', 'orpEff')
       .leftJoinAndSelect('orpEffCicli.linkOrpOrd', 'linkOrpOrd')
       .leftJoinAndSelect('linkOrpOrd.ordCliRighe', 'ordCliRighe')
@@ -109,10 +106,12 @@ export class EpsNestjsOrpEffCicliEsecRelationalRepository implements EpsNestjsOr
           tFine: targetDateFine,
         },
       );
-    // .offset((paginationOptions.page - 1) * paginationOptions.limit)
-    // .limit(paginationOptions.limit);
-    // .offset((paginationOptions.page - 1) * paginationOptions.limit)
-    // .limit(paginationOptions.limit);
+
+    if (id?.value) {
+      entitiesSql.andWhere('epsNestjsOrpEffCicliEsec.id = :id', {
+        id: id.value,
+      });
+    }
 
     if (sortOptions) {
       applicaSort('epsNestjsOrpEffCicliEsec', entitiesSql, sortOptions);
@@ -120,7 +119,7 @@ export class EpsNestjsOrpEffCicliEsecRelationalRepository implements EpsNestjsOr
 
     const entitiesAndCount = await entitiesSql.getManyAndCount();
 
-    const totaleTempoOperatore = entitiesAndCount[0].reduce(
+    let totaleTempoOperatore = entitiesAndCount[0].reduce(
       (accumulator, item) => {
         // Convert the current item's value to a Decimal instance
         const valueToAdd = item?.TEMPO_OPERATORE || 0;
@@ -129,6 +128,55 @@ export class EpsNestjsOrpEffCicliEsecRelationalRepository implements EpsNestjsOr
       },
       new Decimal(0), // Initialize the accumulator with Decimal(0)
     );
+
+    for (const entity of entitiesAndCount[0]) {
+      const entitiesChildSql = this.epsNestjsOrpEffCicliEsecChildRepository
+        .createQueryBuilder('epsNestjsOrpEffCicliEsecChild')
+        .innerJoinAndSelect('epsNestjsOrpEffCicliEsecChild.operatori', 'operatori')
+        .leftJoinAndSelect('epsNestjsOrpEffCicliEsecChild.orpEffCicli', 'orpEffCicli')
+        .leftJoinAndSelect('orpEffCicli.orpEff', 'orpEff')
+        .leftJoinAndSelect('orpEffCicli.linkOrpOrd', 'linkOrpOrd')
+        .leftJoinAndSelect('linkOrpOrd.ordCliRighe', 'ordCliRighe')
+        .leftJoinAndSelect('ordCliRighe.cf', 'cf')
+        .leftJoinAndSelect('ordCliRighe.ordCli', 'ordCli')
+        .leftJoinAndSelect('ordCli.cfComm', 'cfComm')
+        .leftJoinAndSelect('orpEff.x1TrasCodici', 'x1TrasCodici')
+        .select()
+        .addSelect(
+          `TO_CHAR("ordCliRighe".DATA_DOC, 'YY') || "x1TrasCodici".CODICE2 || "orpEff".NUM_DOC || '-' || "orpEffCicli".NUM_RIGA`,
+          'CODICE_BREVE',
+        ) // Using raw SQL for concatenation and formatted date
+        .where('epsNestjsOrpEffCicliEsecChild.COD_OP =:COD_OP', {
+          COD_OP: user?.COD_OP,
+        })
+        .andWhere(
+          '(TRUNC(epsNestjsOrpEffCicliEsecChild.DATA_INIZIO) <= TRUNC(:tFine) AND TRUNC(epsNestjsOrpEffCicliEsecChild.DATA_FINE) >= TRUNC(:tInizio))',
+          {
+            tInizio: targetDateInizio,
+            tFine: targetDateFine,
+          },
+        )
+        .andWhere('epsNestjsOrpEffCicliEsecChild.idfk = :idfk', {
+          idfk: entity.id,
+        });
+
+      const entitiesChild = await entitiesChildSql.getMany();
+
+      const totaleTempoOperatoreChild = entitiesChild.reduce(
+        (accumulator, item) => {
+          // Convert the current item's value to a Decimal instance
+          const valueToAdd = item?.TEMPO_OPERATORE || 0;
+          // Use the library's 'plus' method for addition
+          return accumulator.plus(new Decimal(valueToAdd.toString()));
+        },
+        new Decimal(0), // Initialize the accumulator with Decimal(0)
+      );
+
+      // Accumula nel totale generale
+      totaleTempoOperatore = totaleTempoOperatore.plus(totaleTempoOperatoreChild);
+
+      entity.epsNestjsOrpEffCicliEsecChild = entitiesChild
+    }
 
     const list = entitiesAndCount[0].map((entity) => EpsNestjsOrpEffCicliEsecMapper.toDomain(entity));
 
@@ -180,6 +228,10 @@ export class EpsNestjsOrpEffCicliEsecRelationalRepository implements EpsNestjsOr
   }
 
   async remove(id: EpsNestjsOrpEffCicliEsec['id']): Promise<void> {
-    await this.epsNestjsOrpEffCicliEsecRepository.delete(id);
+    await this.epsNestjsOrpEffCicliEsecRepository.manager.transaction(async (trans) => {
+      const entity = await trans.getRepository(EpsNestjsOrpEffCicliEsecEntity).delete({ id });
+      // Assuming EpsNestjsOrpEffCicliEsecChildEntity is related and should also be deleted
+      const entityChild = await trans.getRepository(EpsNestjsOrpEffCicliEsecChildEntity).delete({ idfk: Number(id) });
+    });
   }
 }

@@ -1,6 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { TipoTrasferta } from '../../eps-nestjs-orp-eff-cicli-esecs/domain/eps-nestjs-orp-eff-cicli-esec';
 import Decimal from 'decimal.js';
+import { AppReq3HypServ } from '../../app-req3-hyp-servs/domain/app-req3-hyp-serv';
+import { HypServReq2 } from '../../hyp-serv-req2/domain/hyp-serv-req2';
+import { OrpEffCicli } from '../../orp-eff-ciclis/domain/orp-eff-cicli';
 
 export class EpsNestjsOrpEffCicliEsecChild {
   @ApiProperty({
@@ -137,11 +140,30 @@ export class EpsNestjsOrpEffCicliEsecChild {
   @ApiProperty({
     type: Number,
   })
-  idFk: Number;
+  idfk: number;
 
   @ApiProperty()
   createdAt: Date;
 
   @ApiProperty()
   updatedAt: Date;
+
+  // -------------------------
+  @ApiProperty({
+    type: () => OrpEffCicli,
+    nullable: true,
+  })
+  orpEffCicli?: OrpEffCicli | null;
+
+  @ApiProperty({
+    type: () => HypServReq2,
+    nullable: true,
+  })
+  hypServReq2?: HypServReq2 | null;
+
+  @ApiProperty({
+    type: () => AppReq3HypServ,
+    nullable: true,
+  })
+  appReq3HypServ?: AppReq3HypServ | null;
 }

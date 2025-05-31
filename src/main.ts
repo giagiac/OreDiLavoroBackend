@@ -11,7 +11,7 @@ import validationOptions from './utils/validation-options';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    cors: true,
+    cors: false,
     // cors: {
     //   origin: [
     //     'https://ore-di-lavoro-frontend.vercel.app', // <--- Sostituisci con l'URL esatto della tua app Vercel

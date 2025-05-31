@@ -7,7 +7,7 @@ import { EpsNestjsOrpEffCicliEsecChild } from '../../domain/eps-nestjs-orp-eff-c
 import { EpsNestjsOrpEffCicliEsecChildDto } from '../../dto/eps-nestjs-orp-eff-cicli-esec-child.dto';
 
 export abstract class EpsNestjsOrpEffCicliEsecChildRepository {
-  abstract create(data: Omit<EpsNestjsOrpEffCicliEsecChild, 'id' | 'idFk' | 'createdAt' | 'updatedAt'>): Promise<EpsNestjsOrpEffCicliEsecChild>;
+  abstract create(data: Omit<EpsNestjsOrpEffCicliEsecChild, 'id' | 'createdAt' | 'updatedAt'>): Promise<EpsNestjsOrpEffCicliEsecChild>;
 
 abstract findAllWithPagination({
     filterOptions,
