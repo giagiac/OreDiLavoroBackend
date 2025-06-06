@@ -4,6 +4,7 @@ import Decimal from 'decimal.js';
 import { AppReq3HypServ } from '../../app-req3-hyp-servs/domain/app-req3-hyp-serv';
 import { HypServReq2 } from '../../hyp-serv-req2/domain/hyp-serv-req2';
 import { OrpEffCicli } from '../../orp-eff-ciclis/domain/orp-eff-cicli';
+import { ArtAna } from '../../art-ana/domain/art-ana';
 
 export class EpsNestjsOrpEffCicliEsecChild {
   @ApiProperty({
@@ -25,10 +26,10 @@ export class EpsNestjsOrpEffCicliEsecChild {
   HYPSERV_REQ2_COD_CHIAVE?: string | null;
 
   @ApiProperty({
-    type: () => Number,
+    type: () => Decimal,
     nullable: true,
   })
-  KM?: number | null;
+  KM?: Decimal | null;
 
   @ApiProperty({
     type: () => String,
@@ -166,4 +167,10 @@ export class EpsNestjsOrpEffCicliEsecChild {
     nullable: true,
   })
   appReq3HypServ?: AppReq3HypServ | null;
+
+  @ApiProperty({
+    type: () => ArtAna,
+    nullable: true,
+  })
+  artAna?: ArtAna | null;
 }

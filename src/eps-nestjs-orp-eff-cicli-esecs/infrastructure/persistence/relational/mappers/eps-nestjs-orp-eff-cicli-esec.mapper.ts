@@ -6,6 +6,7 @@ import { HypServReq2Mapper } from '../../../../../hyp-serv-req2/infrastructure/p
 import { OrpEffCicliMapper } from '../../../../../orp-eff-ciclis/infrastructure/persistence/relational/mappers/orp-eff-cicli.mapper';
 import { TempoOperatoreToSessantesimiTransformer } from '../../../../../utils/transformers/tempo-in-human-readable';
 import { EpsNestjsOrpEffCicliEsecEntity } from '../entities/eps-nestjs-orp-eff-cicli-esec.entity';
+import { ArtAnaMapper } from '../../../../../art-ana/infrastructure/persistence/relational/mappers/art-ana.mapper';
 
 const transformer = new TempoOperatoreToSessantesimiTransformer();
 
@@ -70,6 +71,10 @@ export class EpsNestjsOrpEffCicliEsecMapper {
 
     if (raw.appReq3HypServ) {
       domainEntity.appReq3HypServ = AppReq3HypServMapper.toDomain(raw.appReq3HypServ);
+    }
+
+    if (raw.artAna) {
+      domainEntity.artAna = ArtAnaMapper.toDomain(raw.artAna);
     }
 
     return domainEntity;

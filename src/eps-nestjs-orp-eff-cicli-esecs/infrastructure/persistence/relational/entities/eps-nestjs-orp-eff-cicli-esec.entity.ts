@@ -1,14 +1,5 @@
 import Decimal from 'decimal.js';
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn
-} from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { OperatoriEntity } from '../../../../../operatoris/infrastructure/persistence/relational/entities/operatori.entity';
 import { OrpEffCicliEsecEntity } from '../../../../../orp-eff-cicli-esecs/infrastructure/persistence/relational/entities/orp-eff-cicli-esec.entity';
 import { OrpEffCicliEntity } from '../../../../../orp-eff-ciclis/infrastructure/persistence/relational/entities/orp-eff-cicli.entity';
@@ -19,6 +10,7 @@ import { AppReq3HypServEntity } from '../../../../../app-req3-hyp-servs/infrastr
 import { EpsNestjsOrpEffCicliEsecChildEntity } from '../../../../../eps-nestjs-orp-eff-cicli-esec-children/infrastructure/persistence/relational/entities/eps-nestjs-orp-eff-cicli-esec-child.entity';
 import { HypServReq2Entity } from '../../../../../hyp-serv-req2/infrastructure/persistence/relational/entities/hyp-serv-req2.entity';
 import { TipoTrasferta } from '../../../../domain/eps-nestjs-orp-eff-cicli-esec';
+import { ArtAnaEntity } from '../../../../../art-ana/infrastructure/persistence/relational/entities/art-ana.entity';
 
 export class DecimalToNumberTransformer implements ValueTransformer {
   // Trasforma il valore da salvare nel database (numero -> stringa)
@@ -65,9 +57,9 @@ export class EpsNestjsOrpEffCicliEsecEntity extends EntityRelationalHelper {
 
   @Column({
     nullable: true,
-    type: Number,
+    type: String,
   })
-  KM?: number | null;
+  KM?: Decimal | null;
 
   @Column({
     nullable: false,
@@ -204,6 +196,14 @@ export class EpsNestjsOrpEffCicliEsecEntity extends EntityRelationalHelper {
     referencedColumnName: 'COD_CHIAVE',
   })
   appReq3HypServ?: AppReq3HypServEntity | null;
+
+  // Articoli
+  @OneToOne(() => ArtAnaEntity, (artAna) => artAna.epsNestjsOrpEffCicliEsec)
+  @JoinColumn({
+    name: 'COD_ART',
+    referencedColumnName: 'COD_ART',
+  })
+  artAna?: ArtAnaEntity | null;
 
   // tabella figlia
   epsNestjsOrpEffCicliEsecChild?: EpsNestjsOrpEffCicliEsecChildEntity[] | null;

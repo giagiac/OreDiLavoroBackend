@@ -3,6 +3,8 @@ import { EntityRelationalHelper } from '../../../../../utils/relational-entity-h
 import { ArticoliCostiCfCommEntity } from '../../../../../articoli-costi-cf-comm/infrastructure/persistence/relational/entities/articoli-costi-cf-comm.entity';
 import { ArtCostiEntity } from '../../../../../art-costi/infrastructure/persistence/relational/entities/art-costi.entity';
 import { EpsNestjsTargaMezziEntity } from '../../../../../eps-nestjs-targa-mezzis/infrastructure/persistence/relational/entities/eps-nestjs-targa-mezzi.entity';
+import { EpsNestjsOrpEffCicliEsecEntity } from '../../../../../eps-nestjs-orp-eff-cicli-esecs/infrastructure/persistence/relational/entities/eps-nestjs-orp-eff-cicli-esec.entity';
+import { EpsNestjsOrpEffCicliEsecChildEntity } from '../../../../../eps-nestjs-orp-eff-cicli-esec-children/infrastructure/persistence/relational/entities/eps-nestjs-orp-eff-cicli-esec-child.entity';
 
 @Entity({
   name: 'ART_ANA',
@@ -41,4 +43,20 @@ export class ArtAnaEntity extends EntityRelationalHelper {
     referencedColumnName: 'COD_ART',
   })
   epsNestjsTargaMezzi?: EpsNestjsTargaMezziEntity | null;
+
+  // Articoli
+  @OneToOne(() => EpsNestjsOrpEffCicliEsecEntity, (epsNestjsOrpEffCicliEsec) => epsNestjsOrpEffCicliEsec.artAna)
+  @JoinColumn({
+    name: 'COD_ART',
+    referencedColumnName: 'COD_ART',
+  })
+  epsNestjsOrpEffCicliEsec?: EpsNestjsOrpEffCicliEsecEntity | null;
+
+  // Articoli
+  @OneToOne(() => EpsNestjsOrpEffCicliEsecChildEntity, (epsNestjsOrpEffCicliEsecChild) => epsNestjsOrpEffCicliEsecChild.artAna)
+  @JoinColumn({
+    name: 'COD_ART',
+    referencedColumnName: 'COD_ART',
+  })
+  epsNestjsOrpEffCicliEsecChild?: EpsNestjsOrpEffCicliEsecChildEntity | null;
 }

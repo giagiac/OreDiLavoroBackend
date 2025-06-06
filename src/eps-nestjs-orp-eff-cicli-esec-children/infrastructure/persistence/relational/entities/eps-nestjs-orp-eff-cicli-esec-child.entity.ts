@@ -7,6 +7,7 @@ import { OperatoriEntity } from '../../../../../operatoris/infrastructure/persis
 import { OrpEffCicliEsecEntity } from '../../../../../orp-eff-cicli-esecs/infrastructure/persistence/relational/entities/orp-eff-cicli-esec.entity';
 import { OrpEffCicliEntity } from '../../../../../orp-eff-ciclis/infrastructure/persistence/relational/entities/orp-eff-cicli.entity';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
+import { ArtAnaEntity } from '../../../../../art-ana/infrastructure/persistence/relational/entities/art-ana.entity';
 
 @Entity({
   name: 'EPS_NESTJS_ORP_EFF_CICLI_ESEC_CHILD',
@@ -46,9 +47,9 @@ export class EpsNestjsOrpEffCicliEsecChildEntity extends EntityRelationalHelper 
 
   @Column({
     nullable: true,
-    type: Number,
+    type: String,
   })
-  KM?: number | null;
+  KM?: Decimal | null;
 
   @Column({
     nullable: false,
@@ -185,4 +186,12 @@ export class EpsNestjsOrpEffCicliEsecChildEntity extends EntityRelationalHelper 
     referencedColumnName: 'COD_CHIAVE',
   })
   appReq3HypServ?: AppReq3HypServEntity | null;
+
+  // Articoli
+  @OneToOne(() => ArtAnaEntity, (artAna) => artAna.epsNestjsOrpEffCicliEsecChild)
+  @JoinColumn({
+    name: 'COD_ART',
+    referencedColumnName: 'COD_ART',
+  })
+  artAna?: ArtAnaEntity | null;
 }

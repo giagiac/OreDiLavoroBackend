@@ -34,11 +34,11 @@ export class CreateEpsNestjsOrpEffCicliEsecChildDto {
 
   @ApiProperty({
     required: false,
-    type: () => Number,
+    type: () => Decimal,
   })
   @IsOptional()
   @IsNumber()
-  KM?: number | null;
+  KM?: Decimal | null;
 
   @ApiProperty({
     required: true,

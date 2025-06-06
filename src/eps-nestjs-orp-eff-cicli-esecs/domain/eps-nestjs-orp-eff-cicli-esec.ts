@@ -1,9 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import Decimal from 'decimal.js';
 import { AppReq3HypServ } from '../../app-req3-hyp-servs/domain/app-req3-hyp-serv';
+import { ArtAna } from '../../art-ana/domain/art-ana';
+import { EpsNestjsOrpEffCicliEsecChild } from '../../eps-nestjs-orp-eff-cicli-esec-children/domain/eps-nestjs-orp-eff-cicli-esec-child';
 import { HypServReq2 } from '../../hyp-serv-req2/domain/hyp-serv-req2';
 import { OrpEffCicli } from '../../orp-eff-ciclis/domain/orp-eff-cicli';
-import { EpsNestjsOrpEffCicliEsecChild } from '../../eps-nestjs-orp-eff-cicli-esec-children/domain/eps-nestjs-orp-eff-cicli-esec-child';
+import { NumberToDecimalTransformer } from '../../utils/transformers/number.transformer';
 
 export type TipoTrasferta =
   | 'in_sede'
@@ -38,10 +41,14 @@ export class EpsNestjsOrpEffCicliEsec {
   HYPSERV_REQ2_COD_CHIAVE?: string | null;
 
   @ApiProperty({
-    type: () => Number,
+    type: () => String,
     nullable: true,
   })
-  KM?: number | null;
+  // @Transform(({ value }) => {
+  //   debugger
+  //   return value ? Number(String(value).replace(',', '.')) : 0;
+  // })
+  KM?: Decimal | null;
 
   @ApiProperty({
     type: () => String,
@@ -180,4 +187,10 @@ export class EpsNestjsOrpEffCicliEsec {
     nullable: true,
   })
   epsNestjsOrpEffCicliEsecChild?: Array<EpsNestjsOrpEffCicliEsecChild | null>;
+
+  @ApiProperty({
+    type: () => ArtAna,
+    nullable: true,
+  })
+  artAna?: ArtAna;
 }

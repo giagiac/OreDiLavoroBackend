@@ -84,6 +84,7 @@ export class EpsNestjsOrpEffCicliEsecRelationalRepository implements EpsNestjsOr
       .createQueryBuilder('epsNestjsOrpEffCicliEsec')
       .innerJoinAndSelect('epsNestjsOrpEffCicliEsec.operatori', 'operatori')
       .leftJoinAndSelect('epsNestjsOrpEffCicliEsec.orpEffCicli', 'orpEffCicli')
+      .leftJoinAndSelect('epsNestjsOrpEffCicliEsec.artAna', 'artAna')
       .leftJoinAndSelect('orpEffCicli.orpEff', 'orpEff')
       .leftJoinAndSelect('orpEffCicli.linkOrpOrd', 'linkOrpOrd')
       .leftJoinAndSelect('linkOrpOrd.ordCliRighe', 'ordCliRighe')
@@ -134,6 +135,7 @@ export class EpsNestjsOrpEffCicliEsecRelationalRepository implements EpsNestjsOr
         .createQueryBuilder('epsNestjsOrpEffCicliEsecChild')
         .innerJoinAndSelect('epsNestjsOrpEffCicliEsecChild.operatori', 'operatori')
         .leftJoinAndSelect('epsNestjsOrpEffCicliEsecChild.orpEffCicli', 'orpEffCicli')
+        .leftJoinAndSelect('epsNestjsOrpEffCicliEsecChild.artAna', 'artAna')
         .leftJoinAndSelect('orpEffCicli.orpEff', 'orpEff')
         .leftJoinAndSelect('orpEffCicli.linkOrpOrd', 'linkOrpOrd')
         .leftJoinAndSelect('linkOrpOrd.ordCliRighe', 'ordCliRighe')
@@ -142,13 +144,8 @@ export class EpsNestjsOrpEffCicliEsecRelationalRepository implements EpsNestjsOr
         .leftJoinAndSelect('ordCli.cfComm', 'cfComm')
         .leftJoinAndSelect('orpEff.x1TrasCodici', 'x1TrasCodici')
         .select()
-        .addSelect(
-          `TO_CHAR("ordCliRighe".DATA_DOC, 'YY') || "x1TrasCodici".CODICE2 || "orpEff".NUM_DOC || '-' || "orpEffCicli".NUM_RIGA`,
-          'CODICE_BREVE',
-        ) // Using raw SQL for concatenation and formatted date
-        .where('epsNestjsOrpEffCicliEsecChild.COD_OP =:COD_OP', {
-          COD_OP: user?.COD_OP,
-        })
+        .addSelect(`TO_CHAR("ordCliRighe".DATA_DOC, 'YY') || "x1TrasCodici".CODICE2 || "orpEff".NUM_DOC || '-' || "orpEffCicli".NUM_RIGA`, 'CODICE_BREVE') // Using raw SQL for concatenation and formatted date
+        .where('epsNestjsOrpEffCicliEsecChild.COD_OP =:COD_OP', { COD_OP: user?.COD_OP })
         .andWhere(
           '(TRUNC(epsNestjsOrpEffCicliEsecChild.DATA_INIZIO) <= TRUNC(:tFine) AND TRUNC(epsNestjsOrpEffCicliEsecChild.DATA_FINE) >= TRUNC(:tInizio))',
           {

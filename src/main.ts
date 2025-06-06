@@ -14,7 +14,9 @@ async function bootstrap() {
     cors: false,
     // cors: {
     //   origin: [
+    //     '*',
     //     'https://ore-di-lavoro-frontend.vercel.app', // <--- Sostituisci con l'URL esatto della tua app Vercel
+    //     'https://test.erroridiconiazione.com',
     //     'http://192.168.5.110:3000', // Aggiungi qui altre origini se necessario (es. per sviluppo locale)
     //   ],
     //   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS', // Specifica i metodi consentiti
