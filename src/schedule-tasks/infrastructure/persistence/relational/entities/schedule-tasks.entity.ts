@@ -97,5 +97,5 @@ export enum TIPO_ERRORI_SYNC {
   ORD_CLI_RIGHE = 'Nessun ordine cliente righe collegato',
 
   DESTINAZIONE_INCOMPLETA = 'Destinazione indirizzo o comune incompleta',
-  ORP_EFF_CICLI = "Nessun orp eff cicli collegato",
+  ORP_EFF_CICLI = 'Nessun orp eff cicli collegato',
 }

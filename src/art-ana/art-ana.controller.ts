@@ -44,17 +44,17 @@ export class art_anaController {
     return infinityPaginationQueryBuilder(cf, count);
   }
 
-  @Get(':id')
+  @Get(':COD_ART')
   @ApiParam({
-    name: 'id',
+    name: 'COD_ART',
     type: String,
     required: true,
   })
   @ApiOkResponse({
     type: ArtAna,
   })
-  findById(@Param('id') id: string) {
-    return this.artAnaService.findById(id);
+  findById(@Param('COD_ART') COD_ART: string) {
+    return this.artAnaService.findById(COD_ART);
   }
 
   @Patch(':id')

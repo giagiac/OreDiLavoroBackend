@@ -1,4 +1,6 @@
+import { CfMapper } from '../../../../../cfs/infrastructure/persistence/relational/mappers/cf.mapper';
 import { FileEntity } from '../../../../../files/infrastructure/persistence/relational/entities/file.entity';
+
 import { FileMapper } from '../../../../../files/infrastructure/persistence/relational/mappers/file.mapper';
 import { OperatoriMapper } from '../../../../../operatoris/infrastructure/persistence/relational/mappers/operatori.mapper';
 import { RoleEntity } from '../../../../../roles/infrastructure/persistence/relational/entities/role.entity';
@@ -9,6 +11,8 @@ import { UserEntity } from '../entities/user.entity';
 export class UserMapper {
   static toDomain(raw: UserEntity): User {
     const domainEntity = new User();
+    domainEntity.CF_ORIGIN_DEFAULT = raw.CF_ORIGIN_DEFAULT;
+
     domainEntity.id = raw.id;
     domainEntity.email = raw.email;
     domainEntity.password = raw.password;
@@ -29,6 +33,10 @@ export class UserMapper {
 
     if (raw.operatori) {
       domainEntity.operatori = OperatoriMapper.toDomain(raw.operatori);
+    }
+
+    if(raw.cfOriginDefault){
+      domainEntity.cfOriginDefault = CfMapper.toDomain(raw.cfOriginDefault)
     }
 
     return domainEntity;
@@ -60,6 +68,8 @@ export class UserMapper {
     }
 
     const persistenceEntity = new UserEntity();
+    persistenceEntity.CF_ORIGIN_DEFAULT = domainEntity.CF_ORIGIN_DEFAULT;
+
     if (domainEntity.id && typeof domainEntity.id === 'number') {
       persistenceEntity.id = domainEntity.id;
     }

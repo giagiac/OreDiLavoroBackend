@@ -17,11 +17,7 @@ export class EpsNestjsOrpEffCicliEsecChildrenService {
     private readonly usersService: UsersService,
   ) {}
 
-  async create(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    createEpsNestjsOrpEffCicliEsecChildDto: CreateEpsNestjsOrpEffCicliEsecChildDto,
-    user: UserEntity,
-  ) {
+  async create(createEpsNestjsOrpEffCicliEsecChildDto: CreateEpsNestjsOrpEffCicliEsecChildDto, user: UserEntity) {
     // Do not remove comment below.
     // <creating-property />
 

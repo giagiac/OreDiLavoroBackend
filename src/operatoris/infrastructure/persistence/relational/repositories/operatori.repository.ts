@@ -41,11 +41,19 @@ export class OperatoriRelationalRepository implements OperatoriRepository {
 
     // return entities.map((entity) => OperatoriMapper.toDomain(entity));
 
-    const entitiesSql = this.operatoriRepository
+    let entitiesSql = this.operatoriRepository
       .createQueryBuilder('operatori')
       .leftJoinAndSelect('operatori.user', 'user')
       .offset((paginationOptions.page - 1) * paginationOptions.limit)
       .limit(paginationOptions.limit);
+
+    if (join) {
+      entitiesSql = this.operatoriRepository
+        .createQueryBuilder('operatori')
+        .innerJoinAndSelect('operatori.user', 'user')
+        .offset((paginationOptions.page - 1) * paginationOptions.limit)
+        .limit(paginationOptions.limit);
+    }
 
     if (filterOptions) {
       applicaWhereFullLike('operatori', entitiesSql, filterOptions);

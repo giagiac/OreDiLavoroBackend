@@ -9,7 +9,7 @@ import { EpsNestjsOrpEffCicliEsecChildDto } from '../../dto/eps-nestjs-orp-eff-c
 export abstract class EpsNestjsOrpEffCicliEsecChildRepository {
   abstract create(data: Omit<EpsNestjsOrpEffCicliEsecChild, 'id' | 'createdAt' | 'updatedAt'>): Promise<EpsNestjsOrpEffCicliEsecChild>;
 
-abstract findAllWithPagination({
+  abstract findAllWithPagination({
     filterOptions,
     sortOptions,
     paginationOptions,

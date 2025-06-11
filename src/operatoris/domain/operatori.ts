@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { EpsNestjsOrpEffCicliEsec } from '../../eps-nestjs-orp-eff-cicli-esecs/domain/eps-nestjs-orp-eff-cicli-esec';
+import { User } from '../../users/domain/user';
 
 export class Operatori {
   @ApiProperty({
@@ -42,4 +43,10 @@ export class Operatori {
     nullable: true,
   })
   epsNestjsOrpEffCicliEsec?: Array<EpsNestjsOrpEffCicliEsec> | null;
+
+  @ApiProperty({
+    type: () => User,
+    nullable: true,
+  })
+  user?: User | null;
 }

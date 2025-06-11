@@ -93,7 +93,7 @@ export class HypServReq2Entity extends EntityRelationalHelper {
   })
   epsNestjsOrpEffCicliEsec?: EpsNestjsOrpEffCicliEsecEntity | null;
 
-    // tabella di HG - dati dei cicli DOC_RIGA_ID - l'utente cerca per codice COMMESSA :
+  // tabella di HG - dati dei cicli DOC_RIGA_ID - l'utente cerca per codice COMMESSA :
   // il codice COMMESSA BREVE, l'ultimo carattere è in numero del ciclo
   // riferimento inverso a eps-nestjs-orp-eff-cicli-esec
   @OneToOne(() => EpsNestjsOrpEffCicliEsecChildEntity, (epsNestjsOrpEffCicliEsecChild) => epsNestjsOrpEffCicliEsecChild.hypServReq2)

@@ -19,7 +19,7 @@ export abstract class ArtAnaRepository {
     paginationOptions: IPaginationOptions;
   }): Promise<{ data: Array<ArtAna>; count: number }>;
 
-  abstract findById(id: ArtAna['COD_ART']): Promise<NullableType<ArtAna>>;
+  abstract findById(COD_ART: ArtAna['COD_ART']): Promise<NullableType<ArtAna>>;
 
   abstract findByIds(ids: ArtAna['COD_ART'][]): Promise<ArtAna[]>;
 

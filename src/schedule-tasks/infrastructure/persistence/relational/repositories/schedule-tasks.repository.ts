@@ -151,6 +151,7 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
       if (!cfEntity) {
         throw new Error('Cf sede principale non definita...');
       }
+
       this.cfSedePrincipale = cfEntity;
 
       await this.processInSede(manager, id);
@@ -182,12 +183,13 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
       .createQueryBuilder('epsNestjsOrpEffCicliEsec')
       .select()
       .andWhere('"epsNestjsOrpEffCicliEsec"."HYPSERV_REQ2_COD_CHIAVE" IS NULL')
-      .andWhere('"epsNestjsOrpEffCicliEsec"."TIPO_TRASFERTA" = :tipoTrasferta', { tipoTrasferta })
-      .orderBy('"epsNestjsOrpEffCicliEsec"."id"', 'ASC');
+      .andWhere('"epsNestjsOrpEffCicliEsec"."TIPO_TRASFERTA" = :tipoTrasferta', { tipoTrasferta });
 
     if (id) {
       entitiesSql.andWhere('"epsNestjsOrpEffCicliEsec"."id" = :id', { id });
     }
+
+    entitiesSql.orderBy('"epsNestjsOrpEffCicliEsec"."id"', 'ASC');
 
     return entitiesSql;
   }
@@ -218,15 +220,18 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
 
       .select()
       .andWhere('"epsNestjsOrpEffCicliEsec"."APP_REQ3_HYPSERV_COD_CHIAVE" IS NULL')
-      .orderBy('"epsNestjsOrpEffCicliEsec"."DOC_RIGA_ID"', 'ASC')
-      .orderBy('"epsNestjsOrpEffCicliEsec"."COD_ART"', 'ASC')
-      .orderBy('"epsNestjsOrpEffCicliEsec"."DATA_INIZIO"', 'ASC');
-
-    entitiesSql.andWhere('"epsNestjsOrpEffCicliEsec"."TIPO_TRASFERTA" = :tipoTrasferta', { tipoTrasferta });
+      .andWhere('"epsNestjsOrpEffCicliEsec"."TIPO_TRASFERTA" = :tipoTrasferta', { tipoTrasferta });
 
     if (id) {
       entitiesSql.andWhere('"epsNestjsOrpEffCicliEsec"."id" = :id', { id });
     }
+
+    // fondamentale serve ad ORGANIZZARE I GRUPPI DI LAVORO...
+    entitiesSql.orderBy({
+      '"epsNestjsOrpEffCicliEsec"."DOC_RIGA_ID"': 'ASC',
+      '"epsNestjsOrpEffCicliEsec"."COD_ART"': 'ASC',
+      '"epsNestjsOrpEffCicliEsec"."DATA_INIZIO"': 'ASC',
+    });
 
     return entitiesSql;
   }
@@ -282,6 +287,7 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
 
     let prevGroup = ''; // al primo passaggio genero il componente sempre
     let prevId = '';
+    let prevMaxId = '';
 
     for (const entity of componenti || []) {
       if (
@@ -323,13 +329,21 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
           entity.orpEffCicli.linkOrpOrd[0].ordCliRighe
         ) {
           const ordCliRighe = entity.orpEffCicli.linkOrpOrd[0].ordCliRighe;
-          km = await this.CalcoloDistanzaKmOrdineCliente(xVolte, manager, ordCliRighe, entity.id);
+
+          const entitiesSqlCfOriginDefault = manager
+            .getRepository(CfEntity)
+            .createQueryBuilder()
+            .where('COD_CF=:COD_CF', { COD_CF: entity.operatori?.user?.CF_ORIGIN_DEFAULT });
+
+          const cfOriginDefault: CfEntity | null = await entitiesSqlCfOriginDefault.getOne();
+
+          km = await this.CalcoloDistanzaKmOrdineCliente(xVolte, manager, ordCliRighe, entity.id, cfOriginDefault);
         } else {
           await this.SalvoConErroreEsecuzione(TIPO_ERRORI_SYNC.LINK_ORP_EFF, manager, entity.id);
           return;
         }
 
-        await this.GeneroComponenteKm(km, manager, entity);
+        prevMaxId = (await this.GeneroComponenteKm(km, manager, entity)) || '';
       } else {
         // Indico i successivi operatori del gruppo di viaggio come processati - con lo stesso id dell'autista
         const update = await manager
@@ -337,9 +351,9 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
           .createQueryBuilder()
           .update()
           .set({
-            APP_REQ3_HYPSERV_COD_CHIAVE: prevId,
+            APP_REQ3_HYPSERV_COD_CHIAVE: prevMaxId,
           })
-          .where('id = :id', { id: entity.id })
+          .where('id = :id', { id: prevId })
           .execute();
       }
     }
@@ -359,10 +373,23 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
         return;
       }
 
-      let KM_MANUALI = new Decimal(entity.KM || 0);
+      const KM_AUTISTA = new Decimal(entity.KM || 0);
+
+      // origine di default sia per le destinazioni intermedie che quella di origine principale
+      const entitiesSqlCfOriginDefault = manager
+        .getRepository(CfEntity)
+        .createQueryBuilder()
+        .where('COD_CF=:COD_CF', { COD_CF: entity.operatori?.user?.CF_ORIGIN_DEFAULT });
+      const cfOriginDefault: CfEntity | null = await entitiesSqlCfOriginDefault.getOne();
 
       // PRIMO STEP KM da SEDE a DESTINAZIONE CLIENTE
-      let CLIENTE_1_km = await this.CalcoloDistanzaKmOrdineCliente(1, manager, entity.orpEffCicli.linkOrpOrd[0].ordCliRighe, entity.id);
+      const CLIENTE_1_km = await this.CalcoloDistanzaKmOrdineCliente(
+        1,
+        manager,
+        entity.orpEffCicli.linkOrpOrd[0].ordCliRighe,
+        entity.id,
+        cfOriginDefault,
+      );
 
       const componentiChild = await this.getBaseComponentiChildQueryBuilder(manager, entity.id).getMany();
 
@@ -387,11 +414,12 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
           child.orpEffCicli.linkOrpOrd.length > 0 &&
           child.orpEffCicli.linkOrpOrd[0].ordCliRighe
         ) {
-          let CLIENTE_next_km = await this.CalcoloDistanzaKmOrdineCliente(
+          const CLIENTE_next_km = await this.CalcoloDistanzaKmOrdineCliente(
             1,
             manager,
             child.orpEffCicli.linkOrpOrd[0].ordCliRighe,
             `${entity.id}_${child.id}`,
+            cfOriginDefault,
           );
 
           child.KM = CLIENTE_next_km;
@@ -402,7 +430,7 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
         }
       }
 
-      let coeff = KM_MANUALI.div(sumKmCalcolati);
+      const coeff = KM_AUTISTA.div(sumKmCalcolati);
 
       console.log(`Coefficente per ripartizione distanze: ${entity.id} -> ${coeff.toString()}`);
 
@@ -609,13 +637,11 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
     const cf = ordCliRighe?.cf;
     const ordCli = ordCliRighe?.ordCli;
 
-    if (cf == null || ordCli == null) {
-      await this.SalvoConErroreEsecuzione(TIPO_ERRORI_SYNC.ORD_CLI_CF, manager, entity.id);
-      return;
+    let CF_COMM_ID = '';
+    if (cf?.COD_CF && ordCli?.NUM_SEDE) {
+      CF_COMM_ID = cf.COD_CF + '_' + ordCli.NUM_SEDE;
     }
-
-    const CF_COMM_ID = cf.COD_CF + '_' + ordCli.NUM_SEDE;
-    const COD_CF = cf.COD_CF;
+    const COD_CF = cf?.COD_CF || '';
 
     const COD_ART = await this.CercoEpsNestjsArticoliCosti(manager, CF_COMM_ID, COD_CF, entity.TIPO_TRASFERTA);
 
@@ -667,14 +693,14 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
   // -------------------------------------------------------------------------------------------------------------------
   // ----------------------------- Genera il componente per il costo chilometrico --------------------------------------
   // -------------------------------------------------------------------------------------------------------------------
-  async GeneroComponenteKm(km: Decimal, manager: EntityManager, entity: EpsNestjsOrpEffCicliEsecEntity) {
+  async GeneroComponenteKm(km: Decimal, manager: EntityManager, entity: EpsNestjsOrpEffCicliEsecEntity): Promise<string | void> {
     // caso in cui lo prendo dalla targa | att.ne andrà aggiunto uno e soltanto un COMPONENTE per ogni gruppo di lavoro
 
     const COD_ART = entity.COD_ART;
     const DOC_ID = entity.orpEffCicli?.DOC_ID;
 
     if (COD_ART == null) {
-      return await this.SalvoConErroreEsecuzione(TIPO_ERRORI_SYNC.COD_ART_COSTI_CF_DEFAULT, manager, entity.id);
+      return this.SalvoConErroreEsecuzione(TIPO_ERRORI_SYNC.COD_ART_COSTI_CF_DEFAULT, manager, entity.id);
     }
     if (DOC_ID == null) {
       return await this.SalvoConErroreEsecuzione(TIPO_ERRORI_SYNC.ORP_EFF_CICLI, manager, entity.id);
@@ -714,10 +740,12 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
       .update()
       .set({
         APP_REQ3_HYPSERV_COD_CHIAVE: `${max}_${entity.id}`,
-        KM: km,
+        KM: km.toDecimalPlaces(1, Decimal.ROUND_UP).toString(),
       })
       .where('id = :id', { id: entity.id })
       .execute();
+
+    return `${max}_${entity.id}`;
   }
 
   // -------------------------------------------------------------------------------------------------------------------
@@ -803,11 +831,13 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
     manager: EntityManager,
     ordCliRighe: OrdCliRigheEntity,
     id: string,
+    cfOriginDefault: CfEntity | null,
   ): Promise<Decimal> {
     const cf = ordCliRighe?.cf;
     const cfComm = ordCliRighe?.ordCli?.cfComm;
 
-    if (cf == null || cfComm == null) {
+    if (cf == null && cfComm == null) {
+      // mancanza di entrambe - necessari per recuperare un destinazione utilizzabile
       await this.SalvoConErroreEsecuzione(TIPO_ERRORI_SYNC.ORD_CLI_CF, manager, id);
       return new Decimal(0);
     }
@@ -839,21 +869,39 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
       return new Decimal(0);
     }
 
-    const km = await this.fetchGoogleDistanza(
-      xVolte,
-      manager,
-      this.cfSedePrincipale,
-      REGIONE,
-      STATO, // att.ne va preso dalla testata del cliente - per le sedi commerciali funziona così
-      PROVINCIA,
-      COMUNE,
-      CAP,
-      INDIRIZZO,
-    );
+    if (cfOriginDefault) {
+      const km = await this.fetchGoogleDistanza(
+        xVolte,
+        manager,
+        cfOriginDefault,
+        REGIONE,
+        STATO, // att.ne va preso dalla testata del cliente - per le sedi commerciali funziona così
+        PROVINCIA,
+        COMUNE,
+        CAP,
+        INDIRIZZO,
+      );
 
-    console.info(`Km da CF_COMM: ${id} -> ${km}`);
+      console.info(`Km da CF_COMM: ${id} -> ${km}`);
 
-    return km;
+      return km;
+    } else {
+      const km = await this.fetchGoogleDistanza(
+        xVolte,
+        manager,
+        this.cfSedePrincipale,
+        REGIONE,
+        STATO, // att.ne va preso dalla testata del cliente - per le sedi commerciali funziona così
+        PROVINCIA,
+        COMUNE,
+        CAP,
+        INDIRIZZO,
+      );
+
+      console.info(`Km da CF_COMM: ${id} -> ${km}`);
+
+      return km;
+    }
   }
 
   //
@@ -965,7 +1013,7 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
   async fetchGoogleDistanza(
     xVolte: number,
     entityManager: EntityManager,
-    cfSedeDiPartenza: CfEntity | null,
+    cfOriginPartenza: CfEntity,
     REGIONE: string | null,
     STATO_CF: string | null,
     PROVINCIA_CF: string | null,
@@ -976,15 +1024,13 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
     const apiKey = process.env.GOOGLE_API_MAP; // Sostituisci con la tua API Key di Google
     const baseUrl = process.env.GOOGLE_DATA_MATRIX || '';
 
-    if (cfSedeDiPartenza == null) throw Error('Sede principale non definita');
-
     const origins = [
       //cfSedePrincipale.REGIONE,
-      cfSedeDiPartenza.STATO_CF,
-      cfSedeDiPartenza.PROVINCIA_CF,
-      cfSedeDiPartenza.COMUNE_CF,
-      cfSedeDiPartenza.CAP_CF,
-      cfSedeDiPartenza.INDI_CF,
+      cfOriginPartenza.STATO_CF,
+      cfOriginPartenza.PROVINCIA_CF,
+      cfOriginPartenza.COMUNE_CF,
+      cfOriginPartenza.CAP_CF,
+      cfOriginPartenza.INDI_CF,
     ];
 
     const destinations = [
@@ -999,7 +1045,8 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
     const _origin = origins.join(',');
     const _destination = destinations.join(',');
 
-    const result = await entityManager.getRepository(EpsNestjsDestinazioniEntity).find({ where: { LINK: _destination } });
+    // le destinazioni ora dipendono anche dall'origine
+    const result = await entityManager.getRepository(EpsNestjsDestinazioniEntity).find({ where: { LINK: _origin + _destination } });
 
     if (result.length == 0) {
       try {
@@ -1029,7 +1076,7 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
                   RESPONSE: responseStr,
                   VALUE: metri,
                   KM: kmStr,
-                  LINK: _destination,
+                  LINK: _origin + _destination, // le destinazioni ora dipendono anche dall'origine
                 },
               ])
               .execute();

@@ -63,9 +63,9 @@ export class UsersDocumentRepository implements UserRepository {
     return userObject ? UserMapper.toDomain(userObject) : null;
   }
 
-  async findByCodOp(COD_OP: User['COD_OP']): Promise<NullableType<UserEntity>> {
+  async findByCodOp(COD_OP: User['COD_OP']): Promise<NullableType<User>> {
     // TODO: non è corretto!!!
-    const userObject = (await this.usersModel.findById(COD_OP)) as UserEntity;
+    const userObject = (await this.usersModel.findById(COD_OP)) as User;
     return userObject ? userObject : null;
   }
 

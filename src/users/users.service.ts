@@ -105,6 +105,8 @@ export class UsersService {
     return this.usersRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
+      CF_ORIGIN_DEFAULT: createUserDto.CF_ORIGIN_DEFAULT,
+
       firstName: createUserDto.firstName,
       lastName: createUserDto.lastName,
       email: email,
@@ -137,7 +139,7 @@ export class UsersService {
     return this.usersRepository.findById(id);
   }
 
-  findByCodOp(COD_OP: User['COD_OP']): Promise<NullableType<UserEntity>> {
+  findByCodOp(COD_OP: User['COD_OP']): Promise<NullableType<User>> {
     return this.usersRepository.findByCodOp(COD_OP);
   }
 
@@ -252,6 +254,8 @@ export class UsersService {
     return this.usersRepository.update(id, {
       // Do not remove comment below.
       // <updating-property-payload />
+      CF_ORIGIN_DEFAULT: updateUserDto.CF_ORIGIN_DEFAULT,
+
       firstName: updateUserDto.firstName,
       lastName: updateUserDto.lastName,
       email,

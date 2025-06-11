@@ -26,6 +26,7 @@ import { CreateEpsNestjsOrpEffCicliEsecDto } from './dto/create-eps-nestjs-orp-e
 import { FindAllEpsNestjsOrpEffCicliEsecsDto } from './dto/find-all-esp-nestjs-orp-eff-cicli-esecs.dto';
 import { UpdateEpsNestjsOrpEffCicliEsecDto } from './dto/update-esp-nestjs-orp-eff-cicli-esec.dto';
 import { EpsNestjsOrpEffCicliEsecsService } from './eps-nestjs-orp-eff-cicli-esecs.service';
+import { User as UserType } from '../users/domain/user';
 
 @ApiTags('Epsnestjsorpeffcicliesecs')
 @ApiBearerAuth()
@@ -47,7 +48,7 @@ export class EpsNestjsOrpEffCicliEsecsController {
   async create(
     @Body()
     createEspNestjsOrpEffCicliEsecDto: CreateEpsNestjsOrpEffCicliEsecDto,
-    @User() user: UserEntity,
+    @User() user: UserType,
   ) {
     const { data: epsNestjsOrpEffCicliEsecs } = await this.epsNestjsOrpEffCicliEsecsService.findAllWithPagination({
       paginationOptions: {
@@ -85,7 +86,7 @@ export class EpsNestjsOrpEffCicliEsecsController {
   async findAll(
     @Query() query: FindAllEpsNestjsOrpEffCicliEsecsDto,
     @Req() req: Request,
-    @User() user: UserEntity,
+    @User() user: UserType,
   ): Promise<
     InfinityPaginationResponseDto<EpsNestjsOrpEffCicliEsec> & {
       totale: string;

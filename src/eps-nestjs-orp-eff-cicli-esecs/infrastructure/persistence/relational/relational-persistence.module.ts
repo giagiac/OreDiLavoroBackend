@@ -11,7 +11,7 @@ import { EpsNestjsOrpEffCicliEsecRelationalRepository } from './repositories/eps
     {
       provide: EpsNestjsOrpEffCicliEsecRepository,
       useClass: EpsNestjsOrpEffCicliEsecRelationalRepository,
-    }
+    },
   ],
   exports: [EpsNestjsOrpEffCicliEsecRepository],
 })

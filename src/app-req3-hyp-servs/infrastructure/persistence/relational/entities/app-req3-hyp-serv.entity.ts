@@ -97,7 +97,7 @@ export class AppReq3HypServEntity extends EntityRelationalHelper {
   })
   epsNestjsOrpEffCicliEsec?: EpsNestjsOrpEffCicliEsecEntity | null;
 
-    // riferimento inverso a eps-nestjs-orp-eff-cicli-esec
+  // riferimento inverso a eps-nestjs-orp-eff-cicli-esec
   @OneToOne(() => EpsNestjsOrpEffCicliEsecChildEntity, (epsNestjsOrpEffCicliEsecChild) => epsNestjsOrpEffCicliEsecChild.hypServReq2)
   @JoinColumn({
     name: 'COD_CHIAVE',

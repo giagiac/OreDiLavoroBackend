@@ -374,6 +374,10 @@ export class AuthService {
     return this.usersService.findById(userJwtPayload.id);
   }
 
+  async meByCOD_OP(COD_OP: string): Promise<NullableType<User>> {
+    return this.usersService.findByCodOp(COD_OP);
+  }
+
   async update(userJwtPayload: JwtPayloadType, userDto: AuthUpdateDto): Promise<NullableType<User>> {
     const currentUser = await this.usersService.findById(userJwtPayload.id);
 

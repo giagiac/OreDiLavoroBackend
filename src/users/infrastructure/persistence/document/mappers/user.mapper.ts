@@ -1,4 +1,5 @@
 import { FileSchemaClass } from '../../../../../files/infrastructure/persistence/document/entities/file.schema';
+
 import { FileMapper } from '../../../../../files/infrastructure/persistence/document/mappers/file.mapper';
 import { Role } from '../../../../../roles/domain/role';
 import { RoleSchema } from '../../../../../roles/infrastructure/persistence/document/entities/role.schema';
@@ -10,6 +11,8 @@ import { UserSchemaClass } from '../entities/user.schema';
 export class UserMapper {
   static toDomain(raw: UserSchemaClass): User {
     const domainEntity = new User();
+    domainEntity.CF_ORIGIN_DEFAULT = raw.CF_ORIGIN_DEFAULT;
+
     domainEntity.id = raw._id.toString();
     domainEntity.email = raw.email;
     domainEntity.password = raw.password;
@@ -64,6 +67,8 @@ export class UserMapper {
     }
 
     const persistenceSchema = new UserSchemaClass();
+    persistenceSchema.CF_ORIGIN_DEFAULT = domainEntity.CF_ORIGIN_DEFAULT;
+
     if (domainEntity.id && typeof domainEntity.id === 'string') {
       persistenceSchema._id = domainEntity.id;
     }

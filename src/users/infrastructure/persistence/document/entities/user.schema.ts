@@ -19,6 +19,11 @@ export type UserSchemaDocument = HydratedDocument<UserSchemaClass>;
 export class UserSchemaClass extends EntityDocumentHelper {
   @Prop({
     type: String,
+  })
+  CF_ORIGIN_DEFAULT?: string | null;
+
+  @Prop({
+    type: String,
     unique: true,
   })
   email: string | null;

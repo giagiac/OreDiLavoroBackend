@@ -20,7 +20,7 @@ export abstract class UserRepository {
   }): Promise<User[]>;
 
   abstract findById(id: User['id']): Promise<NullableType<User>>;
-  abstract findByCodOp(COD_OP: User['COD_OP']): Promise<NullableType<UserEntity>>;
+  abstract findByCodOp(COD_OP: User['COD_OP']): Promise<NullableType<User>>;
   abstract findByIds(ids: User['id'][]): Promise<User[]>;
   abstract findByEmail(email: User['email']): Promise<NullableType<User>>;
   abstract findBySocialIdAndProvider({

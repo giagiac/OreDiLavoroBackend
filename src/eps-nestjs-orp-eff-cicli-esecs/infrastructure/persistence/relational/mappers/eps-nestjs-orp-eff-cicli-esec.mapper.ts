@@ -62,7 +62,9 @@ export class EpsNestjsOrpEffCicliEsecMapper {
     }
 
     if (raw.epsNestjsOrpEffCicliEsecChild) {
-      domainEntity.epsNestjsOrpEffCicliEsecChild = raw.epsNestjsOrpEffCicliEsecChild.map((it) => EpsNestjsOrpEffCicliEsecChildMapper.toDomain(it));
+      domainEntity.epsNestjsOrpEffCicliEsecChild = raw.epsNestjsOrpEffCicliEsecChild.map((it) =>
+        EpsNestjsOrpEffCicliEsecChildMapper.toDomain(it),
+      );
     }
 
     if (raw.hypServReq2) {

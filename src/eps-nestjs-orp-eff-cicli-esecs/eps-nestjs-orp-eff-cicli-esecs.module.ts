@@ -18,7 +18,7 @@ const infrastructurePersistenceModule = (databaseConfig() as DatabaseConfig).isD
     SessionModule,
     // import modules, etc.
     infrastructurePersistenceModule,
-    EpsNestjsOrpEffCicliEsecChildrenModule
+    EpsNestjsOrpEffCicliEsecChildrenModule,
   ],
   controllers: [EpsNestjsOrpEffCicliEsecsController],
   providers: [EpsNestjsOrpEffCicliEsecsService],

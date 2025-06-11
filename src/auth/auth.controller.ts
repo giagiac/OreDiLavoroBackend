@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Patch, Post, Request, SerializeOptions, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Request, SerializeOptions, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { User } from '../users/domain/user';
@@ -12,6 +12,9 @@ import { AuthResetPasswordDto } from './dto/auth-reset-password.dto';
 import { AuthUpdateDto } from './dto/auth-update.dto';
 import { LoginResponseDto } from './dto/login-response.dto';
 import { RefreshResponseDto } from './dto/refresh-response.dto';
+import { RolesGuard } from '../roles/roles.guard';
+import { RoleEnum } from '../roles/roles.enum';
+import { Roles } from '../roles/roles.decorator';
 
 @ApiTags('Auth')
 @Controller({
@@ -75,6 +78,18 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   public me(@Request() request): Promise<NullableType<User>> {
     return this.service.me(request.user);
+  }
+
+  @ApiBearerAuth()
+  @Get('me_by_cod_op')
+  @UseGuards(AuthGuard('jwt'))
+  @ApiOkResponse({
+    type: User,
+  })
+  @HttpCode(HttpStatus.OK)
+  public meByCOD_OP(@Request() request): Promise<NullableType<User>> {
+    const COD_OP = request.query.COD_OP;
+    return this.service.meByCOD_OP(COD_OP);
   }
 
   @ApiBearerAuth()

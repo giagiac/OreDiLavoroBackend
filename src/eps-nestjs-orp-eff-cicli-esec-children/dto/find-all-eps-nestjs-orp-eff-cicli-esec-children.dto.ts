@@ -8,37 +8,37 @@ import { JoinDto } from './eps-nestjs-orp-eff-cicli-esec-child.dto';
 
 export class FindAllEpsNestjsOrpEffCicliEsecChildrenDto {
   @ApiPropertyOptional()
-    @Transform(({ value }) => (value ? Number(value) : 1))
-    @IsNumber()
-    @IsOptional()
-    page?: number;
-  
-    @ApiPropertyOptional()
-    @Transform(({ value }) => (value ? Number(value) : 10))
-    @IsNumber()
-    @IsOptional()
-    limit?: number;
-  
-    @IsArray()
-    @IsOptional()
-    @Transform(({ value }) => (value ? plainToInstance(Array<OthersFiltersDto<JoinDto>>, JSON.parse(value)) : undefined))
-    @ValidateNested({ each: true })
-    @Type(() => OthersFiltersDto)
-    othersFilters?: OthersFiltersDto<JoinDto>[] | null;
-  
-    @IsArray()
-    @IsOptional()
-    @Transform(({ value }) => (value ? plainToInstance(Array<FilterDto<EpsNestjsOrpEffCicliEsecDto>>, JSON.parse(value)) : undefined))
-    @ValidateNested({ each: true })
-    @Type(() => FilterDto)
-    filters?: FilterDto<EpsNestjsOrpEffCicliEsecDto>[] | null;
-  
-    @IsArray()
-    @IsOptional()
-    @Transform(({ value }) => {
-      return value ? plainToInstance(Array<SortDto<EpsNestjsOrpEffCicliEsecDto>>, JSON.parse(value)) : undefined;
-    })
-    @ValidateNested({ each: true })
-    @Type(() => SortDto)
-    sort?: SortDto<EpsNestjsOrpEffCicliEsecDto>[] | null;
+  @Transform(({ value }) => (value ? Number(value) : 1))
+  @IsNumber()
+  @IsOptional()
+  page?: number;
+
+  @ApiPropertyOptional()
+  @Transform(({ value }) => (value ? Number(value) : 10))
+  @IsNumber()
+  @IsOptional()
+  limit?: number;
+
+  @IsArray()
+  @IsOptional()
+  @Transform(({ value }) => (value ? plainToInstance(Array<OthersFiltersDto<JoinDto>>, JSON.parse(value)) : undefined))
+  @ValidateNested({ each: true })
+  @Type(() => OthersFiltersDto)
+  othersFilters?: OthersFiltersDto<JoinDto>[] | null;
+
+  @IsArray()
+  @IsOptional()
+  @Transform(({ value }) => (value ? plainToInstance(Array<FilterDto<EpsNestjsOrpEffCicliEsecDto>>, JSON.parse(value)) : undefined))
+  @ValidateNested({ each: true })
+  @Type(() => FilterDto)
+  filters?: FilterDto<EpsNestjsOrpEffCicliEsecDto>[] | null;
+
+  @IsArray()
+  @IsOptional()
+  @Transform(({ value }) => {
+    return value ? plainToInstance(Array<SortDto<EpsNestjsOrpEffCicliEsecDto>>, JSON.parse(value)) : undefined;
+  })
+  @ValidateNested({ each: true })
+  @Type(() => SortDto)
+  sort?: SortDto<EpsNestjsOrpEffCicliEsecDto>[] | null;
 }

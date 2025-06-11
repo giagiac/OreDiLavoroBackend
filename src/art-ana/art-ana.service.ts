@@ -33,8 +33,8 @@ export class ArtAnaService {
     });
   }
 
-  findById(id: ArtAna['COD_ART']) {
-    return this.artAnaRepository.findById(id);
+  findById(COD_ART: ArtAna['COD_ART']) {
+    return this.artAnaRepository.findById(COD_ART);
   }
 
   findByIds(ids: ArtAna['COD_ART'][]) {

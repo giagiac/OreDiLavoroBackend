@@ -44,6 +44,7 @@ export class UsersRelationalRepository implements UserRepository {
       take: paginationOptions.limit,
       relations: {
         operatori: true,
+        cfOriginDefault: true,
       },
       where: where,
       order: sortOptions?.reduce(
@@ -66,12 +67,12 @@ export class UsersRelationalRepository implements UserRepository {
     return entity ? UserMapper.toDomain(entity) : null;
   }
 
-  async findByCodOp(COD_OP: User['COD_OP']): Promise<NullableType<UserEntity>> {
+  async findByCodOp(COD_OP: User['COD_OP']): Promise<NullableType<User>> {
     const entity = await this.usersRepository.findOne({
       where: { COD_OP: COD_OP || '' },
     });
 
-    return entity ? entity : null;
+    return entity ? UserMapper.toDomain(entity) : null;
   }
 
   async findByIds(ids: User['id'][]): Promise<User[]> {

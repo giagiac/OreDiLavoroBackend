@@ -17,11 +17,18 @@ import { StatusEntity } from '../../../../../statuses/infrastructure/persistence
 import { AuthProvidersEnum } from '../../../../../auth/auth-providers.enum';
 import { EntityRelationalHelper } from '../../../../../utils/relational-entity-helper';
 import { OperatoriEntity } from '../../../../../operatoris/infrastructure/persistence/relational/entities/operatori.entity';
+import { CfEntity } from '../../../../../cfs/infrastructure/persistence/relational/entities/cf.entity';
 
 @Entity({
   name: 'EPS_NESTJS_USER',
 })
 export class UserEntity extends EntityRelationalHelper {
+  @Column({
+    nullable: true,
+    type: String,
+  })
+  CF_ORIGIN_DEFAULT?: string | null;
+
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -86,4 +93,11 @@ export class UserEntity extends EntityRelationalHelper {
     referencedColumnName: 'COD_OP',
   })
   operatori?: OperatoriEntity | null;
+
+  @OneToOne(() => CfEntity, (cfEntity) => cfEntity.user)
+  @JoinColumn({
+    name: 'CF_ORIGIN_DEFAULT',
+    referencedColumnName: 'COD_CF',
+  })
+  cfOriginDefault?: CfEntity | null;
 }

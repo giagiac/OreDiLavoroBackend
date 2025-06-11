@@ -56,5 +56,20 @@ export class RoleSeedService {
         }),
       );
     }
+
+    const countBadge = await this.repository.count({
+      where: {
+        id: RoleEnum.badge,
+      },
+    });
+
+    if (!countBadge) {
+      await this.repository.save(
+        this.repository.create({
+          id: RoleEnum.badge,
+          name: 'Badge',
+        }),
+      );
+    }
   }
 }

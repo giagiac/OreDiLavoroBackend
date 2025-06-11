@@ -144,7 +144,10 @@ export class EpsNestjsOrpEffCicliEsecRelationalRepository implements EpsNestjsOr
         .leftJoinAndSelect('ordCli.cfComm', 'cfComm')
         .leftJoinAndSelect('orpEff.x1TrasCodici', 'x1TrasCodici')
         .select()
-        .addSelect(`TO_CHAR("ordCliRighe".DATA_DOC, 'YY') || "x1TrasCodici".CODICE2 || "orpEff".NUM_DOC || '-' || "orpEffCicli".NUM_RIGA`, 'CODICE_BREVE') // Using raw SQL for concatenation and formatted date
+        .addSelect(
+          `TO_CHAR("ordCliRighe".DATA_DOC, 'YY') || "x1TrasCodici".CODICE2 || "orpEff".NUM_DOC || '-' || "orpEffCicli".NUM_RIGA`,
+          'CODICE_BREVE',
+        ) // Using raw SQL for concatenation and formatted date
         .where('epsNestjsOrpEffCicliEsecChild.COD_OP =:COD_OP', { COD_OP: user?.COD_OP })
         .andWhere(
           '(TRUNC(epsNestjsOrpEffCicliEsecChild.DATA_INIZIO) <= TRUNC(:tFine) AND TRUNC(epsNestjsOrpEffCicliEsecChild.DATA_FINE) >= TRUNC(:tInizio))',
@@ -172,7 +175,7 @@ export class EpsNestjsOrpEffCicliEsecRelationalRepository implements EpsNestjsOr
       // Accumula nel totale generale
       totaleTempoOperatore = totaleTempoOperatore.plus(totaleTempoOperatoreChild);
 
-      entity.epsNestjsOrpEffCicliEsecChild = entitiesChild
+      entity.epsNestjsOrpEffCicliEsecChild = entitiesChild;
     }
 
     const list = entitiesAndCount[0].map((entity) => EpsNestjsOrpEffCicliEsecMapper.toDomain(entity));

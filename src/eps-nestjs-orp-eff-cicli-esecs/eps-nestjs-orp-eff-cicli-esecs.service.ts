@@ -9,6 +9,9 @@ import { EpsNestjsOrpEffCicliEsecDto } from './dto/esp-nestjs-orp-eff-cicli-esec
 import { UpdateEpsNestjsOrpEffCicliEsecDto } from './dto/update-esp-nestjs-orp-eff-cicli-esec.dto';
 import { EpsNestjsOrpEffCicliEsecRepository } from './infrastructure/persistence/eps-nestjs-orp-eff-cicli-esec.repository';
 import { EpsNestjsOrpEffCicliEsecChildRepository } from '../eps-nestjs-orp-eff-cicli-esec-children/infrastructure/persistence/eps-nestjs-orp-eff-cicli-esec-child.repository';
+import { User } from '../users/domain/user';
+import { RoleEnum } from '../roles/roles.enum';
+import { id } from 'date-fns/locale';
 
 @Injectable()
 export class EpsNestjsOrpEffCicliEsecsService {
@@ -20,7 +23,7 @@ export class EpsNestjsOrpEffCicliEsecsService {
     // private sessionService: SessionService,
   ) {}
 
-  async create(createEpsNestjsOrpEffCicliEsecDto: CreateEpsNestjsOrpEffCicliEsecDto, user: UserEntity) {
+  async create(createEpsNestjsOrpEffCicliEsecDto: CreateEpsNestjsOrpEffCicliEsecDto, user: User) {
     // Do not remove comment below.
     // <creating-property />
 
@@ -37,45 +40,40 @@ export class EpsNestjsOrpEffCicliEsecsService {
       );
     }
 
+    if (currentUser.role != null && (currentUser?.role.id === RoleEnum.autista || currentUser?.role.id === RoleEnum.user)) {
+      if (currentUser.COD_OP != createEpsNestjsOrpEffCicliEsecDto.COD_OP) {
+        throw new HttpException(
+          {
+            errors: {
+              message: 'Operazione non è consentita con questo ruolo utente',
+            },
+          },
+          HttpStatus.UNPROCESSABLE_ENTITY,
+        );
+      }
+    }
+
     return this.epsNestjsOrpEffCicliEsecRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />
       ERROR_SYNC: createEpsNestjsOrpEffCicliEsecDto.ERROR_SYNC,
-
       APP_REQ3_HYPSERV_COD_CHIAVE: createEpsNestjsOrpEffCicliEsecDto.APP_REQ3_HYPSERV_COD_CHIAVE,
-
       HYPSERV_REQ2_COD_CHIAVE: createEpsNestjsOrpEffCicliEsecDto.HYPSERV_REQ2_COD_CHIAVE,
-
       KM: createEpsNestjsOrpEffCicliEsecDto.KM,
-
       TIPO_TRASFERTA: createEpsNestjsOrpEffCicliEsecDto.TIPO_TRASFERTA,
-
       NUM_RIGA: createEpsNestjsOrpEffCicliEsecDto.NUM_RIGA,
-
       TEMPO_MINUTI_OP: createEpsNestjsOrpEffCicliEsecDto.TEMPO_MINUTI_OP,
-
       TEMPO_MINUTI_MACC: createEpsNestjsOrpEffCicliEsecDto.TEMPO_MINUTI_MACC,
-
       NOTE: createEpsNestjsOrpEffCicliEsecDto.NOTE,
-
       DATA_FINE: createEpsNestjsOrpEffCicliEsecDto.DATA_FINE,
-
       DATA_INIZIO: createEpsNestjsOrpEffCicliEsecDto.DATA_INIZIO,
-
       TEMPO_OPERATORE: createEpsNestjsOrpEffCicliEsecDto.TEMPO_OPERATORE?.toString(),
-
       TEMPO_MACCHINA: createEpsNestjsOrpEffCicliEsecDto.TEMPO_MACCHINA?.toString(),
-
-      COD_OP: currentUser?.COD_OP,
-
+      COD_OP: createEpsNestjsOrpEffCicliEsecDto.COD_OP,
       COD_ART: createEpsNestjsOrpEffCicliEsecDto.COD_ART,
-
       DOC_RIGA_ESEC_ID: createEpsNestjsOrpEffCicliEsecDto.DOC_RIGA_ESEC_ID,
-
       DOC_RIGA_ID: createEpsNestjsOrpEffCicliEsecDto.DOC_RIGA_ID,
-
       DOC_ID: createEpsNestjsOrpEffCicliEsecDto.DOC_ID,
-
       AZIENDA_ID: createEpsNestjsOrpEffCicliEsecDto.AZIENDA_ID,
     });
   }
@@ -89,15 +87,20 @@ export class EpsNestjsOrpEffCicliEsecsService {
     filterOptions?: Array<FilterDto<EpsNestjsOrpEffCicliEsecDto>> | null;
     sortOptions?: Array<SortDto<EpsNestjsOrpEffCicliEsecDto>> | null;
     paginationOptions: IPaginationOptions;
-    user: UserEntity;
+    user: User;
   }) {
-    const currentUser = await this.usersService.findById(user.id);
+    let currentUser = await this.usersService.findById(user.id);
 
     const DATA_INIZIO = filterOptions?.find((f) => f.columnName === 'DATA_INIZIO');
     const DATA_FINE = filterOptions?.find((f) => f.columnName === 'DATA_INIZIO'); // TODO: Att.ne tanto ho bisogno solo e sempre di quelli della data di oggi - mai span di archi temporali (altrimenti si andrà messo DATA_FINE)
 
     // Estrai l'id da filterOptions se presente
     const ID = filterOptions?.find((f) => f.columnName === 'id');
+    const COD_OP = filterOptions?.find((f) => f.columnName === 'COD_OP');
+    
+    if(COD_OP){
+      currentUser = await this.usersService.findByCodOp(COD_OP.value);
+    }
 
     const targetDateInizio = new Date();
     const targetDateFine = new Date();
