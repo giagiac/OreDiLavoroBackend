@@ -34,12 +34,6 @@ export class OperatoriRelationalRepository implements OperatoriRepository {
     paginationOptions: IPaginationOptions;
     join: boolean;
   }): Promise<{ operatori: Operatori[]; count: number }> {
-    // const entities = await this.operatoriRepository.find({
-    //   skip: (paginationOptions.page - 1) * paginationOptions.limit,
-    //   take: paginationOptions.limit,
-    // });
-
-    // return entities.map((entity) => OperatoriMapper.toDomain(entity));
 
     let entitiesSql = this.operatoriRepository
       .createQueryBuilder('operatori')

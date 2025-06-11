@@ -11,21 +11,16 @@ export abstract class EpsNestjsOrpEffCicliEsecChildRepository {
 
   abstract findAllWithPagination({
     filterOptions,
-    sortOptions,
-    paginationOptions,
-    user,
+    sortOptions
   }: {
     filterOptions?: Array<FilterDto<EpsNestjsOrpEffCicliEsecChildDto>> | null;
     sortOptions?: Array<SortDto<EpsNestjsOrpEffCicliEsecChildDto>> | null;
-    paginationOptions: IPaginationOptions;
-    user: User | null;
   }): Promise<{
     data: {
       targetDateInizio: Date;
       totaleTempoOperatore: number;
       list: EpsNestjsOrpEffCicliEsecChild[];
     };
-    count: number;
   }>;
 
   abstract findById(id: EpsNestjsOrpEffCicliEsecChild['id']): Promise<NullableType<EpsNestjsOrpEffCicliEsecChild>>;

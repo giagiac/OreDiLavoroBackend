@@ -1,16 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, In } from 'typeorm';
-import { EpsNestjsOrpEffCicliEsecChildEntity } from '../entities/eps-nestjs-orp-eff-cicli-esec-child.entity';
+import Decimal from 'decimal.js';
+import { In, Repository } from 'typeorm';
+import { applicaSort, FilterDto, SortDto } from '../../../../../utils/dto/filter-column';
 import { NullableType } from '../../../../../utils/types/nullable.type';
 import { EpsNestjsOrpEffCicliEsecChild } from '../../../../domain/eps-nestjs-orp-eff-cicli-esec-child';
-import { EpsNestjsOrpEffCicliEsecChildRepository } from '../../eps-nestjs-orp-eff-cicli-esec-child.repository';
-import { EpsNestjsOrpEffCicliEsecChildMapper } from '../mappers/eps-nestjs-orp-eff-cicli-esec-child.mapper';
-import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
-import { applicaSort, FilterDto, SortDto } from '../../../../../utils/dto/filter-column';
 import { EpsNestjsOrpEffCicliEsecChildDto } from '../../../../dto/eps-nestjs-orp-eff-cicli-esec-child.dto';
-import { User } from '../../../../../users/domain/user';
-import Decimal from 'decimal.js';
+import { EpsNestjsOrpEffCicliEsecChildRepository } from '../../eps-nestjs-orp-eff-cicli-esec-child.repository';
+import { EpsNestjsOrpEffCicliEsecChildEntity } from '../entities/eps-nestjs-orp-eff-cicli-esec-child.entity';
+import { EpsNestjsOrpEffCicliEsecChildMapper } from '../mappers/eps-nestjs-orp-eff-cicli-esec-child.mapper';
 
 @Injectable()
 export class EpsNestjsOrpEffCicliEsecChildRelationalRepository implements EpsNestjsOrpEffCicliEsecChildRepository {
@@ -30,26 +28,22 @@ export class EpsNestjsOrpEffCicliEsecChildRelationalRepository implements EpsNes
   async findAllWithPagination({
     filterOptions,
     sortOptions,
-    paginationOptions,
-    user,
   }: {
     filterOptions?: Array<FilterDto<EpsNestjsOrpEffCicliEsecChildDto>> | null;
     sortOptions?: Array<SortDto<EpsNestjsOrpEffCicliEsecChildDto>> | null;
-    paginationOptions: IPaginationOptions;
-    user: User | null;
   }): Promise<{
     data: {
       targetDateInizio: Date;
       totaleTempoOperatore: number;
       list: EpsNestjsOrpEffCicliEsecChild[];
     };
-    count: number;
   }> {
     // --- Logica per determinare la data da usare ---
     const today = new Date(); // Data odierna di default
     let targetDateInizio = today; // Inizializza la data target con oggi
     let targetDateFine = today;
 
+    const COD_OP = filterOptions?.find((f) => f.columnName === 'COD_OP');
     // Cerca il filtro per la data specifica in filterOptions
     // Assumiamo che il campo nel filtro si chiami 'dataRiferimento'
     const dateFilterInizio = filterOptions?.find((filter) => filter.columnName === 'DATA_INIZIO');
@@ -82,7 +76,7 @@ export class EpsNestjsOrpEffCicliEsecChildRelationalRepository implements EpsNes
       .createQueryBuilder('epsNestjsOrpEffCicliEsecChild')
       .select()
       .where('epsNestjsOrpEffCicliEsecChild.COD_OP =:COD_OP', {
-        COD_OP: user?.COD_OP,
+        COD_OP: COD_OP?.value,
       })
       .andWhere(
         '(TRUNC(epsNestjsOrpEffCicliEsecChild.DATA_INIZIO) <= TRUNC(:tFine) AND TRUNC(epsNestjsOrpEffCicliEsecChild.DATA_FINE) >= TRUNC(:tInizio))',
@@ -96,9 +90,9 @@ export class EpsNestjsOrpEffCicliEsecChildRelationalRepository implements EpsNes
       applicaSort('epsNestjsOrpEffCicliEsecChild', entitiesSql, sortOptions);
     }
 
-    const entitiesAndCount = await entitiesSql.getManyAndCount();
+    const entitiesAndCount = await entitiesSql.getMany();
 
-    const totaleTempoOperatore = entitiesAndCount[0].reduce(
+    const totaleTempoOperatore = entitiesAndCount.reduce(
       (accumulator, item) => {
         // Convert the current item's value to a Decimal instance
         const valueToAdd = item?.TEMPO_OPERATORE || 0;
@@ -108,15 +102,14 @@ export class EpsNestjsOrpEffCicliEsecChildRelationalRepository implements EpsNes
       new Decimal(0), // Initialize the accumulator with Decimal(0)
     );
 
-    const list = entitiesAndCount[0].map((entity) => EpsNestjsOrpEffCicliEsecChildMapper.toDomain(entity));
+    const list = entitiesAndCount.map((entity) => EpsNestjsOrpEffCicliEsecChildMapper.toDomain(entity));
 
     return {
       data: {
         totaleTempoOperatore: totaleTempoOperatore.toNumber(),
         list,
         targetDateInizio,
-      },
-      count: entitiesAndCount[1],
+      }
     };
   }
 

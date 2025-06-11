@@ -31,20 +31,15 @@ export class EpsNestjsOrpEffCicliEsecRelationalRepository implements EpsNestjsOr
   async findAllWithPagination({
     filterOptions,
     sortOptions,
-    paginationOptions,
-    user,
   }: {
     filterOptions?: Array<FilterDto<EpsNestjsOrpEffCicliEsecDto>> | null;
     sortOptions?: Array<SortDto<EpsNestjsOrpEffCicliEsecDto>> | null;
-    paginationOptions: IPaginationOptions;
-    user: User | null;
   }): Promise<{
     data: {
       targetDateInizio: Date;
       totaleTempoOperatore: number;
       list: EpsNestjsOrpEffCicliEsec[];
     };
-    count: number;
   }> {
     // --- Logica per determinare la data da usare ---
     const today = new Date(); // Data odierna di default
@@ -53,9 +48,10 @@ export class EpsNestjsOrpEffCicliEsecRelationalRepository implements EpsNestjsOr
 
     // Cerca il filtro per la data specifica in filterOptions
     // Assumiamo che il campo nel filtro si chiami 'dataRiferimento'
+    const COD_OP = filterOptions?.find((filter) => filter.columnName === 'COD_OP');
     const dateFilterInizio = filterOptions?.find((filter) => filter.columnName === 'DATA_INIZIO');
     const dateFilterFine = filterOptions?.find((filter) => filter.columnName === 'DATA_FINE');
-    const id = filterOptions?.find((filter) => filter.columnName === 'id'); // chiamata che utili
+    const id = filterOptions?.find((filter) => filter.columnName === 'id'); // chiamata
 
     if (dateFilterInizio?.value) {
       // Se il filtro esiste e ha un valore, prova a usarlo come data
@@ -97,8 +93,8 @@ export class EpsNestjsOrpEffCicliEsecRelationalRepository implements EpsNestjsOr
         `TO_CHAR("ordCliRighe".DATA_DOC, 'YY') || "x1TrasCodici".CODICE2 || "orpEff".NUM_DOC || '-' || "orpEffCicli".NUM_RIGA`,
         'CODICE_BREVE',
       ) // Using raw SQL for concatenation and formatted date
-      .where('epsNestjsOrpEffCicliEsec.COD_OP =:COD_OP', {
-        COD_OP: user?.COD_OP,
+      .andWhere('epsNestjsOrpEffCicliEsec.COD_OP =:COD_OP', {
+        COD_OP: COD_OP?.value,
       })
       .andWhere(
         '(TRUNC(epsNestjsOrpEffCicliEsec.DATA_INIZIO) <= TRUNC(:tFine) AND TRUNC(epsNestjsOrpEffCicliEsec.DATA_FINE) >= TRUNC(:tInizio))',
@@ -118,9 +114,9 @@ export class EpsNestjsOrpEffCicliEsecRelationalRepository implements EpsNestjsOr
       applicaSort('epsNestjsOrpEffCicliEsec', entitiesSql, sortOptions);
     }
 
-    const entitiesAndCount = await entitiesSql.getManyAndCount();
+    const entitiesAndCount = await entitiesSql.getMany();
 
-    let totaleTempoOperatore = entitiesAndCount[0].reduce(
+    let totaleTempoOperatore = entitiesAndCount.reduce(
       (accumulator, item) => {
         // Convert the current item's value to a Decimal instance
         const valueToAdd = item?.TEMPO_OPERATORE || 0;
@@ -130,7 +126,7 @@ export class EpsNestjsOrpEffCicliEsecRelationalRepository implements EpsNestjsOr
       new Decimal(0), // Initialize the accumulator with Decimal(0)
     );
 
-    for (const entity of entitiesAndCount[0]) {
+    for (const entity of entitiesAndCount) {
       const entitiesChildSql = this.epsNestjsOrpEffCicliEsecChildRepository
         .createQueryBuilder('epsNestjsOrpEffCicliEsecChild')
         .innerJoinAndSelect('epsNestjsOrpEffCicliEsecChild.operatori', 'operatori')
@@ -148,7 +144,7 @@ export class EpsNestjsOrpEffCicliEsecRelationalRepository implements EpsNestjsOr
           `TO_CHAR("ordCliRighe".DATA_DOC, 'YY') || "x1TrasCodici".CODICE2 || "orpEff".NUM_DOC || '-' || "orpEffCicli".NUM_RIGA`,
           'CODICE_BREVE',
         ) // Using raw SQL for concatenation and formatted date
-        .where('epsNestjsOrpEffCicliEsecChild.COD_OP =:COD_OP', { COD_OP: user?.COD_OP })
+        .andWhere('epsNestjsOrpEffCicliEsecChild.COD_OP =:COD_OP', { COD_OP: COD_OP?.value })
         .andWhere(
           '(TRUNC(epsNestjsOrpEffCicliEsecChild.DATA_INIZIO) <= TRUNC(:tFine) AND TRUNC(epsNestjsOrpEffCicliEsecChild.DATA_FINE) >= TRUNC(:tInizio))',
           {
@@ -178,7 +174,7 @@ export class EpsNestjsOrpEffCicliEsecRelationalRepository implements EpsNestjsOr
       entity.epsNestjsOrpEffCicliEsecChild = entitiesChild;
     }
 
-    const list = entitiesAndCount[0].map((entity) => EpsNestjsOrpEffCicliEsecMapper.toDomain(entity));
+    const list = entitiesAndCount.map((entity) => EpsNestjsOrpEffCicliEsecMapper.toDomain(entity));
 
     return {
       data: {
@@ -186,7 +182,6 @@ export class EpsNestjsOrpEffCicliEsecRelationalRepository implements EpsNestjsOr
         list,
         targetDateInizio,
       },
-      count: entitiesAndCount[1],
     };
   }
 

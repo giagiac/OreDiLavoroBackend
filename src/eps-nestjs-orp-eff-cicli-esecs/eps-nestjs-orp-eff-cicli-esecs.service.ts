@@ -81,26 +81,16 @@ export class EpsNestjsOrpEffCicliEsecsService {
   async findAllWithPagination({
     filterOptions,
     sortOptions,
-    paginationOptions,
-    user,
   }: {
     filterOptions?: Array<FilterDto<EpsNestjsOrpEffCicliEsecDto>> | null;
     sortOptions?: Array<SortDto<EpsNestjsOrpEffCicliEsecDto>> | null;
-    paginationOptions: IPaginationOptions;
-    user: User;
   }) {
-    let currentUser = await this.usersService.findById(user.id);
-
     const DATA_INIZIO = filterOptions?.find((f) => f.columnName === 'DATA_INIZIO');
     const DATA_FINE = filterOptions?.find((f) => f.columnName === 'DATA_INIZIO'); // TODO: Att.ne tanto ho bisogno solo e sempre di quelli della data di oggi - mai span di archi temporali (altrimenti si andrà messo DATA_FINE)
 
     // Estrai l'id da filterOptions se presente
     const ID = filterOptions?.find((f) => f.columnName === 'id');
     const COD_OP = filterOptions?.find((f) => f.columnName === 'COD_OP');
-    
-    if(COD_OP){
-      currentUser = await this.usersService.findByCodOp(COD_OP.value);
-    }
 
     const targetDateInizio = new Date();
     const targetDateFine = new Date();
@@ -136,14 +126,16 @@ export class EpsNestjsOrpEffCicliEsecsService {
       });
     }
 
+    if (COD_OP) {
+      filterOptions.push({
+        columnName: 'COD_OP',
+        value: COD_OP.value,
+      });
+    }
+
     return this.epsNestjsOrpEffCicliEsecRepository.findAllWithPagination({
       filterOptions,
       sortOptions,
-      paginationOptions: {
-        page: paginationOptions.page,
-        limit: paginationOptions.limit,
-      },
-      user: currentUser,
     });
   }
 

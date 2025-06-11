@@ -1,13 +1,13 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { RoleEnum } from '../roles/roles.enum';
+import { User as UserType } from '../users/domain/user';
+import { UsersService } from '../users/users.service';
+import { FilterDto, SortDto } from '../utils/dto/filter-column';
+import { EpsNestjsOrpEffCicliEsecChild } from './domain/eps-nestjs-orp-eff-cicli-esec-child';
+import { CreateEpsNestjsOrpEffCicliEsecChildDto } from './dto/create-eps-nestjs-orp-eff-cicli-esec-child.dto';
+import { EpsNestjsOrpEffCicliEsecChildDto } from './dto/eps-nestjs-orp-eff-cicli-esec-child.dto';
 import { UpdateEpsNestjsOrpEffCicliEsecChildDto } from './dto/update-eps-nestjs-orp-eff-cicli-esec-child.dto';
 import { EpsNestjsOrpEffCicliEsecChildRepository } from './infrastructure/persistence/eps-nestjs-orp-eff-cicli-esec-child.repository';
-import { IPaginationOptions } from '../utils/types/pagination-options';
-import { EpsNestjsOrpEffCicliEsecChild } from './domain/eps-nestjs-orp-eff-cicli-esec-child';
-import { UsersService } from '../users/users.service';
-import { UserEntity } from '../users/infrastructure/persistence/relational/entities/user.entity';
-import { CreateEpsNestjsOrpEffCicliEsecChildDto } from './dto/create-eps-nestjs-orp-eff-cicli-esec-child.dto';
-import { FilterDto, SortDto } from '../utils/dto/filter-column';
-import { EpsNestjsOrpEffCicliEsecChildDto } from './dto/eps-nestjs-orp-eff-cicli-esec-child.dto';
 
 @Injectable()
 export class EpsNestjsOrpEffCicliEsecChildrenService {
@@ -17,7 +17,7 @@ export class EpsNestjsOrpEffCicliEsecChildrenService {
     private readonly usersService: UsersService,
   ) {}
 
-  async create(createEpsNestjsOrpEffCicliEsecChildDto: CreateEpsNestjsOrpEffCicliEsecChildDto, user: UserEntity) {
+  async create(createEpsNestjsOrpEffCicliEsecChildDto: CreateEpsNestjsOrpEffCicliEsecChildDto, user: UserType) {
     // Do not remove comment below.
     // <creating-property />
 
@@ -35,6 +35,19 @@ export class EpsNestjsOrpEffCicliEsecChildrenService {
         },
         HttpStatus.UNPROCESSABLE_ENTITY,
       );
+    }
+
+    if (currentUser.role != null && (currentUser?.role.id === RoleEnum.autista || currentUser?.role.id === RoleEnum.user)) {
+      if (currentUser.COD_OP != createEpsNestjsOrpEffCicliEsecChildDto.COD_OP) {
+        throw new HttpException(
+          {
+            errors: {
+              message: 'Operazione non è consentita con questo ruolo utente',
+            },
+          },
+          HttpStatus.UNPROCESSABLE_ENTITY,
+        );
+      }
     }
 
     return this.epsNestjsOrpEffCicliEsecChildRepository.create({
@@ -66,18 +79,13 @@ export class EpsNestjsOrpEffCicliEsecChildrenService {
   async findAllWithPagination({
     filterOptions,
     sortOptions,
-    paginationOptions,
-    user,
   }: {
     filterOptions?: Array<FilterDto<EpsNestjsOrpEffCicliEsecChildDto>> | null;
     sortOptions?: Array<SortDto<EpsNestjsOrpEffCicliEsecChildDto>> | null;
-    paginationOptions: IPaginationOptions;
-    user: UserEntity;
   }) {
-    const currentUser = await this.usersService.findById(user.id);
-
     const DATA_INIZIO = filterOptions?.find((f) => f.columnName === 'DATA_INIZIO');
     const DATA_FINE = filterOptions?.find((f) => f.columnName === 'DATA_INIZIO');
+    const COD_OP = filterOptions?.find((f) => f.columnName === 'COD_OP');
 
     const targetDateInizio = new Date();
     const targetDateFine = new Date();
@@ -106,14 +114,16 @@ export class EpsNestjsOrpEffCicliEsecChildrenService {
       value: targetDateFine.toISOString(),
     });
 
+    if (COD_OP) {
+      filterOptions.push({
+        columnName: 'COD_OP',
+        value: COD_OP?.value,
+      });
+    }
+
     return this.epsNestjsOrpEffCicliEsecChildRepository.findAllWithPagination({
       filterOptions,
       sortOptions,
-      paginationOptions: {
-        page: paginationOptions.page,
-        limit: paginationOptions.limit,
-      },
-      user: currentUser,
     });
   }
 

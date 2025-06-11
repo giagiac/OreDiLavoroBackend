@@ -136,12 +136,11 @@ export class CreateEpsNestjsOrpEffCicliEsecDto {
   TEMPO_MACCHINA?: Decimal | null;
 
   @ApiProperty({
-    required: false,
+    required: true,
     type: () => String,
   })
-  @IsOptional()
   @IsString()
-  COD_OP?: string | null;
+  COD_OP: string;
 
   @ApiProperty({
     required: false,

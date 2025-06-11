@@ -11,6 +11,8 @@ import { CreateEpsNestjsOrpEffCicliEsecChildDto } from './dto/create-eps-nestjs-
 import { FindAllEpsNestjsOrpEffCicliEsecChildrenDto } from './dto/find-all-eps-nestjs-orp-eff-cicli-esec-children.dto';
 import { UpdateEpsNestjsOrpEffCicliEsecChildDto } from './dto/update-eps-nestjs-orp-eff-cicli-esec-child.dto';
 import { EpsNestjsOrpEffCicliEsecChildrenService } from './eps-nestjs-orp-eff-cicli-esec-children.service';
+import { RoleEnum } from '../roles/roles.enum';
+import { User as UserType } from '../users/domain/user';
 
 @ApiTags('Epsnestjsorpeffcicliesecchildren')
 @ApiBearerAuth()
@@ -29,16 +31,11 @@ export class EpsNestjsOrpEffCicliEsecChildrenController {
   async create(
     @Body()
     createEspNestjsOrpEffCicliEsecChildDto: CreateEpsNestjsOrpEffCicliEsecChildDto,
-    @User() user: UserEntity,
+    @User() user: UserType,
   ) {
-    const { data: epsNestjsOrpEffCicliEsecChilds, count } = await this.epsNestjsOrpEffCicliEsecChildrenService.findAllWithPagination({
-      paginationOptions: {
-        page: 1,
-        limit: 1,
-      },
-      filterOptions: [],
+    const { data: epsNestjsOrpEffCicliEsecChilds } = await this.epsNestjsOrpEffCicliEsecChildrenService.findAllWithPagination({
+      filterOptions: [{ columnName: 'COD_OP', value: createEspNestjsOrpEffCicliEsecChildDto.COD_OP }],
       sortOptions: [],
-      user,
     });
 
     // numero appena inserito da aggiungere al resto precedentemente salvato...
@@ -69,7 +66,6 @@ export class EpsNestjsOrpEffCicliEsecChildrenController {
   })
   async findAll(
     @Query() query: FindAllEpsNestjsOrpEffCicliEsecChildrenDto,
-    @Req() req: Request,
     @User() user: UserEntity,
   ): Promise<
     InfinityPaginationResponseDto<EpsNestjsOrpEffCicliEsecChild> & {
@@ -77,24 +73,15 @@ export class EpsNestjsOrpEffCicliEsecChildrenController {
       targetDateInizio: string;
     }
   > {
-    const page = query?.page ?? 1;
-    let limit = query?.limit ?? 10;
-    if (limit > 200) {
-      limit = 200;
-    }
-
     const filters = query.filters;
     const sort = query.sort;
 
-    const { data: epsNestjsOrpEffCicliEsecs, count } = await this.epsNestjsOrpEffCicliEsecChildrenService.findAllWithPagination({
-      paginationOptions: {
-        page,
-        limit,
-      },
+    const { data: epsNestjsOrpEffCicliEsecs } = await this.epsNestjsOrpEffCicliEsecChildrenService.findAllWithPagination({
       filterOptions: filters,
       sortOptions: sort,
-      user,
     });
+
+    const count = epsNestjsOrpEffCicliEsecs.list.length;
 
     const paginationResult = infinityPaginationQueryBuilder(epsNestjsOrpEffCicliEsecs.list, count);
 

@@ -9,7 +9,6 @@ export class EpsNestjsOrpEffCicliEsecDto {
 
   @ApiProperty()
   @IsString()
-  @IsOptional()
   COD_OP: string;
 
   @ApiProperty()

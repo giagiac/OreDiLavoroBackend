@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { FindOptionsWhere, In, Repository } from 'typeorm';
@@ -118,16 +118,26 @@ export class UsersRelationalRepository implements UserRepository {
       throw new Error('User not found');
     }
 
-    const updatedEntity = await this.usersRepository.save(
-      this.usersRepository.create(
-        UserMapper.toPersistence({
-          ...UserMapper.toDomain(entity),
-          ...payload,
-        }),
-      ),
-    );
-
-    return UserMapper.toDomain(updatedEntity);
+    try {
+      const updatedEntity = await this.usersRepository.save(
+        this.usersRepository.create(
+          UserMapper.toPersistence({
+            ...UserMapper.toDomain(entity),
+            ...payload,
+          }),
+        ),
+      );
+      return UserMapper.toDomain(updatedEntity);
+    } catch (error) {
+      throw new HttpException(
+        {
+          errors: {
+            message: 'Impossibile salvare',
+          },
+        },
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
+    }
   }
 
   async remove(id: User['id']): Promise<void> {
