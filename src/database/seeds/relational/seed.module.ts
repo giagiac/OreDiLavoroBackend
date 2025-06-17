@@ -24,7 +24,6 @@ import { EpsNestjsDestinazioniSeedModule } from './eps-nestjs-destinazioni/eps-n
     ArticoliCostiCfSeedModule,
     ArticoliCostiCfCommSeedModule,
     EpsNestjsOrpEffCicliEsecSeedModule,
-    EpsNestjsDestinazioniSeedModule,
     ConfigModule.forRoot({
       isGlobal: true,
       load: [databaseConfig, appConfig],

@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { MongooseModule } from '@nestjs/mongoose';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { HeaderResolver, I18nModule } from 'nestjs-i18n';
 import path from 'path';
@@ -18,9 +17,7 @@ import { AuthModule } from './auth/auth.module';
 import authConfig from './auth/config/auth.config';
 import appConfig from './config/app.config';
 import { AllConfigType } from './config/config.type';
-import { DatabaseConfig } from './database/config/database-config.type';
 import databaseConfig from './database/config/database.config';
-import { MongooseConfigService } from './database/mongoose-config.service';
 import { TypeOrmConfigService } from './database/typeorm-config.service';
 import fileConfig from './files/config/file.config';
 import { FilesModule } from './files/files.module';
@@ -32,11 +29,7 @@ import { SessionModule } from './session/session.module';
 import { UsersModule } from './users/users.module';
 
 // <database-block>
-const infrastructureDatabaseModule = (databaseConfig() as DatabaseConfig).isDocumentDatabase
-  ? MongooseModule.forRootAsync({
-      useClass: MongooseConfigService,
-    })
-  : TypeOrmModule.forRootAsync({
+const infrastructureDatabaseModule = TypeOrmModule.forRootAsync({
       useClass: TypeOrmConfigService,
       dataSourceFactory: async (options: DataSourceOptions) => {
         return new DataSource({
@@ -91,7 +84,10 @@ import { EpsNestjsDestinazionisModule } from './eps-nestjs-destinazionis/eps-nes
 
 import { OrdClisModule } from './ord-clis/ord-clis.module';
 
+import { DatabaseSeederService } from './database/database-seeder.service';
 import { EpsNestjsOrpEffCicliEsecChildrenModule } from './eps-nestjs-orp-eff-cicli-esec-children/eps-nestjs-orp-eff-cicli-esec-children.module';
+import { DatabaseModule } from './database/database.module';
+import { UserSeedModule } from './database/seeds/relational/user/user-seed.module';
 
 @Module({
   imports: [
@@ -158,6 +154,12 @@ import { EpsNestjsOrpEffCicliEsecChildrenModule } from './eps-nestjs-orp-eff-cic
     MailModule,
     MailerModule,
     HomeModule,
+    DatabaseModule,
+    UserSeedModule
   ],
+  // providers: [
+  //   DatabaseSeederService, // Aggiungi il servizio qui
+  //   // ... altri provider
+  // ],
 })
 export class AppModule {}

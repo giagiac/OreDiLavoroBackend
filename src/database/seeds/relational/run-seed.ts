@@ -15,12 +15,9 @@ const runSeed = async () => {
   await app.get(RoleSeedService).run();
   await app.get(StatusSeedService).run();
   await app.get(UserSeedService).run();
-
   await app.get(ArticoliCostiCfSeedService).run();
   await app.get(ArticoliCostiCfCommSeedService).run();
-
   await app.get(EpsNestjsOrpEffCicliEsecSeedService).run();
-
   await app.get(EpsNestjsDestinazioniSeedService).run();
 
   await app.close();

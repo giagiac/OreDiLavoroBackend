@@ -14,7 +14,6 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { FilterUserDto, SortUserDto } from './dto/query-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserRepository } from './infrastructure/persistence/user.repository';
-import { UserEntity } from './infrastructure/persistence/relational/entities/user.entity';
 
 @Injectable()
 export class UsersService {
