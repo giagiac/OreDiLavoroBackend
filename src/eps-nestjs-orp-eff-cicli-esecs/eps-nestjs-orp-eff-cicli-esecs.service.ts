@@ -27,32 +27,6 @@ export class EpsNestjsOrpEffCicliEsecsService {
     // Do not remove comment below.
     // <creating-property />
 
-    const currentUser = await this.usersService.findById(user.id);
-
-    if (currentUser?.COD_OP == null) {
-      throw new HttpException(
-        {
-          errors: {
-            message: 'Codice Operatore HG in tabella user non definito',
-          },
-        },
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
-    }
-
-    if (currentUser.role != null && (currentUser?.role.id === RoleEnum.autista || currentUser?.role.id === RoleEnum.user)) {
-      if (currentUser.COD_OP != createEpsNestjsOrpEffCicliEsecDto.COD_OP) {
-        throw new HttpException(
-          {
-            errors: {
-              message: 'Operazione non è consentita con questo ruolo utente',
-            },
-          },
-          HttpStatus.UNPROCESSABLE_ENTITY,
-        );
-      }
-    }
-
     return this.epsNestjsOrpEffCicliEsecRepository.create({
       // Do not remove comment below.
       // <creating-property-payload />

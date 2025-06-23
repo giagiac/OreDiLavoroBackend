@@ -83,8 +83,6 @@ export class EpsNestjsOrpEffCicliEsecMapper {
   }
 
   static toPersistence(domainEntity: EpsNestjsOrpEffCicliEsec): EpsNestjsOrpEffCicliEsecEntity {
-    // Imposta DATA_INIZIO al momento attuale
-    const DATA_ATTUALE = new Date();
 
     // // Calcola TEMPO_OPERATORE_MS considerando la parte intera come ore e la parte decimale come centesimi di ora
     // const TEMPO_OPERATORE = Number(domainEntity.TEMPO_OPERATORE) || 0;
@@ -121,9 +119,9 @@ export class EpsNestjsOrpEffCicliEsecMapper {
 
     persistenceEntity.NOTE = domainEntity.NOTE;
 
-    persistenceEntity.DATA_FINE = DATA_ATTUALE;
+    persistenceEntity.DATA_FINE = domainEntity.DATA_FINE;
 
-    persistenceEntity.DATA_INIZIO = DATA_ATTUALE;
+    persistenceEntity.DATA_INIZIO = domainEntity.DATA_INIZIO;
 
     persistenceEntity.TEMPO_OPERATORE = domainEntity.TEMPO_OPERATORE;
 

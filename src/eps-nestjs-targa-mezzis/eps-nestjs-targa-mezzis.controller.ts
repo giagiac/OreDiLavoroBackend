@@ -34,8 +34,8 @@ export class EpsNestjsTargaMezzisController {
   async findAll(@Query() query: FindAllEpsNestjsTargaMezziDto): Promise<InfinityPaginationResponseDto<EpsNestjsTargaMezzi>> {
     const page = query?.page ?? 1;
     let limit = query?.limit ?? 10;
-    if (limit > 50) {
-      limit = 50;
+    if (limit > 500) {
+      limit = 500;
     }
 
     const filters = query.filters;

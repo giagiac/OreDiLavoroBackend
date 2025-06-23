@@ -158,7 +158,8 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
       await this.processInGiornata(manager, id);
       await this.processInGiornataDopo21(manager, id);
       await this.processFuoriSedeAndata(manager, id);
-      await this.processFuoriSedeRitorno(manager, id);
+      await this.processFuoriSedeRitornoInGiornata(manager, id);
+      await this.processFuoriSedeRitornoDopo21(manager, id);
 
       await this.processAncoraInTrasferta0(manager, id);
       await this.processAncoraInTrasferta10(manager, id);
@@ -604,8 +605,12 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
     await this.processGenericTrasferta(1, 'fuori_sede_andata', manager, id);
   }
 
-  async processFuoriSedeRitorno(manager: EntityManager, id: string | null): Promise<void> {
-    await this.processGenericTrasferta(1, 'fuori_sede_ritorno', manager, id);
+  async processFuoriSedeRitornoInGiornata(manager: EntityManager, id: string | null): Promise<void> {
+    await this.processGenericTrasferta(1, 'fuori_sede_ritorno_in_giornata', manager, id);
+  }
+
+  async processFuoriSedeRitornoDopo21(manager: EntityManager, id: string | null): Promise<void> {
+    await this.processGenericTrasferta(1, 'fuori_sede_ritorno_dopo_21', manager, id);
   }
 
   async processAncoraInTrasferta0(manager: EntityManager, id: string | null): Promise<void> {

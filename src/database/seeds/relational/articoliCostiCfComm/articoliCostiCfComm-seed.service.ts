@@ -40,7 +40,7 @@ export class ArticoliCostiCfCommSeedService {
       //   this.repository.create({
       //     COD_ART: '10040900002',
       //     CF_COMM_ID: '000004_1',
-      //     TIPO_TRASFERTA: 'fuori_sede_ritorno',
+      //     TIPO_TRASFERTA: 'fuori_sede_ritorno_in_giornata',
       //   }),
       // );
     }

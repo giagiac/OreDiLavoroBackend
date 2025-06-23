@@ -18,6 +18,7 @@ async function bootstrap() {
         'https://ore-di-lavoro-frontend.vercel.app', // <--- Sostituisci con l'URL esatto della tua app Vercel
         'https://test.erroridiconiazione.com',
         'http://192.168.5.110:3002', // Aggiungi qui altre origini se necessario (es. per sviluppo locale)
+        'http://192.168.5.110:3001', // Aggiungi qui altre origini se necessario (es. per sviluppo locale)
         'https://ore.rmponterosso.it/',
       ],
       methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS', // Specifica i metodi consentiti

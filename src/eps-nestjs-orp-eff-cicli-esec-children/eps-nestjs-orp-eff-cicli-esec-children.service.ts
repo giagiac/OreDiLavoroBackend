@@ -1,7 +1,5 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { RoleEnum } from '../roles/roles.enum';
+import { Injectable } from '@nestjs/common';
 import { User as UserType } from '../users/domain/user';
-import { UsersService } from '../users/users.service';
 import { FilterDto, SortDto } from '../utils/dto/filter-column';
 import { EpsNestjsOrpEffCicliEsecChild } from './domain/eps-nestjs-orp-eff-cicli-esec-child';
 import { CreateEpsNestjsOrpEffCicliEsecChildDto } from './dto/create-eps-nestjs-orp-eff-cicli-esec-child.dto';
@@ -14,7 +12,6 @@ export class EpsNestjsOrpEffCicliEsecChildrenService {
   constructor(
     // Dependencies here
     private readonly epsNestjsOrpEffCicliEsecChildRepository: EpsNestjsOrpEffCicliEsecChildRepository,
-    private readonly usersService: UsersService,
   ) {}
 
   async create(createEpsNestjsOrpEffCicliEsecChildDto: CreateEpsNestjsOrpEffCicliEsecChildDto, user: UserType) {
@@ -23,32 +20,6 @@ export class EpsNestjsOrpEffCicliEsecChildrenService {
 
     // Do not remove comment below.
     // <creating-property />
-
-    const currentUser = await this.usersService.findById(user.id);
-
-    if (currentUser?.COD_OP == null) {
-      throw new HttpException(
-        {
-          errors: {
-            message: 'Codice Operatore HG in tabella user non definito',
-          },
-        },
-        HttpStatus.UNPROCESSABLE_ENTITY,
-      );
-    }
-
-    if (currentUser.role != null && (currentUser?.role.id === RoleEnum.autista || currentUser?.role.id === RoleEnum.user)) {
-      if (currentUser.COD_OP != createEpsNestjsOrpEffCicliEsecChildDto.COD_OP) {
-        throw new HttpException(
-          {
-            errors: {
-              message: 'Operazione non è consentita con questo ruolo utente',
-            },
-          },
-          HttpStatus.UNPROCESSABLE_ENTITY,
-        );
-      }
-    }
 
     return this.epsNestjsOrpEffCicliEsecChildRepository.create({
       // Do not remove comment below.
@@ -66,7 +37,7 @@ export class EpsNestjsOrpEffCicliEsecChildrenService {
       DATA_INIZIO: createEpsNestjsOrpEffCicliEsecChildDto.DATA_INIZIO,
       TEMPO_OPERATORE: createEpsNestjsOrpEffCicliEsecChildDto.TEMPO_OPERATORE?.toString(),
       TEMPO_MACCHINA: createEpsNestjsOrpEffCicliEsecChildDto.TEMPO_MACCHINA?.toString(),
-      COD_OP: currentUser?.COD_OP,
+      COD_OP: user?.COD_OP,
       COD_ART: createEpsNestjsOrpEffCicliEsecChildDto.COD_ART,
       DOC_RIGA_ESEC_ID: createEpsNestjsOrpEffCicliEsecChildDto.DOC_RIGA_ESEC_ID,
       DOC_RIGA_ID: createEpsNestjsOrpEffCicliEsecChildDto.DOC_RIGA_ID,

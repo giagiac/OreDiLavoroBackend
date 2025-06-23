@@ -1,7 +1,9 @@
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiParam, ApiTags } from '@nestjs/swagger';
-import { UserEntity } from '../users/infrastructure/persistence/relational/entities/user.entity';
+import { RoleEnum } from '../roles/roles.enum';
+import { User as UserType } from '../users/domain/user';
+import { UsersService } from '../users/users.service';
 import { User } from '../utils/decorators';
 import { InfinityPaginationResponse, InfinityPaginationResponseDto } from '../utils/dto/infinity-pagination-response.dto';
 import { infinityPaginationQueryBuilder } from '../utils/infinity-pagination';
@@ -11,8 +13,6 @@ import { CreateEpsNestjsOrpEffCicliEsecChildDto } from './dto/create-eps-nestjs-
 import { FindAllEpsNestjsOrpEffCicliEsecChildrenDto } from './dto/find-all-eps-nestjs-orp-eff-cicli-esec-children.dto';
 import { UpdateEpsNestjsOrpEffCicliEsecChildDto } from './dto/update-eps-nestjs-orp-eff-cicli-esec-child.dto';
 import { EpsNestjsOrpEffCicliEsecChildrenService } from './eps-nestjs-orp-eff-cicli-esec-children.service';
-import { RoleEnum } from '../roles/roles.enum';
-import { User as UserType } from '../users/domain/user';
 
 @ApiTags('Epsnestjsorpeffcicliesecchildren')
 @ApiBearerAuth()
@@ -22,7 +22,10 @@ import { User as UserType } from '../users/domain/user';
   version: '1',
 })
 export class EpsNestjsOrpEffCicliEsecChildrenController {
-  constructor(private readonly epsNestjsOrpEffCicliEsecChildrenService: EpsNestjsOrpEffCicliEsecChildrenService) {}
+  constructor(
+    private readonly epsNestjsOrpEffCicliEsecChildrenService: EpsNestjsOrpEffCicliEsecChildrenService,
+    private readonly userService: UsersService,
+  ) {}
 
   @Post()
   @ApiCreatedResponse({
@@ -30,21 +33,53 @@ export class EpsNestjsOrpEffCicliEsecChildrenController {
   })
   async create(
     @Body()
-    createEspNestjsOrpEffCicliEsecChildDto: CreateEpsNestjsOrpEffCicliEsecChildDto,
+    createEpsNestjsOrpEffCicliEsecChildDto: CreateEpsNestjsOrpEffCicliEsecChildDto,
     @User() user: UserType,
   ) {
+    // 1. HO I RUOLI PER FARLO
+    // 2. HO IL COD_OP DEFINITO in TABELLA EPS_NESTJS_USERS
+    // 3.
+
+    let currentUser = await this.userService.findById(user.id);
+
+    if (currentUser?.role != null && (currentUser?.role.id === RoleEnum.autista || currentUser?.role.id === RoleEnum.user)) {
+      if (currentUser.COD_OP != null && currentUser.COD_OP != createEpsNestjsOrpEffCicliEsecChildDto.COD_OP) {
+        // sono me stesso - tra quello autenticato e quello inicato nei parametri?
+        throw new HttpException(
+          {
+            errors: {
+              message: 'Operazione non è consentita con questo ruolo utente',
+            },
+          },
+          HttpStatus.UNPROCESSABLE_ENTITY,
+        );
+      }
+    }
+
+    currentUser = await this.userService.findByCodOp(createEpsNestjsOrpEffCicliEsecChildDto.COD_OP); // seleziono quello corrente (se ho i ruoli) - oppure quello passato come parametro
+
+    if (currentUser?.COD_OP == null) {
+      throw new HttpException(
+        {
+          errors: {
+            message: 'Codice Operatore HG in tabella user non definito',
+          },
+        },
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
+    }
+
     const { data: epsNestjsOrpEffCicliEsecChilds } = await this.epsNestjsOrpEffCicliEsecChildrenService.findAllWithPagination({
-      filterOptions: [{ columnName: 'COD_OP', value: createEspNestjsOrpEffCicliEsecChildDto.COD_OP }],
+      filterOptions: [{ columnName: 'COD_OP', value: currentUser.COD_OP }],
       sortOptions: [],
     });
 
     // numero appena inserito da aggiungere al resto precedentemente salvato...
-    const totaleTempoOperatore = createEspNestjsOrpEffCicliEsecChildDto.TEMPO_OPERATORE?.add(
+    const totaleTempoOperatore = createEpsNestjsOrpEffCicliEsecChildDto.TEMPO_OPERATORE?.add(
       epsNestjsOrpEffCicliEsecChilds.totaleTempoOperatore,
     );
 
     if (totaleTempoOperatore && totaleTempoOperatore.toNumber() > 20) {
-      // throw new Error('Il tempo totale operatore non può superare 20:00');
       throw new HttpException(
         {
           errors: {
@@ -55,7 +90,7 @@ export class EpsNestjsOrpEffCicliEsecChildrenController {
       );
     }
 
-    return this.epsNestjsOrpEffCicliEsecChildrenService.create(createEspNestjsOrpEffCicliEsecChildDto, user);
+    return this.epsNestjsOrpEffCicliEsecChildrenService.create(createEpsNestjsOrpEffCicliEsecChildDto, currentUser);
   }
 
   transformer = new TempoOperatoreToSessantesimiTransformer();
@@ -66,11 +101,11 @@ export class EpsNestjsOrpEffCicliEsecChildrenController {
   })
   async findAll(
     @Query() query: FindAllEpsNestjsOrpEffCicliEsecChildrenDto,
-    @User() user: UserEntity,
   ): Promise<
     InfinityPaginationResponseDto<EpsNestjsOrpEffCicliEsecChild> & {
       totale: string;
       targetDateInizio: string;
+      dateInizio: Date;
     }
   > {
     const filters = query.filters;
@@ -89,6 +124,7 @@ export class EpsNestjsOrpEffCicliEsecChildrenController {
       ...paginationResult,
       totale: this.transformer.convertiOreInFormatoHHMM(epsNestjsOrpEffCicliEsecs.totaleTempoOperatore),
       targetDateInizio: this.transformer.convertiInGiorno(epsNestjsOrpEffCicliEsecs.targetDateInizio),
+      dateInizio: epsNestjsOrpEffCicliEsecs.targetDateInizio,
     };
   }
 
