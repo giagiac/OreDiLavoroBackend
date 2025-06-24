@@ -43,4 +43,8 @@ export class TempoOperatoreToSessantesimiTransformer {
     const minuti = Math.round(minutiDecimali * 60);
     return String(ore * 60 + minuti);
   }
+
+  convertiInFormatoDDMMYYYY(date: Date): string {
+    return formatDate(date, 'dd.MM.yyyy');
+  }
 }

@@ -98,4 +98,7 @@ export enum TIPO_ERRORI_SYNC {
 
   DESTINAZIONE_INCOMPLETA = 'Destinazione indirizzo o comune incompleta',
   ORP_EFF_CICLI = 'Nessun orp eff cicli collegato',
+
+  DATA_INIZIO_NON_DEFINITA = 'Nessuna DATA_INIZIO definita',
+  DES_ART_NON_DEFINITA = 'Nessuna DES_ART definita come articoli dai costi',
 }

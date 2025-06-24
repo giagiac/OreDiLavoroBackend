@@ -20,6 +20,9 @@ async function bootstrap() {
         'http://192.168.5.110:3002', // Aggiungi qui altre origini se necessario (es. per sviluppo locale)
         'http://192.168.5.110:3001', // Aggiungi qui altre origini se necessario (es. per sviluppo locale)
         'https://ore.rmponterosso.it/',
+        'http://localhost:3000', // Aggiungi qui altre origini se necessario (es. per sviluppo locale)
+        'http://localhost:3001', // Aggiungi qui altre origini se necessario (es. per sviluppo locale)
+        'http://localhost:3002', // Aggiungi
       ],
       methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS', // Specifica i metodi consentiti
       allowedHeaders: 'Content-Type,Accept,Authorization,x-custom-lang', // Specifica gli header consentiti

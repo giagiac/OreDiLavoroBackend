@@ -1,17 +1,14 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { EpsNestjsOrpEffCicliEsecChildRepository } from '../eps-nestjs-orp-eff-cicli-esec-children/infrastructure/persistence/eps-nestjs-orp-eff-cicli-esec-child.repository';
+import { User } from '../users/domain/user';
 import { UserEntity } from '../users/infrastructure/persistence/relational/entities/user.entity';
 import { UsersService } from '../users/users.service';
 import { FilterDto, SortDto } from '../utils/dto/filter-column';
-import { IPaginationOptions } from '../utils/types/pagination-options';
 import { EpsNestjsOrpEffCicliEsec } from './domain/eps-nestjs-orp-eff-cicli-esec';
 import { CreateEpsNestjsOrpEffCicliEsecDto } from './dto/create-eps-nestjs-orp-eff-cicli-esec.dto';
 import { EpsNestjsOrpEffCicliEsecDto } from './dto/esp-nestjs-orp-eff-cicli-esec.dto';
 import { UpdateEpsNestjsOrpEffCicliEsecDto } from './dto/update-esp-nestjs-orp-eff-cicli-esec.dto';
 import { EpsNestjsOrpEffCicliEsecRepository } from './infrastructure/persistence/eps-nestjs-orp-eff-cicli-esec.repository';
-import { EpsNestjsOrpEffCicliEsecChildRepository } from '../eps-nestjs-orp-eff-cicli-esec-children/infrastructure/persistence/eps-nestjs-orp-eff-cicli-esec-child.repository';
-import { User } from '../users/domain/user';
-import { RoleEnum } from '../roles/roles.enum';
-import { id } from 'date-fns/locale';
 
 @Injectable()
 export class EpsNestjsOrpEffCicliEsecsService {
