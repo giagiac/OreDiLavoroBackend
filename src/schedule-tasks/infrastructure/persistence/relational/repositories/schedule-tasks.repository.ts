@@ -4,6 +4,7 @@ import axios from 'axios';
 import Decimal from 'decimal.js';
 import { EntityManager, In, Repository } from 'typeorm';
 import { AppReq3HypServEntity } from '../../../../../app-req3-hyp-servs/infrastructure/persistence/relational/entities/app-req3-hyp-serv.entity';
+import { ArtAnaEntity } from '../../../../../art-ana/infrastructure/persistence/relational/entities/art-ana.entity';
 import { ArticoliCostiCfCommEntity } from '../../../../../articoli-costi-cf-comm/infrastructure/persistence/relational/entities/articoli-costi-cf-comm.entity';
 import { ArticoliCostiCfEntity } from '../../../../../articoli-costi-cf/infrastructure/persistence/relational/entities/articoli-costi-cf.entity';
 import { CfEntity, DEFAULT } from '../../../../../cfs/infrastructure/persistence/relational/entities/cf.entity';
@@ -27,8 +28,6 @@ import {
   TIPO_ERRORI_SYNC,
 } from '../entities/schedule-tasks.entity';
 import { ScheduleTasksMapper } from '../mappers/schedule-tasks.mapper';
-import { ArtAna } from '../../../../../art-ana/domain/art-ana';
-import { ArtAnaEntity } from '../../../../../art-ana/infrastructure/persistence/relational/entities/art-ana.entity';
 
 const transformer = new TempoOperatoreToSessantesimiTransformer();
 
@@ -163,6 +162,8 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
       await this.processFuoriSedeRitornoInGiornata(manager, id);
       await this.processFuoriSedeRitornoDopo21(manager, id);
 
+      await this.processAncoraInTrasfertaLike(manager, id);
+
       await this.processAncoraInTrasferta0(manager, id);
       await this.processAncoraInTrasferta10(manager, id);
       await this.processAncoraInTrasferta20(manager, id);
@@ -201,19 +202,21 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
     return await entitiesSql.getMany();
   }
 
-  private async getBaseEsecuzioniQueryBuilderGroupEsecuzioni(
+  private async getBaseEsecuzioniQueryBuilderGroupLikeEsecuzioni(
     manager: EntityManager,
-    tipoTrasferta: TipoTrasferta,
     DOC_RIGA_ID: String,
     COD_ART: String,
     DATA_INIZIO: String,
   ): Promise<EpsNestjsOrpEffCicliEsecEntity[]> {
+
+    const tipoTrasferta = 'ancora_in_trasferta_';
+
     const entitiesSql = manager
       .getRepository(EpsNestjsOrpEffCicliEsecEntity)
       .createQueryBuilder('epsNestjsOrpEffCicliEsec')
       .select()
       .andWhere('"epsNestjsOrpEffCicliEsec"."HYPSERV_REQ2_COD_CHIAVE" IS NULL')
-      .andWhere('"epsNestjsOrpEffCicliEsec"."TIPO_TRASFERTA" = :tipoTrasferta', { tipoTrasferta })
+      .andWhere(`"epsNestjsOrpEffCicliEsec"."TIPO_TRASFERTA" LIKE :TIPO_TRASFERATA`, { TIPO_TRASFERATA: `${tipoTrasferta}%` })
       .andWhere('"epsNestjsOrpEffCicliEsec"."DOC_RIGA_ID" = :DOC_RIGA_ID', { DOC_RIGA_ID })
       .andWhere('"epsNestjsOrpEffCicliEsec"."COD_ART" = :COD_ART', { COD_ART })
       .andWhere(`TO_CHAR("epsNestjsOrpEffCicliEsec"."DATA_INIZIO", 'YYYY-MM-DD') = :DATA_INIZIO_YYYYMMDD`, {
@@ -271,6 +274,53 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
     return await entitiesSql.getMany();
   }
 
+  private async getBaseComponentiQueryBuilderRicercaKmMax(
+    manager: EntityManager,
+    id: string | null,
+  ): Promise<EpsNestjsOrpEffCicliEsecEntity[]> {
+    const tipoTrasferta = 'ancora_in_trasferta_';
+
+    const entitiesSql = manager
+      .getRepository(EpsNestjsOrpEffCicliEsecEntity)
+      .createQueryBuilder('epsNestjsOrpEffCicliEsec')
+
+      .innerJoinAndSelect('epsNestjsOrpEffCicliEsec.operatori', 'operatori')
+      .innerJoinAndSelect('operatori.user', 'user')
+      .innerJoinAndSelect('user.role', 'role')
+
+      .leftJoinAndSelect('epsNestjsOrpEffCicliEsec.hypServReq2', 'hypServReq2')
+      .leftJoinAndSelect('epsNestjsOrpEffCicliEsec.appReq3HypServ', 'appReq3HypServ')
+      .leftJoinAndSelect('epsNestjsOrpEffCicliEsec.orpEffCicli', 'orpEffCicli')
+
+      .leftJoinAndSelect('epsNestjsOrpEffCicliEsec.artAna', 'artAna')
+
+      .leftJoinAndSelect('orpEffCicli.linkOrpOrd', 'linkOrpOrd')
+      .leftJoinAndSelect('linkOrpOrd.ordCliRighe', 'ordCliRighe')
+      .leftJoinAndSelect('ordCliRighe.ordCli', 'ordCli')
+      .leftJoinAndSelect('ordCli.cfComm', 'cfComm')
+      .leftJoinAndSelect('ordCliRighe.cf', 'cf')
+
+      .leftJoinAndSelect('orpEffCicli.orpEff', 'orpEff')
+      .leftJoinAndSelect('orpEff.x1TrasCodici', 'x1TrasCodici')
+
+      .select()
+      .andWhere('"epsNestjsOrpEffCicliEsec"."APP_REQ3_HYPSERV_COD_CHIAVE" IS NULL')
+      .andWhere(`"epsNestjsOrpEffCicliEsec"."TIPO_TRASFERTA" LIKE :TIPO_TRASFERATA`, { TIPO_TRASFERATA: `${tipoTrasferta}%` });
+
+    if (id) {
+      entitiesSql.andWhere('"epsNestjsOrpEffCicliEsec"."id" = :id', { id });
+    }
+
+    // fondamentale serve ad ORGANIZZARE I GRUPPI DI LAVORO...
+    entitiesSql.orderBy({
+      '"epsNestjsOrpEffCicliEsec"."DOC_RIGA_ID"': 'ASC',
+      '"epsNestjsOrpEffCicliEsec"."COD_ART"': 'ASC',
+      '"epsNestjsOrpEffCicliEsec"."DATA_INIZIO"': 'ASC',
+    });
+
+    return await entitiesSql.getMany();
+  }
+
   private async getBaseComponentiQueryBuilderGroupEsecuzioni(
     manager: EntityManager,
     tipoTrasferta: TipoTrasferta,
@@ -305,6 +355,57 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
 
       .andWhere('"epsNestjsOrpEffCicliEsec"."APP_REQ3_HYPSERV_COD_CHIAVE" IS NULL')
       .andWhere('"epsNestjsOrpEffCicliEsec"."TIPO_TRASFERTA" = :tipoTrasferta', { tipoTrasferta })
+      .andWhere('"epsNestjsOrpEffCicliEsec"."DOC_RIGA_ID" = :DOC_RIGA_ID', { DOC_RIGA_ID })
+      .andWhere('"epsNestjsOrpEffCicliEsec"."COD_ART" = :COD_ART', { COD_ART })
+      .andWhere(`TO_CHAR("epsNestjsOrpEffCicliEsec"."DATA_INIZIO", 'YYYY-MM-DD') = :DATA_INIZIO_YYYYMMDD`, {
+        DATA_INIZIO_YYYYMMDD: DATA_INIZIO,
+      });
+
+    // fondamentale serve ad ORGANIZZARE I GRUPPI DI LAVORO...
+    entitiesSql.orderBy({
+      '"epsNestjsOrpEffCicliEsec"."DOC_RIGA_ID"': 'ASC',
+      '"epsNestjsOrpEffCicliEsec"."COD_ART"': 'ASC',
+      '"epsNestjsOrpEffCicliEsec"."DATA_INIZIO"': 'ASC',
+    });
+
+    return await entitiesSql.getMany();
+  }
+
+  private async getBaseComponentiQueryBuilderGroupEsecuzioniRicercaKmManuali(
+    manager: EntityManager,
+    DOC_RIGA_ID: String,
+    COD_ART: String,
+    DATA_INIZIO: String,
+  ): Promise<EpsNestjsOrpEffCicliEsecEntity[]> {
+    const tipoTrasferta = 'ancora_in_trasferta_';
+
+    const entitiesSql = manager
+      .getRepository(EpsNestjsOrpEffCicliEsecEntity)
+      .createQueryBuilder('epsNestjsOrpEffCicliEsec')
+
+      .innerJoinAndSelect('epsNestjsOrpEffCicliEsec.operatori', 'operatori')
+      .innerJoinAndSelect('operatori.user', 'user')
+      .innerJoinAndSelect('user.role', 'role')
+
+      .leftJoinAndSelect('epsNestjsOrpEffCicliEsec.hypServReq2', 'hypServReq2')
+      .leftJoinAndSelect('epsNestjsOrpEffCicliEsec.appReq3HypServ', 'appReq3HypServ')
+      .leftJoinAndSelect('epsNestjsOrpEffCicliEsec.orpEffCicli', 'orpEffCicli')
+
+      .leftJoinAndSelect('epsNestjsOrpEffCicliEsec.artAna', 'artAna')
+
+      .leftJoinAndSelect('orpEffCicli.linkOrpOrd', 'linkOrpOrd')
+      .leftJoinAndSelect('linkOrpOrd.ordCliRighe', 'ordCliRighe')
+      .leftJoinAndSelect('ordCliRighe.ordCli', 'ordCli')
+      .leftJoinAndSelect('ordCli.cfComm', 'cfComm')
+      .leftJoinAndSelect('ordCliRighe.cf', 'cf')
+
+      .leftJoinAndSelect('orpEffCicli.orpEff', 'orpEff')
+      .leftJoinAndSelect('orpEff.x1TrasCodici', 'x1TrasCodici')
+
+      .select()
+
+      .andWhere('"epsNestjsOrpEffCicliEsec"."APP_REQ3_HYPSERV_COD_CHIAVE" IS NULL')
+      .andWhere(`"epsNestjsOrpEffCicliEsec"."TIPO_TRASFERTA" LIKE :TIPO_TRASFERATA`, { TIPO_TRASFERATA: `${tipoTrasferta}%` })
       .andWhere('"epsNestjsOrpEffCicliEsec"."DOC_RIGA_ID" = :DOC_RIGA_ID', { DOC_RIGA_ID })
       .andWhere('"epsNestjsOrpEffCicliEsec"."COD_ART" = :COD_ART', { COD_ART })
       .andWhere(`TO_CHAR("epsNestjsOrpEffCicliEsec"."DATA_INIZIO", 'YYYY-MM-DD') = :DATA_INIZIO_YYYYMMDD`, {
@@ -384,7 +485,9 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
           return;
         }
 
-        esecuzioni = await this.getBaseEsecuzioniQueryBuilderGroupEsecuzioni(manager, TIPO_TRASFERTA, DOC_RIGA_ID, COD_ART, DATA_INIZIO);
+        // la ricerca sarà like perchè gli operatori poterbbero selezionare KM dicersi (p.e. 20 30 40) ma alla fine sarà solo un costo che riporta
+        // il valore maggiore - in questo caso le esecuzioni devono essere processate tutte (non solo quella stretta sul TIPO_TRASFERTA del id richiesto)
+        esecuzioni = await this.getBaseEsecuzioniQueryBuilderGroupLikeEsecuzioni(manager, DOC_RIGA_ID, COD_ART, DATA_INIZIO);
       }
     }
 
@@ -405,7 +508,8 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
     // questo id indica che la richiesta è PUNTAULE per una singola EPS_NESTJS_ORP_EFF_CICLI_ESEC (ovvero quando cliccco su SEND TO HG)
     // raccolgo quindi tutti gli EPS_NESTJS_ORP_EFF_CICLI_ESEC collegati eventualmente anche per altri OPERATORI (avessero lavorato assieme)
     if (id) {
-      if (componenti.length > 0) { // devo cmq verificare che la query precendete abbia almeno un record
+      if (componenti.length > 0) {
+        // devo cmq verificare che la query precendete abbia almeno un record
         const DOC_RIGA_ID = componenti[0].DOC_RIGA_ID;
         const COD_ART = componenti[0].COD_ART;
         const DATA_INIZIO = componenti[0].DATA_INIZIO?.toISOString().substring(0, 10) || '';
@@ -487,12 +591,88 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
           if (kmManuali !== null && kmManuali !== undefined) {
             km = Decimal(kmManuali);
           } else {
-            km = await this.CalcoloDistanzaKmOrdineCliente(xVolte, manager, ordCliRighe, entity.id, cfOriginDefault);
+            km = await this.CalcoloDistanzaKmOrdineCliente(xVolte, manager, ordCliRighe, entity.id, "", cfOriginDefault);
           }
         } else {
           await this.SalvoConErroreEsecuzione(TIPO_ERRORI_SYNC.LINK_ORP_EFF, manager, entity.id);
           return;
         }
+
+        prevMaxId = (await this.GeneroComponenteKm(km, manager, entity)) || '';
+      } else {
+        // Indico i successivi operatori del gruppo di viaggio come processati - con lo stesso COD_CHIAVE dell'autista
+        await manager
+          .getRepository(EpsNestjsOrpEffCicliEsecEntity)
+          .createQueryBuilder()
+          .update()
+          .set({
+            APP_REQ3_HYPSERV_COD_CHIAVE: prevMaxId,
+          })
+          .where('id = :id', { id: prevId })
+          .execute();
+      }
+    }
+  }
+
+  async processGenericComponentiCostoTrasfertaRicercaKmMax(manager: EntityManager, id: string | null): Promise<void> {
+    let componenti = await this.getBaseComponentiQueryBuilderRicercaKmMax(manager, id);
+    // questo id indica che la richiesta è PUNTAULE per una singola EPS_NESTJS_ORP_EFF_CICLI_ESEC (ovvero quando cliccco su SEND TO HG)
+    // raccolgo quindi tutti gli EPS_NESTJS_ORP_EFF_CICLI_ESEC collegati eventualmente anche per altri OPERATORI (avessero lavorato assieme)
+    if (id) {
+      if (componenti.length > 0) {
+        // devo cmq verificare che la query precendete abbia almeno un record
+        const DOC_RIGA_ID = componenti[0].DOC_RIGA_ID;
+        const COD_ART = componenti[0].COD_ART;
+        const DATA_INIZIO = componenti[0].DATA_INIZIO?.toISOString().substring(0, 10) || '';
+        const COD_OP = componenti[0].COD_OP;
+        const DATA_FINE = componenti[0].DATA_FINE;
+        if (
+          DOC_RIGA_ID == null ||
+          COD_ART == null ||
+          DATA_INIZIO == null ||
+          // servono più avanti (non li uso per il check di gruppo ovviamente)
+          COD_OP == null ||
+          // ricorda che DATA_FINE coincide con DATA_INIZIO
+          DATA_FINE == null
+        ) {
+          await this.SalvoConErroreEsecuzione(TIPO_ERRORI_SYNC.DATI_SET_MINIMO, manager, componenti[0].id);
+          return;
+        }
+
+        componenti = await this.getBaseComponentiQueryBuilderGroupEsecuzioniRicercaKmManuali(manager, DOC_RIGA_ID, COD_ART, DATA_INIZIO);
+      }
+    }
+
+    let prevGroup = ''; // al primo passaggio genero il componente sempre
+    let prevId = '';
+    let prevMaxId = '';
+
+    let km: Decimal = new Decimal(0);
+
+    // cerco tra quelli del gruppo ma che sia il valore maggiore
+    if (componenti && componenti.length > 0) {
+      km = new Decimal(Math.max(...componenti.map((c) => new Decimal(c.KM || 0).toNumber())));
+    }
+
+    for (const entity of componenti || []) {
+      if (
+        entity.DOC_RIGA_ID == null ||
+        entity.COD_ART == null ||
+        entity.DATA_INIZIO == null ||
+        // servono più avanti (non li uso per il check di gruppo ovviamente)
+        entity.COD_OP == null ||
+        entity.DATA_FINE == null
+      ) {
+        await this.SalvoConErroreEsecuzione(TIPO_ERRORI_SYNC.DATI_SET_MINIMO, manager, entity.id);
+        return;
+      }
+
+      const DATA_INIZIO = entity.DATA_INIZIO?.toISOString().substring(0, 10) || '';
+
+      const currGroup = entity.DOC_RIGA_ID + entity.COD_ART + DATA_INIZIO; // della data prendo solo anno mese giorno -- TIPO_TRASFERTA non servirebbe lo lascio solo per comprensione
+      if (currGroup !== prevGroup) {
+        prevGroup = currGroup;
+        prevId = entity.id;
 
         prevMaxId = (await this.GeneroComponenteKm(km, manager, entity)) || '';
       } else {
@@ -539,6 +719,7 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
         manager,
         entity.orpEffCicli.linkOrpOrd[0].ordCliRighe,
         entity.id,
+        "",
         cfOriginDefault,
       );
 
@@ -569,7 +750,8 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
             1,
             manager,
             child.orpEffCicli.linkOrpOrd[0].ordCliRighe,
-            `${entity.id}_${child.id}`,
+            entity.id,
+            child.id,
             cfOriginDefault,
           );
 
@@ -635,33 +817,39 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
     await this.processGenericComponentiCostoTrasferta(null, 1, 'fuori_sede_ritorno_dopo_21', manager, id);
   }
 
+  async processAncoraInTrasfertaLike(manager: EntityManager, id: string | null): Promise<void> {
+    // Logica Elena, prendo tutti quelli "trasferta_fuori_sede_*" prenderò i chilometri maggiori tra tutti
+    await this.processGenericComponentiCostoTrasfertaRicercaKmMax(manager, id);
+  }
+
   async processAncoraInTrasferta0(manager: EntityManager, id: string | null): Promise<void> {
     // Usa il manager per eseguire query all'interno della transazione
+    // solo esecuzioni
     await this.processGenericEsecuzioni('ancora_in_trasferta_0', manager, id);
   }
 
   async processAncoraInTrasferta10(manager: EntityManager, id: string | null): Promise<void> {
     // Usa il manager per eseguire query all'interno della transazione
+    // solo esecuzioni
     await this.processGenericEsecuzioni('ancora_in_trasferta_10', manager, id);
-    await this.processGenericComponentiCostoTrasferta(10, 1, 'ancora_in_trasferta_10', manager, id);
   }
 
   async processAncoraInTrasferta20(manager: EntityManager, id: string | null): Promise<void> {
     // Usa il manager per eseguire query all'interno della transazione
+    // solo esecuzioni
     await this.processGenericEsecuzioni('ancora_in_trasferta_20', manager, id);
-    await this.processGenericComponentiCostoTrasferta(20, 1, 'ancora_in_trasferta_20', manager, id);
   }
 
   async processAncoraInTrasferta30(manager: EntityManager, id: string | null): Promise<void> {
     // Usa il manager per eseguire query all'interno della transazione
+    // solo esecuzioni
     await this.processGenericEsecuzioni('ancora_in_trasferta_30', manager, id);
-    await this.processGenericComponentiCostoTrasferta(30, 1, 'ancora_in_trasferta_30', manager, id);
   }
 
   async processAncoraInTrasferta40(manager: EntityManager, id: string | null): Promise<void> {
     // Usa il manager per eseguire query all'interno della transazione
+    // solo esecuzioni
     await this.processGenericEsecuzioni('ancora_in_trasferta_40', manager, id);
-    await this.processGenericComponentiCostoTrasferta(40, 1, 'ancora_in_trasferta_40', manager, id);
   }
 
   async processStep1KmAutista(manager: EntityManager, id: string | null): Promise<void> {
@@ -964,6 +1152,7 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
     manager: EntityManager,
     ordCliRighe: OrdCliRigheEntity,
     id: string,
+    idfk: string,
     cfOriginDefault: CfEntity | null,
   ): Promise<Decimal> {
     const cf = ordCliRighe?.cf;
@@ -971,7 +1160,7 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
 
     if (cf == null && cfComm == null) {
       // mancanza di entrambe - necessari per recuperare un destinazione utilizzabile
-      await this.SalvoConErroreEsecuzione(TIPO_ERRORI_SYNC.ORD_CLI_CF, manager, id);
+      await this.SalvoConErroreEsecuzione(TIPO_ERRORI_SYNC.ORD_CLI_CF, manager, id, idfk);
       return new Decimal(0);
     }
 
@@ -1238,7 +1427,7 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
 
   // -----------------------------------------------------------------------
 
-  async SalvoConErroreEsecuzione(tipo: TIPO_ERRORI_SYNC, manager: EntityManager, id: string) {
+  async SalvoConErroreEsecuzione(tipo: TIPO_ERRORI_SYNC, manager: EntityManager, id: string, idfk?: string) {
     const result = await manager
       .getRepository(EpsNestjsOrpEffCicliEsecEntity)
       .createQueryBuilder()
@@ -1246,6 +1435,16 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
       .set({ HYPSERV_REQ2_COD_CHIAVE: '-1', ERROR_SYNC: tipo })
       .where('id = :id', { id })
       .execute();
+
+    if (idfk) {
+      await manager
+        .getRepository(EpsNestjsOrpEffCicliEsecChildEntity)
+        .createQueryBuilder()
+        .update()
+        .set({ HYPSERV_REQ2_COD_CHIAVE: '-1', ERROR_SYNC: tipo })
+        .where('id = :idfk', { idfk })
+        .execute();
+    }
   }
 
   async SalvoConErroreComponente(tipo: TIPO_ERRORI_SYNC, manager: EntityManager, id: string) {
