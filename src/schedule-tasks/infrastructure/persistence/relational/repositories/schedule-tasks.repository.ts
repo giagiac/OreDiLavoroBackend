@@ -207,9 +207,14 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
     DOC_RIGA_ID: String,
     COD_ART: String,
     DATA_INIZIO: String,
+    TIPO_TRASFERATA: String,
   ): Promise<EpsNestjsOrpEffCicliEsecEntity[]> {
+    
+    let tipoTrasferta = TIPO_TRASFERATA;
 
-    const tipoTrasferta = 'ancora_in_trasferta_';
+    if (TIPO_TRASFERATA.indexOf('ancora_in_trasferta_') > -1) {
+      tipoTrasferta = 'ancora_in_trasferta_';
+    }
 
     const entitiesSql = manager
       .getRepository(EpsNestjsOrpEffCicliEsecEntity)
@@ -487,7 +492,13 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
 
         // la ricerca sarà like perchè gli operatori poterbbero selezionare KM dicersi (p.e. 20 30 40) ma alla fine sarà solo un costo che riporta
         // il valore maggiore - in questo caso le esecuzioni devono essere processate tutte (non solo quella stretta sul TIPO_TRASFERTA del id richiesto)
-        esecuzioni = await this.getBaseEsecuzioniQueryBuilderGroupLikeEsecuzioni(manager, DOC_RIGA_ID, COD_ART, DATA_INIZIO);
+        esecuzioni = await this.getBaseEsecuzioniQueryBuilderGroupLikeEsecuzioni(
+          manager,
+          DOC_RIGA_ID,
+          COD_ART,
+          DATA_INIZIO,
+          TIPO_TRASFERTA,
+        );
       }
     }
 
@@ -591,7 +602,7 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
           if (kmManuali !== null && kmManuali !== undefined) {
             km = Decimal(kmManuali);
           } else {
-            km = await this.CalcoloDistanzaKmOrdineCliente(xVolte, manager, ordCliRighe, entity.id, "", cfOriginDefault);
+            km = await this.CalcoloDistanzaKmOrdineCliente(xVolte, manager, ordCliRighe, entity.id, '', cfOriginDefault);
           }
         } else {
           await this.SalvoConErroreEsecuzione(TIPO_ERRORI_SYNC.LINK_ORP_EFF, manager, entity.id);
@@ -719,7 +730,7 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
         manager,
         entity.orpEffCicli.linkOrpOrd[0].ordCliRighe,
         entity.id,
-        "",
+        '',
         cfOriginDefault,
       );
 
@@ -763,7 +774,7 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
         }
       }
 
-      const coeff = KM_AUTISTA.div(sumKmCalcolati);
+      const coeff = sumKmCalcolati.isZero() ? new Decimal(1) : KM_AUTISTA.div(sumKmCalcolati)
 
       console.log(`Coefficente per ripartizione distanze: ${entity.id} -> ${coeff.toString()}`);
 
@@ -853,7 +864,7 @@ export class ScheduleTasksRelationalRepository implements ScheduleTasksRepositor
   }
 
   async processStep1KmAutista(manager: EntityManager, id: string | null): Promise<void> {
-    const entities = await this.processKmAutistaTrasferta(manager, null);
+    const entities = await this.processKmAutistaTrasferta(manager, id);
 
     for (const entity of entities || []) {
       // genero solo l'esecuzione
