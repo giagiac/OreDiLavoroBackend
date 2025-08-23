@@ -88,7 +88,7 @@ export class EpsNestjsOrpEffCicliEsecRelationalRepository implements EpsNestjsOr
       .leftJoinAndSelect('orpEff.x1TrasCodici', 'x1TrasCodici')
       .select()
       .addSelect(
-        `TO_CHAR("ordCliRighe".DATA_DOC, 'YY') || "x1TrasCodici".CODICE2 || "orpEff".NUM_DOC || '-' || "orpEffCicli".NUM_RIGA`,
+        `TO_CHAR("orpEff".DATA_DOC, 'YY') || "x1TrasCodici".CODICE2 || "orpEff".NUM_DOC || '-' || "orpEffCicli".NUM_RIGA`,
         'CODICE_BREVE',
       ) // Using raw SQL for concatenation and formatted date
       .andWhere('epsNestjsOrpEffCicliEsec.COD_OP =:COD_OP', {
@@ -139,7 +139,7 @@ export class EpsNestjsOrpEffCicliEsecRelationalRepository implements EpsNestjsOr
         .leftJoinAndSelect('orpEff.x1TrasCodici', 'x1TrasCodici')
         .select()
         .addSelect(
-          `TO_CHAR("ordCliRighe".DATA_DOC, 'YY') || "x1TrasCodici".CODICE2 || "orpEff".NUM_DOC || '-' || "orpEffCicli".NUM_RIGA`,
+          `TO_CHAR("orpEff".DATA_DOC, 'YY') || "x1TrasCodici".CODICE2 || "orpEff".NUM_DOC || '-' || "orpEffCicli".NUM_RIGA`,
           'CODICE_BREVE',
         ) // Using raw SQL for concatenation and formatted date
         .andWhere('epsNestjsOrpEffCicliEsecChild.COD_OP =:COD_OP', { COD_OP: COD_OP?.value })

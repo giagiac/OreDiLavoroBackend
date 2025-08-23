@@ -71,7 +71,7 @@ export class OrpEffCicliEsecRelationalRepository implements OrpEffCicliEsecRepos
       .leftJoinAndSelect('orpEff.x1TrasCodici', 'x1TrasCodici')
       .select()
       .addSelect(
-        `TO_CHAR("ordCliRighe".DATA_DOC, 'YY') || "x1TrasCodici".CODICE2 || "orpEff".NUM_DOC || '-' || "orpEffCicli".NUM_RIGA`,
+        `TO_CHAR("orpEff".DATA_DOC, 'YY') || "x1TrasCodici".CODICE2 || "orpEff".NUM_DOC || '-' || "orpEffCicli".NUM_RIGA`,
         'CODICE_BREVE',
       ) // Using raw SQL for concatenation and formatted date
       .where('TRUNC(SYSDATE) BETWEEN TRUNC(orpEffCicliEsec.DATA_INIZIO) AND TRUNC(orpEffCicliEsec.DATA_FINE)');

@@ -49,11 +49,11 @@ export class OrpEffCicliRelationalRepository implements OrpEffCicliRepository {
       .innerJoinAndSelect('orpEff.x1TrasCodici', 'x1TrasCodici')
       .select()
       .addSelect(
-        `TO_CHAR("ordCliRighe".DATA_DOC, 'YY') || "x1TrasCodici".CODICE2 || "orpEff".NUM_DOC || '-' || "orpEffCicli".NUM_RIGA`,
+        `TO_CHAR("orpEff".DATA_DOC, 'YY') || "x1TrasCodici".CODICE2 || "orpEff".NUM_DOC || '-' || "orpEffCicli".NUM_RIGA`,
         'CODICE_BREVE',
       ) // Using raw SQL for concatenation and formatted date
       .where(
-        `TO_CHAR("ordCliRighe".DATA_DOC, 'YY') || "x1TrasCodici".CODICE2 || "orpEff".NUM_DOC || '-' || "orpEffCicli".NUM_RIGA =:CODICE_BREVE`,
+        `TO_CHAR("orpEff".DATA_DOC, 'YY') || "x1TrasCodici".CODICE2 || "orpEff".NUM_DOC || '-' || "orpEffCicli".NUM_RIGA =:CODICE_BREVE`,
         { CODICE_BREVE: filterCodiceBreve?.value },
       );
 
